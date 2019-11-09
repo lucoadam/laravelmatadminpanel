@@ -26,7 +26,7 @@ class CreateOnionsTable extends Migration
      */
     public function down()
     {
-        Schema::drop("onion");
+        Schema::drop("onions");
     }
 
 }

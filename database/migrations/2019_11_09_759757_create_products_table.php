@@ -28,7 +28,7 @@ class CreateProductsTable extends Migration
      */
     public function down()
     {
-        Schema::drop("product");
+        Schema::drop("products");
     }
 
 }

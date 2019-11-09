@@ -28,7 +28,7 @@ class CreateInstitutesTable extends Migration
      */
     public function down()
     {
-        Schema::drop("institute");
+        Schema::drop("institutes");
     }
 
 }

@@ -29,7 +29,7 @@ class CreateStaffsTable extends Migration
      */
     public function down()
     {
-        Schema::drop("staff");
+        Schema::drop("staffs");
     }
 
 }

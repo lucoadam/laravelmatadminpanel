@@ -27,7 +27,7 @@ class CreateLibrarysTable extends Migration
      */
     public function down()
     {
-        Schema::drop("library");
+        Schema::drop("librarys");
     }
 
 }

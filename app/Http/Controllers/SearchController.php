@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -55,9 +56,11 @@ class SearchController extends Controller
                 foreach ($products as $key => $product) {
                     $each = '';
                     foreach ($columns as $column) {
-                        if ($column != 'actions') {
+                        if ($column == 'created_at') {
+                            $each .= '<td>' . Carbon::parse($product->created_at)->format('Y/m/d'). '</td>';
+                        } elseif ($column != 'actions') {
                             $each .= '<td>' . $product->{$column} . '</td>';
-                        } else {
+                        }else {
                             $each .= '<td class="td-actions text-right">
                               <form action="' . url('/') . '/' . $modelName . '/' . $product->id . '" method="post">
                                   ' . csrf_field() . '

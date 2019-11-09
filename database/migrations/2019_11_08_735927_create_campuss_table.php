@@ -27,7 +27,7 @@ class CreateCampussTable extends Migration
      */
     public function down()
     {
-        Schema::drop("campus");
+        Schema::drop("campuss");
     }
 
 }

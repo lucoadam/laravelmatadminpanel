@@ -154,7 +154,7 @@ class Create'.ucfirst(strtolower($table)).'sTable extends Migration
      */
     public function down()
     {
-        Schema::drop("'.strtolower($table).'");
+        Schema::drop("'.strtolower($table).'s");
     }
 
 }';
@@ -410,6 +410,9 @@ class '.$model.'Controller extends Controller
     private function viewIndex($model,$fields=['name'=>'string']){
         $titleContent = '';
         $bodyContent = '';
+        $fieldKey= array();
+        $fieldMe= array();
+        array_push($fieldKey,'id');
         foreach($fields as $key=>$value){
             $titleContent .= "\n\t\t\t\t\t\t".'<th>
                             {{ __("'.ucfirst(implode(" ",explode("_",$key))).'") }}
@@ -417,7 +420,11 @@ class '.$model.'Controller extends Controller
             $bodyContent .= "\n\t\t\t\t\t\t".'<td>
                             {{ $model->'.$key.' }}
                           </td>';
+            array_push($fieldKey,$key);
         }
+        array_push($fieldKey,'created_at');
+        $fieldMe = $fieldKey;
+        array_push($fieldKey,'actions');
         return '@extends(\'layouts.app\', [\'activePage\' => \''.strtolower($model).'-management\', \'titlePage\' => __(\''.$model.' Management\')])
 
 @section(\'content\')
@@ -503,8 +510,7 @@ class '.$model.'Controller extends Controller
 @endsection
 @section(\'after-script\')
     <script type="text/javascript">
-        <script type="text/javascript">
-        $(document).ready(function () {
+       $(document).ready(function () {
             $(\'#searchTable\').on(\'keyup\',function() {
                 $value = $(this).val();
                 $.ajax({
@@ -512,15 +518,15 @@ class '.$model.'Controller extends Controller
                         \'X-CSRF-TOKEN\': "{{csrf_token()}}"
                     },
                     type: \'get\',
-                    url: \'{{URL::to(\'search/'.$model.'s\')}}\',
+                    url: \'{{URL::to(\'search/'.strtolower($model).'s\')}}\',
                     data: {
                         \'search\': $value,
-                        \'searchFields\':[\''.json_encode($fields).'\'],
-                        \'token\':\'{{csrf_token()}}\',
-                        \'fields\':'.json_encode($fields).'
-                        },
+                        \'searchFields\': '.json_encode($fieldMe).',
+                        \'token\': \'{{csrf_token()}}\',
+                        \'fields\': '.json_encode($fieldKey).'
+                    },
                     success: function (data) {
-                        var d= JSON.parse(data)
+                        var d = JSON.parse(data)
                         console.log(d.paginate)
                         $(\'tbody\').html(d.content);
                     }
@@ -528,7 +534,6 @@ class '.$model.'Controller extends Controller
             });
         })
 
-    </script>
     </script>
 @endsection';
     }
