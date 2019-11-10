@@ -5,8 +5,11 @@ namespace App\Http\Controllers\settings;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\settings\DepartmentRequest;
 use App\Models\settings\Department;
+use Illuminate\Database\Migrations\Migration;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 
 class DepartmentController extends Controller
 {
@@ -40,14 +43,17 @@ class DepartmentController extends Controller
      */
     public function store(DepartmentRequest $request,Department $department)
     {
+        if($request->all()['name']!='department')
 
         $modelName=ucfirst($request->all()['name']);
         $fields=json_decode($request->all()['field']);//array('name'=>'string','country'=>'string','city'=>'text','salary'=>'integer');
         $basePath=explode('public',public_path())[0];
-        $migrationPath= $basePath.'database/migrations/'.now()->format('Y_m_d').'_'.rand(99999,999999).'_create_'.strtolower($modelName).'s_table.php';
-        $migrationContent = $this->migrationContent(strtolower($modelName),$fields);
-        $migrationGenerate = File::put($migrationPath,$migrationContent);
-        exec('cd '.$basePath.' && php artisan migrate');
+        if(!Schema::hasTable(strtolower($modelName).'s')) {
+            $migrationPath = $basePath . 'database/migrations/' . now()->format('Y_m_d') . '_' . rand(99999, 999999) . '_create_' . strtolower($modelName) . 's_table.php';
+            $migrationContent = $this->migrationContent(strtolower($modelName), $fields);
+            $migrationGenerate = File::put($migrationPath, $migrationContent);
+            exec('cd ' . $basePath . ' && php artisan migrate');
+        }
         $modelPath = $basePath.'app/Models/'.ucfirst($modelName).'.php';
         $modelContent = $this->modelContent($modelName,$fields);
         $modelGenerate = File::put($modelPath,$modelContent);
@@ -117,6 +123,44 @@ class DepartmentController extends Controller
     public function destroy(Department $department)
     {
         //
+        $modelName = ucfirst($department->name);
+        $mig = scandir(base_path().'/database/migrations');
+        // DB::table('migrations')->where('migration','2019_11_08_830097_create_librarys_table')->delete();
+        $mArray=preg_grep('/'.strtolower($modelName).'s/',$mig);
+        $basePath=explode('public',public_path())[0];
+        $modelPath = $basePath.'app/Models/'.ucfirst($modelName).'.php';
+        $requestPath = $basePath.'app/Http/Requests/'.$modelName.'Request.php';
+        $controllerPath = $basePath.'/app/Http/Controllers/'.$modelName.'Controller.php';
+        $viewPath = $basePath.'resources/views/'.strtolower($modelName);
+        $routesPath = $basePath.'routes/Generator';
+        Schema::dropIfExists(strtolower($modelName).'s');
+
+        if(count($mArray)==1){
+            $migrationName =   array_pop($mArray);
+            $path=base_path().'/database/migrations/'.$migrationName;
+            $migrationName= explode('.',$migrationName)[0];
+            if(File::exists($path)){
+                File::delete($path);
+                DB::table('migrations')->where('migration',$migrationName)->delete();
+            }
+
+        }
+        $files=[
+           $modelPath,
+           $requestPath,
+           $controllerPath,
+            $viewPath.'/create.blade.php',
+            $viewPath.'/index.blade.php',
+            $viewPath.'/view.blade.php',
+            $viewPath.'/edit.blade.php',
+            $routesPath.'/'.$modelName.'.php'
+        ];
+        foreach($files as $file){
+            if(File::exists($file)){
+                File::delete($file);
+            }
+        }
+
         $department->delete();
         return redirect()->route('settings.department.index')->withStatus(__('Department successfully deleted.'));
     }

@@ -31,6 +31,17 @@
                     </div>
                   </div>
                 </div>
+							<div class="row">
+                  <label class="col-sm-2 col-form-label">{{ __('Type') }}</label>
+                  <div class="col-sm-7">
+                    <div class="form-group{{ $errors->has('type') ? ' has-danger' : '' }}">
+                      <input class="form-control{{ $errors->has('type') ? ' is-invalid' : '' }}" name="type" id="input-type" type="text" placeholder="{{ __('Type') }}" value="{{ old('type', $onion->type) }}" required="true" aria-required="true"/>
+                      @if ($errors->has('type'))
+                        <span id="type-error" class="error text-danger" for="input-type">{{ $errors->first('type') }}</span>
+                      @endif
+                    </div>
+                  </div>
+                </div>
               </div>
               <div class="card-footer ml-auto mr-auto">
                 <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
