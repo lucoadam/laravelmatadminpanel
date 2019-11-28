@@ -50,7 +50,6 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::put('profile', ['as' => 'profile.update', 'uses' => 'ProfileController@update']);
 	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'ProfileController@password']);
     Route::resource('students','StudentsController');
-    Route::resource('staff','StaffController');
     Route::resource('institute','InstituteController');
     Route::get('search/{table}','SearchController@search');
     $directory= __DIR__.'/Generator';

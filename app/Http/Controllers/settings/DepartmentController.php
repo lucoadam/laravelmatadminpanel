@@ -57,9 +57,28 @@ class DepartmentController extends Controller
         $modelPath = $basePath.'app/Models/'.ucfirst($modelName).'.php';
         $modelContent = $this->modelContent($modelName,$fields);
         $modelGenerate = File::put($modelPath,$modelContent);
-          $requestPath = $basePath.'app/Http/Requests/'.$modelName.'Request.php';
-          $requestContent = $this->requestContent($modelName,$fields);
+
+            $requestPath = $basePath.'app/Http/Requests/'.strtolower($modelName);
+            File::isDirectory($requestPath) or File::makeDirectory($requestPath, 0777, true, true);
+          $requestPath = $basePath.'app/Http/Requests/'.strtolower($modelName).'/'.$modelName.'StoreRequest.php';
+          $requestContent = $this->requestContent($modelName,$fields,'Store');
           $requestGenerate = File::put($requestPath,$requestContent);
+            $requestPath = $basePath.'app/Http/Requests/'.strtolower($modelName).'/'.$modelName.'UpdateRequest.php';
+            $requestContent = $this->requestContent($modelName,$fields,'Update');
+            $requestGenerate = File::put($requestPath,$requestContent);
+        $requestPath = $basePath.'app/Http/Requests/'.strtolower($modelName).'/'.$modelName.'EditRequest.php';
+        $requestContent = $this->requestContent($modelName,$fields,'Edit');
+        $requestGenerate = File::put($requestPath,$requestContent);
+        $requestPath = $basePath.'app/Http/Requests/'.strtolower($modelName).'/'.$modelName.'CreateRequest.php';
+        $requestContent = $this->requestContent($modelName,$fields,'Create');
+        $requestGenerate = File::put($requestPath,$requestContent);
+        $requestPath = $basePath.'app/Http/Requests/'.strtolower($modelName).'/'.$modelName.'DeleteRequest.php';
+        $requestContent = $this->requestContent($modelName,$fields,'Delete');
+        $requestGenerate = File::put($requestPath,$requestContent);
+        $requestPath = $basePath.'app/Http/Requests/'.strtolower($modelName).'/'.$modelName.'ViewRequest.php';
+        $requestContent = $this->requestContent($modelName,$fields,'View');
+        $requestGenerate = File::put($requestPath,$requestContent);
+
         $controllerPath = $basePath.'/app/Http/Controllers/'.$modelName.'Controller.php';
         $controllerContent = $this->controllerContent($modelName);
         $contollergenerate=File::put($controllerPath,$controllerContent);
@@ -224,22 +243,25 @@ class '.ucfirst($model).' extends Model
 }';
     }
 
-    private function requestContent($model,$fields=['name'=>'string']){
+    private function requestContent($model,$fields=['name'=>'string'],$type){
         $fieldContent='';
         foreach($fields as $key=>$value){
             $fieldContent .= "\n\t\t\t"."'".$key."' => [
                 'required'
             ],";
         }
+        if($type!='Update'||$type!='Store')
+            $fieldContent='';
+
         return '<?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\\'.strtolower($model).';
 
 use App\Models\\'.$model.';
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class '.$model.'Request extends FormRequest
+class '.$model.$type.'Request extends FormRequest
 {
     /**
      * Determine if the '.strtolower($model).' is authorized to make this request.
@@ -269,9 +291,13 @@ class '.$model.'Request extends FormRequest
         return '<?php
 
 namespace App\Http\Controllers;
-
 use App\Models\\'.$model.';
-use App\Http\Requests\\'.$model.'Request;
+use App\Http\Requests\\'.strtolower($model).'\\'.$model.'CreateRequest;
+use App\Http\Requests\\'.strtolower($model).'\\'.$model.'EditRequest;
+use App\Http\Requests\\'.strtolower($model).'\\'.$model.'StoreRequest;
+use App\Http\Requests\\'.strtolower($model).'\\'.$model.'UpdateRequest;
+use App\Http\Requests\\'.strtolower($model).'\\'.$model.'DeleteRequest;
+use App\Http\Requests\\'.strtolower($model).'\\'.$model.'ViewRequest;
 use Illuminate\Support\Facades\Hash;
 
 class '.$model.'Controller extends Controller
@@ -282,16 +308,17 @@ class '.$model.'Controller extends Controller
      * @param  \App\\' . $model . '  $model
      * @return \Illuminate\View\View
      */
-    public function index(' . $model .' $model)
+    public function index('.$model.'ViewRequest $request,' . $model .' $model)
     {
         return view(\''.strtolower($model).'.index\', [\''.strtolower($model).'\' => $model->paginate(20)]);
     }
+    
     /**
      * Show the form for creating a new '.strtolower($model).'
      *
      * @return \Illuminate\View\View
      */
-    public function create()
+    public function create('.$model.'CreateRequest $request)
     {
         return view(\''.strtolower($model).'.create\');
     }
@@ -303,7 +330,7 @@ class '.$model.'Controller extends Controller
      * @param  \App\\'.ucfirst($model).'  $model
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store('.$model.'Request $request, '.ucfirst($model).' $model)
+    public function store('.$model.'StoreRequest $request, '.ucfirst($model).' $model)
     {
         $model->create($request->all());
 
@@ -328,7 +355,7 @@ class '.$model.'Controller extends Controller
      * @param  \App\\'.ucfirst($model).'  $'.strtolower($model).'
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update('.ucfirst($model).'Request $request, '.ucfirst($model).'  $'.strtolower($model).')
+    public function update('.$model.'UpdateRequest $request,'.ucfirst($model).'  $'.strtolower($model).')
     {
         $'.strtolower($model).'->update($request->all());
         return redirect()->route(\''.strtolower($model).'.index\')->withStatus(__(\''.ucfirst($model).' successfully updated.\'));
@@ -340,7 +367,7 @@ class '.$model.'Controller extends Controller
      * @param  \App\\'.ucfirst($model).'  $'.strtolower($model).'
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy('.ucfirst($model).'  $'.strtolower($model).')
+    public function destroy('.$model.'DeleteRequest $request,'.ucfirst($model).'  $'.strtolower($model).')
     {
         $'.strtolower($model).'->delete();
 
