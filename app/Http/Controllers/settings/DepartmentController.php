@@ -4,7 +4,8 @@ namespace App\Http\Controllers\settings;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\settings\DepartmentRequest;
-use App\Models\settings\Department;
+use App\Models\Menu;
+use App\Models\settings\Module;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,7 @@ class DepartmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Department $model)
+    public function index(Module $model)
     {
         //
         return view('settings.departments.index',['departments' => $model->paginate(5)]);
@@ -41,60 +42,70 @@ class DepartmentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(DepartmentRequest $request,Department $department)
+    public function store(DepartmentRequest $request, Module $department)
     {
-        if($request->all()['name']!='department')
 
-        $modelName=ucfirst($request->all()['name']);
-        $fields=json_decode($request->all()['field']);//array('name'=>'string','country'=>'string','city'=>'text','salary'=>'integer');
-        $basePath=explode('public',public_path())[0];
-        if(!Schema::hasTable(strtolower($modelName).'s')) {
-            $migrationPath = $basePath . 'database/migrations/' . now()->format('Y_m_d') . '_' . rand(99999, 999999) . '_create_' . strtolower($modelName) . 's_table.php';
-            $migrationContent = $this->migrationContent(strtolower($modelName), $fields);
-            $migrationGenerate = File::put($migrationPath, $migrationContent);
-            exec('cd ' . $basePath . ' && php artisan migrate');
-        }
-        $modelPath = $basePath.'app/Models/'.ucfirst($modelName).'.php';
-        $modelContent = $this->modelContent($modelName,$fields);
-        $modelGenerate = File::put($modelPath,$modelContent);
+        if ($request->all()['name'] != 'module') {
 
-            $requestPath = $basePath.'app/Http/Requests/'.strtolower($modelName);
+            $modelName = ucfirst($request->all()['name']);
+            $fields = json_decode($request->all()['field']);//array('name'=>'string','country'=>'string','city'=>'text','salary'=>'integer');
+            $basePath = explode('public', public_path())[0];
+            if (!Schema::hasTable(strtolower($modelName) . 's')) {
+                $migrationPath = $basePath . 'database/migrations/' . now()->format('Y_m_d') . '_' . rand(99999, 999999) . '_create_' . strtolower($modelName) . 's_table.php';
+                $migrationContent = $this->migrationContent(strtolower($modelName), $fields);
+                $migrationGenerate = File::put($migrationPath, $migrationContent);
+                exec('cd ' . $basePath . ' && php artisan migrate');
+            }
+            $modelPath = $basePath . 'app/Models/' . ucfirst($modelName) . '.php';
+            $modelContent = $this->modelContent($modelName, $fields);
+            $modelGenerate = File::put($modelPath, $modelContent);
+
+            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($modelName);
             File::isDirectory($requestPath) or File::makeDirectory($requestPath, 0777, true, true);
-          $requestPath = $basePath.'app/Http/Requests/'.strtolower($modelName).'/'.$modelName.'StoreRequest.php';
-          $requestContent = $this->requestContent($modelName,$fields,'Store');
-          $requestGenerate = File::put($requestPath,$requestContent);
-            $requestPath = $basePath.'app/Http/Requests/'.strtolower($modelName).'/'.$modelName.'UpdateRequest.php';
-            $requestContent = $this->requestContent($modelName,$fields,'Update');
-            $requestGenerate = File::put($requestPath,$requestContent);
-        $requestPath = $basePath.'app/Http/Requests/'.strtolower($modelName).'/'.$modelName.'EditRequest.php';
-        $requestContent = $this->requestContent($modelName,$fields,'Edit');
-        $requestGenerate = File::put($requestPath,$requestContent);
-        $requestPath = $basePath.'app/Http/Requests/'.strtolower($modelName).'/'.$modelName.'CreateRequest.php';
-        $requestContent = $this->requestContent($modelName,$fields,'Create');
-        $requestGenerate = File::put($requestPath,$requestContent);
-        $requestPath = $basePath.'app/Http/Requests/'.strtolower($modelName).'/'.$modelName.'DeleteRequest.php';
-        $requestContent = $this->requestContent($modelName,$fields,'Delete');
-        $requestGenerate = File::put($requestPath,$requestContent);
-        $requestPath = $basePath.'app/Http/Requests/'.strtolower($modelName).'/'.$modelName.'ViewRequest.php';
-        $requestContent = $this->requestContent($modelName,$fields,'View');
-        $requestGenerate = File::put($requestPath,$requestContent);
+            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($modelName) . '/' . $modelName . 'StoreRequest.php';
+            $requestContent = $this->requestContent($modelName, $fields, 'Store');
+            $requestGenerate = File::put($requestPath, $requestContent);
+            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($modelName) . '/' . $modelName . 'UpdateRequest.php';
+            $requestContent = $this->requestContent($modelName, $fields, 'Update');
+            $requestGenerate = File::put($requestPath, $requestContent);
+            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($modelName) . '/' . $modelName . 'EditRequest.php';
+            $requestContent = $this->requestContent($modelName, $fields, 'Edit');
+            $requestGenerate = File::put($requestPath, $requestContent);
+            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($modelName) . '/' . $modelName . 'CreateRequest.php';
+            $requestContent = $this->requestContent($modelName, $fields, 'Create');
+            $requestGenerate = File::put($requestPath, $requestContent);
+            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($modelName) . '/' . $modelName . 'DeleteRequest.php';
+            $requestContent = $this->requestContent($modelName, $fields, 'Delete');
+            $requestGenerate = File::put($requestPath, $requestContent);
+            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($modelName) . '/' . $modelName . 'ViewRequest.php';
+            $requestContent = $this->requestContent($modelName, $fields, 'View');
+            $requestGenerate = File::put($requestPath, $requestContent);
 
-        $controllerPath = $basePath.'/app/Http/Controllers/'.$modelName.'Controller.php';
-        $controllerContent = $this->controllerContent($modelName);
-        $contollergenerate=File::put($controllerPath,$controllerContent);
-        $viewPath = $basePath.'resources/views/'.strtolower($modelName);
-        File::isDirectory($viewPath) or File::makeDirectory($viewPath, 0777, true, true);
-        $createContent= $this->createView($modelName,$fields);
-        $createGenerate = File::put($viewPath.'/create.blade.php',$createContent);
-        $editContent= $this->editView($modelName,$fields);
-        $editGenerate = File::put($viewPath.'/edit.blade.php',$editContent);
-        $indexContent= $this->viewIndex($modelName,$fields);
-        $indexGenerate = File::put($viewPath.'/index.blade.php',$indexContent);
-        $routesPath = $basePath.'routes/Generator';
-        File::isDirectory($routesPath) or File::makeDirectory($routesPath, 0777, true, true);
-        File::put($routesPath.'/'.$modelName.'.php','<?php'."\n\t".'Route::resource(\''.strtolower($modelName).'\',\''.$modelName.'Controller\');');
-        $department->create(['name'=>$request->all()['name']]);
+            $controllerPath = $basePath . '/app/Http/Controllers/' . $modelName . 'Controller.php';
+            $controllerContent = $this->controllerContent($modelName,$fields);
+            $contollergenerate = File::put($controllerPath, $controllerContent);
+            $viewPath = $basePath . 'resources/views/' . strtolower($modelName);
+            File::isDirectory($viewPath) or File::makeDirectory($viewPath, 0777, true, true);
+            $createContent = $this->createView($modelName, $fields);
+            $createGenerate = File::put($viewPath . '/create.blade.php', $createContent);
+            $editContent = $this->editView($modelName, $fields);
+            $editGenerate = File::put($viewPath . '/edit.blade.php', $editContent);
+            $indexContent = $this->viewIndex($modelName, $fields);
+            $indexGenerate = File::put($viewPath . '/index.blade.php', $indexContent);
+            $routesPath = $basePath . 'routes/Generator';
+            File::isDirectory($routesPath) or File::makeDirectory($routesPath, 0777, true, true);
+            File::put($routesPath . '/' . $modelName . '.php', '<?php' . "\n\t" . 'Route::resource(\'' . strtolower($modelName) . '\',\'' . $modelName . 'Controller\');');
+            $department->create(['name' => $request->all()['name']]);
+
+            if($request->has('parent')&&!is_null($request->get('parent'))){
+                $parent=Menu::firstOrCreate(['name'=>$request->get('parent'),'url'=>'#']);
+                Menu::firstOrCreate(['name'=>$request->all()['name'],'url'=>strtolower($request->all()['name']).'.index','parent_id'=>$parent->id]);
+            }else{
+                Menu::firstOrCreate(['name'=>$request->all()['name'],'url'=>strtolower($request->all()['name']).'.index']);
+            }
+        }
         return redirect()->route('settings.department.index')->withStatus(__('Department successfully created.'));
+
     }
 
     /**
@@ -114,7 +125,7 @@ class DepartmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Department $department)
+    public function edit(Module $department)
     {
         return view('settings.departments.edit',compact('department'));
     }
@@ -126,7 +137,7 @@ class DepartmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Department $department)
+    public function update(Request $request, Module $department)
     {
         //
         $department->update($request->all());
@@ -139,7 +150,7 @@ class DepartmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Department $department)
+    public function destroy(Module $department)
     {
         //
         $modelName = ucfirst($department->name);
@@ -165,9 +176,9 @@ class DepartmentController extends Controller
 
         }
         $files=[
-           $modelPath,
-           $requestPath,
-           $controllerPath,
+            $modelPath,
+            $requestPath,
+            $controllerPath,
             $viewPath.'/create.blade.php',
             $viewPath.'/index.blade.php',
             $viewPath.'/view.blade.php',
@@ -188,7 +199,18 @@ class DepartmentController extends Controller
     private function migrationContent($table,$fields=['name'=>'string']){
         $fieldContent = '';
         foreach($fields as $key=>$field){
-            $fieldContent .="\n\t\t\t".'$table->'.$field.'("'.$key.'");';
+            if(count(explode('_',$key))==2&&explode('_',$key)[1]=='id'){
+                $reltable = explode('_',$key)[0].'s';
+                if(Schema::hasTable($reltable)){
+                    $fieldContent .= "\n\t\t\t" . '$table->bigInteger("' . $key . '")->unsigned();';
+                    $fieldContent .= "\n\t\t\t" . '$table->foreign("' . $key . '")->references("id")->on("'.$reltable.'")->onUpdate("RESTRICT")->onDelete("CASCADE");';
+                    //    $table->foreign('department_id')->references('id')->on('departments')->onUpdate('RESTRICT')->onDelete('CASCADE');
+                }else{
+                    $fieldContent .= "\n\t\t\t" . '$table->' . $field . '("' . $key . '");';
+                }
+            }else {
+                $fieldContent .= "\n\t\t\t" . '$table->' . $field . '("' . $key . '");';
+            }
         }
         return '<?php
 use Illuminate\Support\Facades\Schema;
@@ -205,7 +227,7 @@ class Create'.ucfirst(strtolower($table)).'sTable extends Migration
     public function up()
     {
         Schema::create("'.strtolower($table).'s", function (Blueprint $table) {
-            $table->increments("id");'.$fieldContent.'
+            $table->bigIncrements("id");'.$fieldContent.'
             $table->timestamps();
         });
     }
@@ -225,8 +247,17 @@ class Create'.ucfirst(strtolower($table)).'sTable extends Migration
 
     private function modelContent($model,$fields=['name'=>'string']){
         $fillableFields = '';
+        $methods ='';
         foreach($fields as $key=>$field){
             $fillableFields .="\n\t\t"."'".$key."',";
+            if(count(explode('_',$key))==2&&explode('_',$key)[1]=='id') {
+                $reltable = explode('_', $key)[0];
+                if (Schema::hasTable($reltable.'s')) {
+                    $methods="\n\t\t\t".'public function '.$reltable.'(){
+        return $this->belongsTo('.ucfirst($reltable).'::class,\''.$reltable.'_id\');
+    }';
+                }
+            }
         }
         return '<?php
 
@@ -239,7 +270,7 @@ class '.ucfirst($model).' extends Model
     protected $table = "'.strtolower($model).'s";
     //
     protected $fillable =['.$fillableFields.'
-    ];
+    ];'.$methods.'
 }';
     }
 
@@ -287,7 +318,15 @@ class '.$model.$type.'Request extends FormRequest
 ';
     }
 
-    private function controllerContent($model){
+    private function controllerContent($model,$fields){
+        $images= array_key_exists('image',$fields)?'if(isset($input[\'image\'])&&!is_null($input[\'image\'])) {
+            $inputPath=$request->image->store(\'public/assets/image\');
+            $input[\'image\']="/".implode("storage",explode("public",$inputPath));
+
+        }':'';
+        $imag=array_key_exists('image',$fields)?'else {
+            $input[\'image\'] = \'\';
+        }':'';
         return '<?php
 
 namespace App\Http\Controllers;
@@ -312,7 +351,7 @@ class '.$model.'Controller extends Controller
     {
         return view(\''.strtolower($model).'.index\', [\''.strtolower($model).'\' => $model->paginate(20)]);
     }
-    
+
     /**
      * Show the form for creating a new '.strtolower($model).'
      *
@@ -320,6 +359,7 @@ class '.$model.'Controller extends Controller
      */
     public function create('.$model.'CreateRequest $request)
     {
+
         return view(\''.strtolower($model).'.create\');
     }
 
@@ -332,8 +372,9 @@ class '.$model.'Controller extends Controller
      */
     public function store('.$model.'StoreRequest $request, '.ucfirst($model).' $model)
     {
-        $model->create($request->all());
-
+        $input =$request->all();
+        '.$images.$imag.'
+        $model->create($input);
         return redirect()->route(\''.strtolower($model).'.index\')->withStatus(__(\''.ucfirst($model).' successfully created.\'));
     }
 
@@ -357,7 +398,10 @@ class '.$model.'Controller extends Controller
      */
     public function update('.$model.'UpdateRequest $request,'.ucfirst($model).'  $'.strtolower($model).')
     {
-        $'.strtolower($model).'->update($request->all());
+          $input =$request->all();
+        '.$images.'
+
+        $'.strtolower($model).'->update($input);
         return redirect()->route(\''.strtolower($model).'.index\')->withStatus(__(\''.ucfirst($model).' successfully updated.\'));
     }
 
@@ -373,19 +417,57 @@ class '.$model.'Controller extends Controller
 
         return redirect()->route(\''.strtolower($model).'.index\')->withStatus(__(\''.ucfirst($model).' successfully deleted.\'));
     }
-}
-';
+}';
 
     }
 
     private function createView($model,$fields=['name'=>'string']){
         $fieldContent = '';
         foreach($fields as $key=>$value){
-            $fieldContent .= "\n\t\t\t\t\t\t\t".'<div class="row">
+            $input = '<input class="form-control{{ $errors->has(\''.strtolower($key).'\') ? \' is-invalid\' : \'\' }}" name="'.strtolower($key).'" id="input-'.strtolower($key).'" type="text" placeholder="{{ __(\''.ucfirst($key).'\') }}" value="{{ old(\''.strtolower($key).'\') }}" required="true" aria-required="true"/>';
+            if($value=='text') {
+                $input = '<textarea rows="5" class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"></textarea>';
+            }else if($key=='image'){
+                $input = ' <div class="fileinput fileinput-new text-center" data-provides="fileinput">
+                      <div class="fileinput-new thumbnail img-raised">
+                          <img src="http://style.anu.edu.au/_anu/4/images/placeholders/person_8x10.png" rel="nofollow" alt="...">
+                      </div>
+                      <div class="fileinput-preview fileinput-exists thumbnail img-raised"></div>
+                      <div>
+        <span class="btn btn-raised btn-round btn-default btn-file">
+            <span class="fileinput-new">Select image</span>
+            <span class="fileinput-exists">Change</span>
+            <input type="file" name="image" />
+        </span>
+                          <a href="javascript:;" class="btn btn-danger btn-round fileinput-exists" data-dismiss="fileinput"><i class="fa fa-times"></i> Remove</a>
+                          </div>
+                 ';
+            }else if($value=='integer'||$value=='bigInteger') {
+                if(count(explode('_',$key))==2&&explode('_',$key)[1]=='id') {
+                    $reltable = explode('_', $key)[0];
+                    if (Schema::hasTable($reltable . 's')) {
+                        $input = '@php
+                    $'.$reltable.'s = \App\Models\\'.ucfirst($reltable).'::all();
+                  @endphp
+
+                              <select class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="'.$reltable.'_id">
+                                  <option selected disabled value="">'.ucfirst($reltable).'</option>
+                                  @foreach($'.$reltable.'s as $'.$reltable.')
+                                      <option value="{{$'.$reltable.'->id}}">{{$'.$reltable.'->name}}</option>
+                                  @endforeach
+                              </select>';
+                    }else{
+                        $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="number" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"/>';
+                    }
+                }else {
+                    $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="number" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"/>';
+                }
+            }
+            $fieldContent .= "\n\t\t\t\t\t".'<div class="row">
                   <label class="col-sm-2 col-form-label">{{ __(\''.ucfirst(implode(" ",explode("_",$key))).'\') }}</label>
                   <div class="col-sm-7">
                     <div class="form-group{{ $errors->has(\''.strtolower($key).'\') ? \' has-danger\' : \'\' }}">
-                      <input class="form-control{{ $errors->has(\''.strtolower($key).'\') ? \' is-invalid\' : \'\' }}" name="'.strtolower($key).'" id="input-'.strtolower($key).'" type="text" placeholder="{{ __(\''.ucfirst($key).'\') }}" value="{{ old(\''.strtolower($key).'\') }}" required="true" aria-required="true"/>
+                      '.$input.'
                       @if ($errors->has(\''.strtolower($key).'\'))
                         <span id="'.strtolower($key).'-error" class="error text-danger" for="input-'.strtolower($key).'">{{ $errors->first(\''.strtolower($key).'\') }}</span>
                       @endif
@@ -400,7 +482,7 @@ class '.$model.'Controller extends Controller
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12">
-          <form method="post" action="{{ route(\''.strtolower($model).'.store\') }}" autocomplete="off" class="form-horizontal">
+          <form method="post" action="{{ route(\''.strtolower($model).'.store\') }}" autocomplete="off" class="form-horizontal" '.(array_key_exists('image',$fields)?'enctype="multipart/form-data"':'').'>
             @csrf
             @method(\'post\')
 
@@ -414,7 +496,7 @@ class '.$model.'Controller extends Controller
                   <div class="col-md-12 text-right">
                       <a href="{{ route(\''.strtolower($model).'.index\') }}" class="btn btn-sm btn-primary">{{ __(\'Back to list\') }}</a>
                   </div>
-                </div>'.$fieldContent.'                
+                </div>'.$fieldContent.'
               </div>
               <div class="card-footer ml-auto mr-auto">
                 <button type="submit" class="btn btn-primary">{{ __(\'Add '.$model.'\') }}</button>
@@ -427,22 +509,61 @@ class '.$model.'Controller extends Controller
   </div>
 @endsection';
     }
-    
+
     private function editView($model,$fields=['name'=>'string']){
         $fieldContent = '';
         foreach($fields as $key=>$value){
-            $fieldContent .= "\n\t\t\t\t\t\t\t".'<div class="row">
+                $input = '<input class="form-control{{ $errors->has(\''.strtolower($key).'\') ? \' is-invalid\' : \'\' }}" name="'.strtolower($key).'" id="input-'.strtolower($key).'" type="text" placeholder="{{ __(\''.ucfirst($key).'\') }}" value="{{ old(\''.strtolower($key).'\', $'.strtolower($model).'->'.$key.') }}" required="true" aria-required="true"/>';
+                if($value=='text') {
+                    $input = '<textarea rows="5" class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true">{{$'.strtolower($model).'->'.$key.'}}</textarea>';
+                }else if($key=='image'){
+                    $input = ' <div class="fileinput fileinput-new text-center" data-provides="fileinput">
+                      <div class="fileinput-new thumbnail img-raised">
+                          <img src="{{$'.strtolower($model).'->'.$key.'}}" rel="nofollow" alt="...">
+                      </div>
+                      <div class="fileinput-preview fileinput-exists thumbnail img-raised"></div>
+                      <div>
+        <span class="btn btn-raised btn-round btn-default btn-file">
+            <span class="fileinput-new">Select image</span>
+            <span class="fileinput-exists">Change</span>
+            <input type="file" name="image" />
+        </span>
+                          <a href="javascript:;" class="btn btn-danger btn-round fileinput-exists" data-dismiss="fileinput"><i class="fa fa-times"></i> Remove</a>
+                          </div>
+                 ';
+                }else if($value=='integer'||$value=='bigInteger') {
+                    if(count(explode('_',$key))==2&&explode('_',$key)[1]=='id') {
+                        $reltable = explode('_', $key)[0];
+                        if (Schema::hasTable($reltable . 's')) {
+                            $input = '@php
+                    $'.$reltable.'s = \App\Models\\'.ucfirst($reltable).'::all();
+                  @endphp
+
+                              <select class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="'.$reltable.'_id" value="{{ $'.strtolower($model).'->'.$key.'}}">
+                                  <option disabled value="">'.ucfirst($reltable).'</option>
+                                  @foreach($'.$reltable.'s as $'.$reltable.')
+                                      <option value="{{$'.$reltable.'->id}}">{{$'.$reltable.'->name}}</option>
+                                  @endforeach
+                              </select>';
+                        }else{
+                            $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="number" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"/>';
+                        }
+                    }else {
+                        $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="number" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"/>';
+                    }
+                }
+                $fieldContent .= "\n\t\t\t\t\t".'<div class="row">
                   <label class="col-sm-2 col-form-label">{{ __(\''.ucfirst(implode(" ",explode("_",$key))).'\') }}</label>
                   <div class="col-sm-7">
-                    <div class="form-group{{ $errors->has(\''.$key.'\') ? \' has-danger\' : \'\' }}">
-                      <input class="form-control{{ $errors->has(\''.$key.'\') ? \' is-invalid\' : \'\' }}" name="'.$key.'" id="input-'.$key.'" type="text" placeholder="{{ __(\''.ucfirst($key).'\') }}" value="{{ old(\''.$key.'\', $'.strtolower($model).'->'.$key.') }}" required="true" aria-required="true"/>
-                      @if ($errors->has(\''.$key.'\'))
-                        <span id="'.$key.'-error" class="error text-danger" for="input-'.$key.'">{{ $errors->first(\''.$key.'\') }}</span>
+                    <div class="form-group{{ $errors->has(\''.strtolower($key).'\') ? \' has-danger\' : \'\' }}">
+                      '.$input.'
+                      @if ($errors->has(\''.strtolower($key).'\'))
+                        <span id="'.strtolower($key).'-error" class="error text-danger" for="input-'.strtolower($key).'">{{ $errors->first(\''.strtolower($key).'\') }}</span>
                       @endif
                     </div>
                   </div>
                 </div>';
-        }
+            }
         return '@extends(\'layouts.app\', [\'activePage\' => \''.strtolower($model).'-management\', \'titlePage\' => __(\''.$model.' Management\')])
 
 @section(\'content\')
@@ -450,7 +571,7 @@ class '.$model.'Controller extends Controller
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12">
-          <form method="post" action="{{ route(\''.strtolower($model).'.update\', $'.strtolower($model).') }}" autocomplete="off" class="form-horizontal">
+          <form method="post" action="{{ route(\''.strtolower($model).'.update\', $'.strtolower($model).') }}" autocomplete="off" class="form-horizontal" '.(array_key_exists('image',$fields)?'enctype="multipart/form-data"':'').'>
             @csrf
             @method(\'put\')
 
@@ -489,7 +610,11 @@ class '.$model.'Controller extends Controller
                             {{ __("'.ucfirst(implode(" ",explode("_",$key))).'") }}
                           </th>';
             $bodyContent .= "\n\t\t\t\t\t\t".'<td>
-                            {{ $model->'.$key.' }}
+                            '.($key=="image"?'<div class="fileinput fileinput-new text-center">
+                            <div class="fileinput-new thumbnail img-raised">
+                                <img src="':'').'{{ $model->'.$key.' }}'.($key=="image"?'" rel="nofollow" alt="Image not found">
+                            </div>
+                            </div>':'').'
                           </td>';
             array_push($fieldKey,$key);
         }
@@ -555,7 +680,7 @@ class '.$model.'Controller extends Controller
                               <form action="{{ route(\''.strtolower($model).'.destroy\', $model) }}" method="post">
                                   @csrf
                                   @method(\'delete\')
-                              
+
                                   <a rel="tooltip" class="btn btn-success btn-link" href="{{ route(\''.strtolower($model).'.edit\', $model) }}" data-original-title="" title="">
                                     <i class="material-icons">edit</i>
                                     <div class="ripple-container"></div>

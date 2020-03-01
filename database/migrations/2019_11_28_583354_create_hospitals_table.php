@@ -15,9 +15,9 @@ class CreateHospitalsTable extends Migration
         Schema::create("hospitals", function (Blueprint $table) {
             $table->increments("id");
 			$table->string("name");
-			$table->string("pan");
-			$table->bigInteger("phone");
-			$table->string("email");
+			$table->lineString("pan");
+//			$table->bigInteger("phone");
+//			$table->string("email");
 			$table->text("documents");
             $table->timestamps();
         });

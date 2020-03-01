@@ -14,6 +14,17 @@
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/alish', function () {
+    $parent= \App\Models\Menu::select(['id','name','url'])->orderBy('name')->where('parent_id',0)->get();
+    foreach($parent as $p){
+        $child =\App\Models\Menu::select(['id','name','url'])->orderBy('name')->where('parent_id',$p->id);
+        if($child->exists()){
+            $p['children']=$child->get();
+        }
+
+    }
+    return $parent;
+});
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home')->middleware('auth');
@@ -52,14 +63,17 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('students','StudentsController');
     Route::resource('institute','InstituteController');
     Route::get('search/{table}','SearchController@search');
-    $directory= __DIR__.'/Generator';
-    $files=scandir($directory);
-    foreach($files as $file){
-        $array=explode('.',$file);
-        if(end($array)=='php'){
-           require $directory.'/'.$file;
+    Route::group(['prefix'=>'admin'],function(){
+        $directory= __DIR__.'/Generator';
+        $files=scandir($directory);
+        foreach($files as $file){
+            $array=explode('.',$file);
+            if(end($array)=='php'){
+                require $directory.'/'.$file;
+            }
         }
-    }
+    });
+
 	Route::group(['prefix'=>'settings','as'=>'settings.','namespace'=>'settings'],function(){
 	   Route::resource('department','DepartmentController');
     });

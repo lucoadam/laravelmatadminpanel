@@ -14,5 +14,6 @@ class Menu extends Model
 		'url_type',
 		'url',
 		'open_in_new_tab',
+        'parent_id'
     ];
 }

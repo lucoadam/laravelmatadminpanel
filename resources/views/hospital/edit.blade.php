@@ -32,45 +32,12 @@
                   </div>
                 </div>
 							<div class="row">
-                  <label class="col-sm-2 col-form-label">{{ __('Pan') }}</label>
+                  <label class="col-sm-2 col-form-label">{{ __('Description') }}</label>
                   <div class="col-sm-7">
-                    <div class="form-group{{ $errors->has('pan') ? ' has-danger' : '' }}">
-                      <input class="form-control{{ $errors->has('pan') ? ' is-invalid' : '' }}" name="pan" id="input-pan" type="text" placeholder="{{ __('Pan') }}" value="{{ old('pan', $hospital->pan) }}" required="true" aria-required="true"/>
-                      @if ($errors->has('pan'))
-                        <span id="pan-error" class="error text-danger" for="input-pan">{{ $errors->first('pan') }}</span>
-                      @endif
-                    </div>
-                  </div>
-                </div>
-							<div class="row">
-                  <label class="col-sm-2 col-form-label">{{ __('Phone') }}</label>
-                  <div class="col-sm-7">
-                    <div class="form-group{{ $errors->has('phone') ? ' has-danger' : '' }}">
-                      <input class="form-control{{ $errors->has('phone') ? ' is-invalid' : '' }}" name="phone" id="input-phone" type="text" placeholder="{{ __('Phone') }}" value="{{ old('phone', $hospital->phone) }}" required="true" aria-required="true"/>
-                      @if ($errors->has('phone'))
-                        <span id="phone-error" class="error text-danger" for="input-phone">{{ $errors->first('phone') }}</span>
-                      @endif
-                    </div>
-                  </div>
-                </div>
-							<div class="row">
-                  <label class="col-sm-2 col-form-label">{{ __('Email') }}</label>
-                  <div class="col-sm-7">
-                    <div class="form-group{{ $errors->has('email') ? ' has-danger' : '' }}">
-                      <input class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" id="input-email" type="text" placeholder="{{ __('Email') }}" value="{{ old('email', $hospital->email) }}" required="true" aria-required="true"/>
-                      @if ($errors->has('email'))
-                        <span id="email-error" class="error text-danger" for="input-email">{{ $errors->first('email') }}</span>
-                      @endif
-                    </div>
-                  </div>
-                </div>
-							<div class="row">
-                  <label class="col-sm-2 col-form-label">{{ __('Documents') }}</label>
-                  <div class="col-sm-7">
-                    <div class="form-group{{ $errors->has('documents') ? ' has-danger' : '' }}">
-                      <input class="form-control{{ $errors->has('documents') ? ' is-invalid' : '' }}" name="documents" id="input-documents" type="text" placeholder="{{ __('Documents') }}" value="{{ old('documents', $hospital->documents) }}" required="true" aria-required="true"/>
-                      @if ($errors->has('documents'))
-                        <span id="documents-error" class="error text-danger" for="input-documents">{{ $errors->first('documents') }}</span>
+                    <div class="form-group{{ $errors->has('description') ? ' has-danger' : '' }}">
+                      <input class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}" name="description" id="input-description" type="text" placeholder="{{ __('Description') }}" value="{{ old('description', $hospital->description) }}" required="true" aria-required="true"/>
+                      @if ($errors->has('description'))
+                        <span id="description-error" class="error text-danger" for="input-description">{{ $errors->first('description') }}</span>
                       @endif
                     </div>
                   </div>

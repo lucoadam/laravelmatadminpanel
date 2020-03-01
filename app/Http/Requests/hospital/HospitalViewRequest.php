@@ -25,6 +25,7 @@ class HospitalViewRequest extends FormRequest
      */
     public function rules()
     {
-        return [];
+        return [
+        ];
     }
 }

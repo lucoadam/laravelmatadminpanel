@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\settings;
 
-use App\Models\settings\Department;
+use App\Models\settings\Module;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -27,7 +27,7 @@ class DepartmentRequest extends FormRequest
     {
         return [
             'name' => [
-                'required', 'min:3', Rule::unique((new Department)->getTable())
+                'required', 'min:3', Rule::unique((new Module)->getTable())
             ],
         ];
     }

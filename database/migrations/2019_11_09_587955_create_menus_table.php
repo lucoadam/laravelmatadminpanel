@@ -15,10 +15,12 @@ class CreateMenusTable extends Migration
         Schema::create("menus", function (Blueprint $table) {
             $table->increments("id");
 			$table->string("name");
-			$table->string("icon");
-			$table->string("url_type");
+			$table->string("icon")->nullable();
+			$table->string("url_type")->nullable();
 			$table->string("url");
-			$table->boolean("open_in_new_tab");
+			$table->integer('parent_id')->default(0);
+			$table->boolean('backend')->default(1);
+			$table->boolean("open_in_new_tab")->nullable();
             $table->timestamps();
         });
     }

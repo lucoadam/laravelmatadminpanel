@@ -5,7 +5,7 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12">
-          <form method="post" action="{{ route('hospital.store') }}" autocomplete="off" class="form-horizontal">
+          <form method="post" action="{{ route('hospital.store') }}" autocomplete="off" class="form-horizontal" enctype="multipart/form-data">
             @csrf
             @method('post')
 
@@ -20,7 +20,7 @@
                       <a href="{{ route('hospital.index') }}" class="btn btn-sm btn-primary">{{ __('Back to list') }}</a>
                   </div>
                 </div>
-							<div class="row">
+					<div class="row">
                   <label class="col-sm-2 col-form-label">{{ __('Name') }}</label>
                   <div class="col-sm-7">
                     <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
@@ -31,50 +31,36 @@
                     </div>
                   </div>
                 </div>
-							<div class="row">
-                  <label class="col-sm-2 col-form-label">{{ __('Pan') }}</label>
-                  <div class="col-sm-7">
-                    <div class="form-group{{ $errors->has('pan') ? ' has-danger' : '' }}">
-                      <input class="form-control{{ $errors->has('pan') ? ' is-invalid' : '' }}" name="pan" id="input-pan" type="text" placeholder="{{ __('Pan') }}" value="{{ old('pan') }}" required="true" aria-required="true"/>
-                      @if ($errors->has('pan'))
-                        <span id="pan-error" class="error text-danger" for="input-pan">{{ $errors->first('pan') }}</span>
-                      @endif
-                    </div>
-                  </div>
-                </div>
-							<div class="row">
-                  <label class="col-sm-2 col-form-label">{{ __('Phone') }}</label>
-                  <div class="col-sm-7">
-                    <div class="form-group{{ $errors->has('phone') ? ' has-danger' : '' }}">
-                      <input class="form-control{{ $errors->has('phone') ? ' is-invalid' : '' }}" name="phone" id="input-phone" type="text" placeholder="{{ __('Phone') }}" value="{{ old('phone') }}" required="true" aria-required="true"/>
-                      @if ($errors->has('phone'))
-                        <span id="phone-error" class="error text-danger" for="input-phone">{{ $errors->first('phone') }}</span>
-                      @endif
-                    </div>
-                  </div>
-                </div>
-							<div class="row">
-                  <label class="col-sm-2 col-form-label">{{ __('Email') }}</label>
-                  <div class="col-sm-7">
-                    <div class="form-group{{ $errors->has('email') ? ' has-danger' : '' }}">
-                      <input class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" id="input-email" type="text" placeholder="{{ __('Email') }}" value="{{ old('email') }}" required="true" aria-required="true"/>
-                      @if ($errors->has('email'))
-                        <span id="email-error" class="error text-danger" for="input-email">{{ $errors->first('email') }}</span>
-                      @endif
-                    </div>
-                  </div>
-                </div>
-							<div class="row">
-                  <label class="col-sm-2 col-form-label">{{ __('Documents') }}</label>
+					<div class="row">
+                  <label class="col-sm-2 col-form-label">{{ __('Description') }}</label>
                   <div class="col-sm-7">
                     <div class="form-group{{ $errors->has('documents') ? ' has-danger' : '' }}">
-                      <input class="form-control{{ $errors->has('documents') ? ' is-invalid' : '' }}" name="documents" id="input-documents" type="text" placeholder="{{ __('Documents') }}" value="{{ old('documents') }}" required="true" aria-required="true"/>
-                      @if ($errors->has('documents'))
-                        <span id="documents-error" class="error text-danger" for="input-documents">{{ $errors->first('documents') }}</span>
+                      <textarea class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}" name="documents" id="input-documents" placeholder="{{ __('Description') }}" value="{{ old('description') }}" rows="5" required="true" aria-required="true"></textarea>
+                      @if ($errors->has('description'))
+                        <span id="description-error" class="error text-danger" for="input-description">{{ $errors->first('description') }}</span>
                       @endif
                     </div>
                   </div>
-                </div>                
+                </div>
+                  <div class="row">
+                      <label class="col-sm-2 col-form-label">{{ __('Image') }}</label>
+                      <div class="col-sm-7">
+                  <div class="fileinput fileinput-new text-center" data-provides="fileinput">
+                      <div class="fileinput-new thumbnail img-raised">
+                          <img src="http://style.anu.edu.au/_anu/4/images/placeholders/person_8x10.png" rel="nofollow" alt="...">
+                      </div>
+                      <div class="fileinput-preview fileinput-exists thumbnail img-raised"></div>
+                      <div>
+        <span class="btn btn-raised btn-round btn-default btn-file">
+            <span class="fileinput-new">Select image</span>
+            <span class="fileinput-exists">Change</span>
+            <input type="file" name="pan" />
+        </span>
+                          <a href="javascript:;" class="btn btn-danger btn-round fileinput-exists" data-dismiss="fileinput"><i class="fa fa-times"></i> Remove</a>
+                      </div>
+                  </div>
+                      </div>
+                  </div>
               </div>
               <div class="card-footer ml-auto mr-auto">
                 <button type="submit" class="btn btn-primary">{{ __('Add Hospital') }}</button>

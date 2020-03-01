@@ -26,21 +26,6 @@ class HospitalStoreRequest extends FormRequest
     public function rules()
     {
         return [
-			'name' => [
-                'required'
-            ],
-			'pan' => [
-                'required'
-            ],
-			'phone' => [
-                'required'
-            ],
-			'email' => [
-                'required'
-            ],
-			'documents' => [
-                'required'
-            ],
         ];
     }
 }

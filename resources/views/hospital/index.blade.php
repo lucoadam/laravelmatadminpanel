@@ -41,16 +41,7 @@
                             {{ __("Name") }}
                           </th>
 						<th>
-                            {{ __("Pan") }}
-                          </th>
-						<th>
-                            {{ __("Phone") }}
-                          </th>
-						<th>
-                            {{ __("Email") }}
-                          </th>
-						<th>
-                            {{ __("Documents") }}
+                            {{ __("Description") }}
                           </th>
                       <th>
                         {{ __('Creation date') }}
@@ -69,16 +60,7 @@
                             {{ $model->name }}
                           </td>
 						<td>
-                            {{ $model->pan }}
-                          </td>
-						<td>
-                            {{ $model->phone }}
-                          </td>
-						<td>
-                            {{ $model->email }}
-                          </td>
-						<td>
-                            {{ $model->documents }}
+                            {{ $model->description }}
                           </td>
                           <td>
                             {{ $model->created_at->format('Y/m/d') }}
@@ -87,7 +69,7 @@
                               <form action="{{ route('hospital.destroy', $model) }}" method="post">
                                   @csrf
                                   @method('delete')
-                              
+
                                   <a rel="tooltip" class="btn btn-success btn-link" href="{{ route('hospital.edit', $model) }}" data-original-title="" title="">
                                     <i class="material-icons">edit</i>
                                     <div class="ripple-container"></div>
@@ -124,9 +106,9 @@
                     url: '{{URL::to('search/hospitals')}}',
                     data: {
                         'search': $value,
-                        'searchFields': ["id","name","pan","phone","email","documents","created_at"],
+                        'searchFields': ["id","name","description","created_at"],
                         'token': '{{csrf_token()}}',
-                        'fields': ["id","name","pan","phone","email","documents","created_at","actions"]
+                        'fields': ["id","name","description","created_at","actions"]
                     },
                     success: function (data) {
                         var d = JSON.parse(data)

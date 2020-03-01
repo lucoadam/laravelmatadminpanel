@@ -10,9 +10,7 @@ class Hospital extends Model
     //
     protected $fillable =[
 		'name',
-		'pan',
-		'phone',
-		'email',
+        'pan',
 		'documents',
     ];
 }

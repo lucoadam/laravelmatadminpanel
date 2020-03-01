@@ -42,6 +42,14 @@
                     </div>
                   </div>
                 </div>
+                  <div class="row">
+                      <label class="col-sm-2 col-form-label">{{__('Parent Menu(Optional)')}}</label>
+                      <div class="col-sm-7">
+                          <div class="form-group">
+                              <input class="form-control" name="parent"/>
+                          </div>
+                      </div>
+                  </div>
               </div>
               <div class="card-footer ml-auto mr-auto">
                 <button type="submit" class="btn btn-primary">{{ __('Add Module') }}</button>
