@@ -49,7 +49,7 @@
                     <i class="material-icons">lock_outline</i>
                   </span>
                 </div>
-                <input type="password" name="password" id="password" class="form-control" placeholder="{{ __('Password...') }}" value="{{ !$errors->has('password') ? "Admin.12" : "" }}" required>
+                <input type="password" name="password" id="password" class="form-control" placeholder="{{ __('Password...') }}" value="{{ !$errors->has('password') ? "secret123" : "" }}" required>
               </div>
               @if ($errors->has('password'))
                 <div id="password-error" class="error text-danger pl-3" for="password" style="display: block;">

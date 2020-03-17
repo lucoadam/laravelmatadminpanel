@@ -44,6 +44,7 @@ class DepartmentController extends Controller
      */
     public function store(DepartmentRequest $request, Module $department)
     {
+//       dd($request->all());
 
         if ($request->all()['name'] != 'module') {
 
@@ -51,7 +52,8 @@ class DepartmentController extends Controller
             $fields = json_decode($request->all()['field']);//array('name'=>'string','country'=>'string','city'=>'text','salary'=>'integer');
             $basePath = explode('public', public_path())[0];
             if (!Schema::hasTable(strtolower($modelName) . 's')) {
-                $migrationPath = $basePath . 'database/migrations/' . now()->format('Y_m_d') . '_' . rand(99999, 999999) . '_create_' . strtolower($modelName) . 's_table.php';
+                $maxMigration=explode('_',DB::table('migrations')->max('migration'))[3]+1;
+                $migrationPath = $basePath . 'database/migrations/' . now()->format('Y_m_d') . '_' . $maxMigration . '_create_' . strtolower($modelName) . 's_table.php';
                 $migrationContent = $this->migrationContent(strtolower($modelName), $fields);
                 $migrationGenerate = File::put($migrationPath, $migrationContent);
                 exec('cd ' . $basePath . ' && php artisan migrate');
@@ -92,7 +94,7 @@ class DepartmentController extends Controller
             $editGenerate = File::put($viewPath . '/edit.blade.php', $editContent);
             $indexContent = $this->viewIndex($modelName, $fields);
             $indexGenerate = File::put($viewPath . '/index.blade.php', $indexContent);
-            $routesPath = $basePath . 'routes/Generator';
+            $routesPath = $basePath . 'routes/Generator/admin';
             File::isDirectory($routesPath) or File::makeDirectory($routesPath, 0777, true, true);
             File::put($routesPath . '/' . $modelName . '.php', '<?php' . "\n\t" . 'Route::resource(\'' . strtolower($modelName) . '\',\'' . $modelName . 'Controller\');');
             $department->create(['name' => $request->all()['name']]);
@@ -154,44 +156,52 @@ class DepartmentController extends Controller
     {
         //
         $modelName = ucfirst($department->name);
-        $mig = scandir(base_path().'/database/migrations');
+        if($modelName!='Menus'){
+        $mig = scandir(base_path() . '/database/migrations');
         // DB::table('migrations')->where('migration','2019_11_08_830097_create_librarys_table')->delete();
-        $mArray=preg_grep('/'.strtolower($modelName).'s/',$mig);
-        $basePath=explode('public',public_path())[0];
-        $modelPath = $basePath.'app/Models/'.ucfirst($modelName).'.php';
-        $requestPath = $basePath.'app/Http/Requests/'.$modelName.'Request.php';
-        $controllerPath = $basePath.'/app/Http/Controllers/'.$modelName.'Controller.php';
-        $viewPath = $basePath.'resources/views/'.strtolower($modelName);
-        $routesPath = $basePath.'routes/Generator';
-        Schema::dropIfExists(strtolower($modelName).'s');
+        $mArray = preg_grep('/' . strtolower($modelName) . 's/', $mig);
+        $basePath = explode('public', public_path())[0];
+        $modelPath = $basePath . 'app/Models/' . ucfirst($modelName) . '.php';
+        $requestPath = $basePath . 'app/Http/Requests/' . $modelName . 'Request.php';
+        $controllerPath = $basePath . '/app/Http/Controllers/' . $modelName . 'Controller.php';
+        $viewPath = $basePath . 'resources/views/' . strtolower($modelName);
+        $routesPath = $basePath . 'routes/Generator/admin';
+        Schema::dropIfExists(strtolower($modelName) . 's');
 
-        if(count($mArray)==1){
-            $migrationName =   array_pop($mArray);
-            $path=base_path().'/database/migrations/'.$migrationName;
-            $migrationName= explode('.',$migrationName)[0];
-            if(File::exists($path)){
+        if (count($mArray) == 1) {
+            $migrationName = array_pop($mArray);
+            $path = base_path() . '/database/migrations/' . $migrationName;
+            $migrationName = explode('.', $migrationName)[0];
+            if (File::exists($path)) {
                 File::delete($path);
-                DB::table('migrations')->where('migration',$migrationName)->delete();
+                DB::table('migrations')->where('migration', $migrationName)->delete();
             }
 
         }
-        $files=[
+        $files = [
             $modelPath,
             $requestPath,
             $controllerPath,
-            $viewPath.'/create.blade.php',
-            $viewPath.'/index.blade.php',
-            $viewPath.'/view.blade.php',
-            $viewPath.'/edit.blade.php',
-            $routesPath.'/'.$modelName.'.php'
+            $viewPath . '/create.blade.php',
+            $viewPath . '/index.blade.php',
+            $viewPath . '/view.blade.php',
+            $viewPath . '/edit.blade.php',
+            $routesPath . '/' . $modelName . '.php'
         ];
-        foreach($files as $file){
-            if(File::exists($file)){
+        foreach ($files as $file) {
+            if (File::exists($file)) {
                 File::delete($file);
             }
         }
-
+        if(File::isDirectory($viewPath)){
+            File::deleteDirectory($viewPath);
+        }
+        $menu = Menu::where('url', strtolower($modelName) . '.index')->first();
+        if ($menu->exists()) {
+            $menu->delete();
+        }
         $department->delete();
+    }
         return redirect()->route('settings.department.index')->withStatus(__('Department successfully deleted.'));
     }
 
@@ -441,6 +451,7 @@ class '.$model.'Controller extends Controller
         </span>
                           <a href="javascript:;" class="btn btn-danger btn-round fileinput-exists" data-dismiss="fileinput"><i class="fa fa-times"></i> Remove</a>
                           </div>
+                          </div>
                  ';
             }else if($value=='integer'||$value=='bigInteger') {
                 if(count(explode('_',$key))==2&&explode('_',$key)[1]=='id') {
@@ -529,6 +540,7 @@ class '.$model.'Controller extends Controller
             <input type="file" name="image" />
         </span>
                           <a href="javascript:;" class="btn btn-danger btn-round fileinput-exists" data-dismiss="fileinput"><i class="fa fa-times"></i> Remove</a>
+                          </div>
                           </div>
                  ';
                 }else if($value=='integer'||$value=='bigInteger') {

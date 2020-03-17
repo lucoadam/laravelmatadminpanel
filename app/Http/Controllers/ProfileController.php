@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileRequest;
 use App\Http\Requests\PasswordRequest;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
@@ -15,6 +16,7 @@ class ProfileController extends Controller
      */
     public function edit()
     {
+
         return view('profile.edit');
     }
 

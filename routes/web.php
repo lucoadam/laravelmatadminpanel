@@ -27,44 +27,42 @@ Route::get('/alish', function () {
 });
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home')->middleware('auth');
+
 
 Route::group(['middleware' => 'auth'], function () {
-	Route::get('table-list', function () {
-		return view('pages.table_list');
-	})->name('table');
+    Route::get('table-list', function () {
+        return view('pages.table_list');
+    })->name('table');
 
-	Route::get('typography', function () {
-		return view('pages.typography');
-	})->name('typography');
+    Route::get('typography', function () {
+        return view('pages.typography');
+    })->name('typography');
 
-	Route::get('icons', function () {
-		return view('pages.icons');
-	})->name('icons');
+    Route::get('icons', function () {
+        return view('pages.icons');
+    })->name('icons');
 
-	Route::get('map', function () {
-		return view('pages.map');
-	})->name('map');
+    Route::get('map', function () {
+        return view('pages.map');
+    })->name('map');
 
-	Route::get('notifications', function () {
-		return view('pages.notifications');
-	})->name('notifications');
+    Route::get('notifications', function () {
+        return view('pages.notifications');
+    })->name('notifications');
 
-	Route::get('upgrade', function () {
-		return view('pages.upgrade');
-	})->name('upgrade');
+    Route::get('upgrade', function () {
+        return view('pages.upgrade');
+    })->name('upgrade');
 });
 
-Route::group(['middleware' => 'auth'], function () {
-	Route::resource('user', 'UserController', ['except' => ['show']]);
-	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'ProfileController@edit']);
-	Route::put('profile', ['as' => 'profile.update', 'uses' => 'ProfileController@update']);
-	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'ProfileController@password']);
-    Route::resource('students','StudentsController');
-    Route::resource('institute','InstituteController');
+Route::group(['middleware' => 'auth','prefix'=>'admin'], function () {
+    Route::resource('user', 'UserController', ['except' => ['show']]);
+    Route::get('profile', ['as' => 'profile.edit', 'uses' => 'ProfileController@edit']);
+    Route::put('profile', ['as' => 'profile.update', 'uses' => 'ProfileController@update']);
+    Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'ProfileController@password']);
     Route::get('search/{table}','SearchController@search');
-    Route::group(['prefix'=>'admin'],function(){
-        $directory= __DIR__.'/Generator';
+    Route::get('/home', 'HomeController@index')->name('home');
+        $directory= __DIR__.'/Generator/admin';
         $files=scandir($directory);
         foreach($files as $file){
             $array=explode('.',$file);
@@ -72,10 +70,8 @@ Route::group(['middleware' => 'auth'], function () {
                 require $directory.'/'.$file;
             }
         }
-    });
 
-	Route::group(['prefix'=>'settings','as'=>'settings.','namespace'=>'settings'],function(){
-	   Route::resource('department','DepartmentController');
+    Route::group(['prefix'=>'settings','as'=>'settings.','namespace'=>'settings'],function(){
+        Route::resource('department','DepartmentController');
     });
 });
-

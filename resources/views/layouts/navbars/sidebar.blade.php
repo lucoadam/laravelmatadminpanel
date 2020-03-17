@@ -5,7 +5,7 @@
       Tip 2: you can also add an image using data-image tag
   -->
   <div class="logo">
-    <a href="/" class="simple-text logo-normal">
+    <a href="/" class="simple-text logo-normal" style="text-align:center">
       {{ env('APP_NAME','Admin Panel') }}
     </a>
   </div>
@@ -60,9 +60,9 @@
         </div>
       </li>
       @php
-          $parent= \App\Models\Menu::select(['id','name','url'])->orderBy('name')->where('parent_id',0)->get();
+          $parent= \App\Models\Menu::select(['id','name','url','icon'])->orderBy('name')->where('parent_id',0)->get();
      foreach($parent as $p){
-         $child =\App\Models\Menu::select(['id','name','url'])->orderBy('name')->where('parent_id',$p->id);
+         $child =\App\Models\Menu::select(['id','name','url','icon'])->orderBy('name')->where('parent_id',$p->id);
          if($child->exists()){
              $p['children']=$child->get();
          }
@@ -72,16 +72,16 @@
       @foreach($parent as $par)
             <li class="nav-item{{ $activePage == strtolower($par->name).'-management' ? ' active' : '' }}" >
                 <a class="nav-link" href="{{$par->url!='#'?route($par->url):$par->url.strtolower($par->name).'Management'}}" {!! $par->url=='#'?'data-toggle="collapse"':''!!}>
-                    <i class="material-icons">content_paste</i>
+                    <i class="material-icons">{{$par->icon??'library_books'}}</i>
                     <p>{{ $par->name }}</p>
                 </a>
-                @if($par->url=='#')
+                @if($par->url=='#'&& isset($par->children))
                     <div class="collapse {{ (0) ? 'show' : '' }}" id="{{strtolower($par->name).'Management'}}">
                         <ul class="nav">
                             @foreach($par->children as $child)
                             <li class="nav-item{{ $activePage == strtolower($child->name).'-management' ? ' active' : '' }}">
                                 <a class="nav-link" href="{{ route($child->url) }}">
-                                    <span class="sidebar-mini"> UP </span>
+                                    <i class="material-icons">{{$child->icon??'library_books'}}</i>
                                     <span class="sidebar-normal">{{ $child->name.' Management' }} </span>
                                 </a>
                             </li>
@@ -91,36 +91,36 @@
                 @endif
             </li>
       @endforeach
-      <li class="nav-item{{ $activePage == 'table' ? ' active' : '' }}">
-        <a class="nav-link" href="{{ route('table') }}">
-          <i class="material-icons">content_paste</i>
-            <p>{{ __('Table List') }}</p>
-        </a>
-      </li>
-      <li class="nav-item{{ $activePage == 'typography' ? ' active' : '' }}">
-        <a class="nav-link" href="{{ route('typography') }}">
-          <i class="material-icons">library_books</i>
-            <p>{{ __('Typography') }}</p>
-        </a>
-      </li>
-      <li class="nav-item{{ $activePage == 'icons' ? ' active' : '' }}">
-        <a class="nav-link" href="{{ route('icons') }}">
-          <i class="material-icons">bubble_chart</i>
-          <p>{{ __('Icons') }}</p>
-        </a>
-      </li>
-      <li class="nav-item{{ $activePage == 'map' ? ' active' : '' }}">
-        <a class="nav-link" href="{{ route('map') }}">
-          <i class="material-icons">location_ons</i>
-            <p>{{ __('Maps') }}</p>
-        </a>
-      </li>
-      <li class="nav-item{{ $activePage == 'notifications' ? ' active' : '' }}">
-        <a class="nav-link" href="{{ route('notifications') }}">
-          <i class="material-icons">notifications</i>
-          <p>{{ __('Notifications') }}</p>
-        </a>
-      </li>
+{{--      <li class="nav-item{{ $activePage == 'table' ? ' active' : '' }}">--}}
+{{--        <a class="nav-link" href="{{ route('table') }}">--}}
+{{--          <i class="material-icons">content_paste</i>--}}
+{{--            <p>{{ __('Table List') }}</p>--}}
+{{--        </a>--}}
+{{--      </li>--}}
+{{--      <li class="nav-item{{ $activePage == 'typography' ? ' active' : '' }}">--}}
+{{--        <a class="nav-link" href="{{ route('typography') }}">--}}
+{{--          <i class="material-icons">library_books</i>--}}
+{{--            <p>{{ __('Typography') }}</p>--}}
+{{--        </a>--}}
+{{--      </li>--}}
+{{--      <li class="nav-item{{ $activePage == 'icons' ? ' active' : '' }}">--}}
+{{--        <a class="nav-link" href="{{ route('icons') }}">--}}
+{{--          <i class="material-icons">bubble_chart</i>--}}
+{{--          <p>{{ __('Icons') }}</p>--}}
+{{--        </a>--}}
+{{--      </li>--}}
+{{--      <li class="nav-item{{ $activePage == 'map' ? ' active' : '' }}">--}}
+{{--        <a class="nav-link" href="{{ route('map') }}">--}}
+{{--          <i class="material-icons">location_ons</i>--}}
+{{--            <p>{{ __('Maps') }}</p>--}}
+{{--        </a>--}}
+{{--      </li>--}}
+{{--      <li class="nav-item{{ $activePage == 'notifications' ? ' active' : '' }}">--}}
+{{--        <a class="nav-link" href="{{ route('notifications') }}">--}}
+{{--          <i class="material-icons">notifications</i>--}}
+{{--          <p>{{ __('Notifications') }}</p>--}}
+{{--        </a>--}}
+{{--      </li>--}}
 
 {{--      <li class="nav-item active-pro{{ $activePage == 'upgrade' ? ' active' : '' }}">--}}
 {{--        <a class="nav-link" href="{{ route('upgrade') }}">--}}
@@ -131,3 +131,28 @@
     </ul>
   </div>
 </div>
+
+{{--<script>--}}
+{{--    function save(data,filename){--}}
+{{--        if(!data) {--}}
+{{--            console.error('Console.save: No data')--}}
+{{--            return;--}}
+{{--        }--}}
+
+{{--        if(!filename) filename = 'console.json'--}}
+
+{{--        if(typeof data === "object"){--}}
+{{--            data = JSON.stringify(data, undefined, 4)--}}
+{{--        }--}}
+
+{{--        var blob = new Blob([data], {type: 'text/json'}),--}}
+{{--            e    = document.createEvent('MouseEvents'),--}}
+{{--            a    = document.createElement('a')--}}
+
+{{--        a.download = filename--}}
+{{--        a.href = window.URL.createObjectURL(blob)--}}
+{{--        a.dataset.downloadurl =  ['text/json', a.download, a.href].join(':')--}}
+{{--        e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)--}}
+{{--        a.dispatchEvent(e)--}}
+{{--    }--}}
+{{--</script>--}}
