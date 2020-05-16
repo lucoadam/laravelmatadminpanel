@@ -20,11 +20,13 @@ class TenderMiddleware
     public function handle($request, Closure $next)
     {
 //        dd(DB::getDefaultConnection());
-        DB::setDefaultConnection('mysql');
-        $setting = Setting::where('key','database')->first();
-        if(DB::getDefaultConnection()!=$setting->value) {
-            DB::setDefaultConnection($setting->value);
-        }
+//        DB::setDefaultConnection('mysql');
+//        if(Setting::where('key','database')->exists()) {
+//            $setting = Setting::where('key', 'database')->first();
+//            if (DB::getDefaultConnection() != $setting->value) {
+//                DB::setDefaultConnection($setting->value);
+//            }
+//        }
         return $next($request);
     }
 }

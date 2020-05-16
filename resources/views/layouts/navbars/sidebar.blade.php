@@ -61,25 +61,41 @@
       </li>
       @php
           $parent= \App\Models\Menu::select(['id','name','url','icon'])->orderBy('name')->where('parent_id',0)->get();
+
      foreach($parent as $p){
+          if(isset($activePage)&& $activePage == strtolower($p->name).'-management'){
+            $p->isActive = true;
+          }else{
+              $p->isActive=false;
+          }
          $child =\App\Models\Menu::select(['id','name','url','icon'])->orderBy('name')->where('parent_id',$p->id);
          if($child->exists()){
-             $p['children']=$child->get();
+             $children=$child->get();
+             foreach ($children as $item) {
+                  if(isset($activePage)&& $activePage == strtolower($item->name).'-management'){
+                    $item->isActive = true;
+                     $p->isActive = true;
+                  }else{
+                      $item->isActive=false;
+                  }
+             }
+             $p['children']=$children;
          }
 
      }
+    ;
       @endphp
       @foreach($parent as $par)
-            <li class="nav-item{{ $activePage == strtolower($par->name).'-management' ? ' active' : '' }}" >
-                <a class="nav-link" href="{{$par->url!='#'?route($par->url):$par->url.strtolower($par->name).'Management'}}" {!! $par->url=='#'?'data-toggle="collapse"':''!!}>
+            <li class="nav-item{{ $par->isActive ? ' active' : '' }}" >
+                <a class="nav-link {{ $par->url=='#' ? ($par->isActive?'':'collapsed') : '' }}" {!! $par->url=='#' ? 'aria-expanded="'.($par->isActive?'true':'false').'"' : '' !!} href="{{$par->url!='#'?route($par->url):$par->url.strtolower($par->name).'Management'}}" {!! $par->url=='#'?'data-toggle="collapse"':''!!}>
                     <i class="material-icons">{{$par->icon??'library_books'}}</i>
-                    <p>{{ $par->name }}</p>
+                    <p>{{ $par->name }}{!! $par->url=='#'?'<b class="caret"></b>':''!!}</p>
                 </a>
                 @if($par->url=='#'&& isset($par->children))
-                    <div class="collapse {{ (0) ? 'show' : '' }}" id="{{strtolower($par->name).'Management'}}">
+                    <div class="collapse {{ $par->isActive ? 'show' : '' }}" id="{{strtolower($par->name).'Management'}}">
                         <ul class="nav">
                             @foreach($par->children as $child)
-                            <li class="nav-item{{ $activePage == strtolower($child->name).'-management' ? ' active' : '' }}">
+                            <li class="nav-item{{ $child->isActive ? ' active' : '' }}">
                                 <a class="nav-link" href="{{ route($child->url) }}">
                                     <i class="material-icons">{{$child->icon??'library_books'}}</i>
                                     <span class="sidebar-normal">{{ $child->name.' Management' }} </span>

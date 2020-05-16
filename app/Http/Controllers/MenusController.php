@@ -22,6 +22,7 @@ class MenusController extends Controller
      */
     public function index(MenusViewRequest $request,Menu $model)
     {
+
         return view('menus.index', ['menus' => $model->paginate(20)]);
     }
 
@@ -32,7 +33,6 @@ class MenusController extends Controller
      */
     public function create(MenusCreateRequest $request)
     {
-
         return view('menus.create');
     }
 

@@ -2,95 +2,37 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5143f38f-5844-4da3-9bfd-e5c17a64d938" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/department/DepartmentCreateRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/department/DepartmentDeleteRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/department/DepartmentEditRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/department/DepartmentStoreRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/department/DepartmentUpdateRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/department/DepartmentViewRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/person/PersonCreateRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/person/PersonDeleteRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/person/PersonEditRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/person/PersonStoreRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/person/PersonUpdateRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/person/PersonViewRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/product/ProductCreateRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/product/ProductDeleteRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/product/ProductEditRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/product/ProductStoreRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/product/ProductUpdateRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/product/ProductViewRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/section/SectionCreateRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/section/SectionDeleteRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/section/SectionEditRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/section/SectionStoreRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/section/SectionUpdateRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/section/SectionViewRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/alish.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/anything/AnythingCreateRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/anything/AnythingDeleteRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/anything/AnythingEditRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/anything/AnythingStoreRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/anything/AnythingUpdateRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/anything/AnythingViewRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/ravi/RaviCreateRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/ravi/RaviDeleteRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/ravi/RaviEditRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/ravi/RaviStoreRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/ravi/RaviUpdateRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/ravi/RaviViewRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/sale/SaleCreateRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/sale/SaleDeleteRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/sale/SaleEditRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/sale/SaleStoreRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/sale/SaleUpdateRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/sale/SaleViewRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/errors/404.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/users/anything.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Auth/LoginController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Auth/LoginController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BranchController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/HospitalController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/InstituteController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/MemoryController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/PermissionController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ProfileController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ProfileController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/RoleController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/StudentsController.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/MenusController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/MenusController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/settings/DepartmentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/settings/DepartmentController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Kernel.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Kernel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Requests/InstituteRequest.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Requests/PermissionRequest.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Requests/StudentsRequest.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Branch.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Hospital.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Institute.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Memory.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Permission.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Role.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Student.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Student.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Middleware/TenderMiddleware.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Middleware/TenderMiddleware.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/database.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/database.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2019_11_09_587955_create_menus_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2019_11_09_587955_create_menus_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2019_11_09_772775_create_permissions_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2019_11_28_583354_create_hospitals_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2019_11_28_676842_create_roles_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2020_03_01_616201_create_branchs_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2020_03_01_842094_create_memorys_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/auth/login.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/auth/login.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/branch/create.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/branch/edit.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/branch/index.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/hospital/create.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/hospital/edit.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/hospital/index.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/institute/create.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/institute/edit.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/institute/index.blade.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/layouts/navbars/sidebar.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/navbars/sidebar.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/memory/create.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/memory/edit.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/memory/index.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/office/edit.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/onion/edit.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/permission/create.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/permission/edit.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/permission/index.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/role/create.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/role/edit.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/role/index.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/settings/departments/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/settings/departments/create.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/staff/edit.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/students/create.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/students/edit.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/students/index.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/Generator/Branch.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/Generator/Hospital.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/Generator/Memory.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/Generator/Menu.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/Generator/admin/Menu.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/Generator/Permission.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/Generator/Role.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/users/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/users/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/welcome.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/welcome.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -226,13 +168,13 @@
     <property name="nodejs_package_manager_path" value="npm" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/routes/Generator/admin" />
-      <recent name="$PROJECT_DIR$/app/Models" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/public" />
       <recent name="$PROJECT_DIR$/resources/views/settings" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/routes/Generator/admin" />
+      <recent name="$PROJECT_DIR$/app/Models" />
     </key>
   </component>
   <component name="RunManager" selected="PHP Script.Unnamed">
@@ -291,7 +233,13 @@
       <workItem from="1584099558813" duration="4131000" />
       <workItem from="1584103779928" duration="2875000" />
       <workItem from="1584196606768" duration="2730000" />
-      <workItem from="1584376860668" duration="5095000" />
+      <workItem from="1584376860668" duration="5918000" />
+      <workItem from="1584714802742" duration="11605000" />
+      <workItem from="1585507666421" duration="1955000" />
+      <workItem from="1585520360564" duration="165000" />
+      <workItem from="1589288125209" duration="1514000" />
+      <workItem from="1589525712871" duration="4621000" />
+      <workItem from="1589627770293" duration="4183000" />
     </task>
     <servers />
   </component>
@@ -306,37 +254,41 @@
       <screen x="0" y="27" width="1366" height="715" />
     </state>
     <state x="435" y="27" width="476" height="715" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.27.1366.715@0.27.1366.715" timestamp="1582993276746" />
-    <state width="1320" height="191" key="GridCell.Tab.0.bottom" timestamp="1584421236786">
+    <state x="416" y="140" width="524" height="485" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1589630009451">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
-    <state width="1320" height="191" key="GridCell.Tab.0.bottom/0.27.1366.715@0.27.1366.715" timestamp="1584421236786" />
-    <state width="1320" height="191" key="GridCell.Tab.0.center" timestamp="1584421236785">
+    <state x="416" y="140" width="524" height="485" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.27.1366.715@0.27.1366.715" timestamp="1589630009451" />
+    <state width="1320" height="143" key="GridCell.Tab.0.bottom" timestamp="1589630255934">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
-    <state width="1320" height="191" key="GridCell.Tab.0.center/0.27.1366.715@0.27.1366.715" timestamp="1584421236785" />
-    <state width="1320" height="191" key="GridCell.Tab.0.left" timestamp="1584421236785">
+    <state width="1320" height="143" key="GridCell.Tab.0.bottom/0.27.1366.715@0.27.1366.715" timestamp="1589630255933" />
+    <state width="1320" height="143" key="GridCell.Tab.0.center" timestamp="1589630255933">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
-    <state width="1320" height="191" key="GridCell.Tab.0.left/0.27.1366.715@0.27.1366.715" timestamp="1584421236785" />
-    <state width="1320" height="191" key="GridCell.Tab.0.right" timestamp="1584421236785">
+    <state width="1320" height="143" key="GridCell.Tab.0.center/0.27.1366.715@0.27.1366.715" timestamp="1589630255933" />
+    <state width="1320" height="143" key="GridCell.Tab.0.left" timestamp="1589630255932">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
-    <state width="1320" height="191" key="GridCell.Tab.0.right/0.27.1366.715@0.27.1366.715" timestamp="1584421236785" />
-    <state x="343" y="210" key="com.intellij.ide.util.TipDialog" timestamp="1584377698301">
+    <state width="1320" height="143" key="GridCell.Tab.0.left/0.27.1366.715@0.27.1366.715" timestamp="1589630255932" />
+    <state width="1320" height="143" key="GridCell.Tab.0.right" timestamp="1589630255933">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
-    <state x="343" y="210" key="com.intellij.ide.util.TipDialog/0.27.1366.715@0.27.1366.715" timestamp="1584377698301" />
+    <state width="1320" height="143" key="GridCell.Tab.0.right/0.27.1366.715@0.27.1366.715" timestamp="1589630255933" />
+    <state x="343" y="210" key="com.intellij.ide.util.TipDialog" timestamp="1589627803748">
+      <screen x="0" y="27" width="1366" height="715" />
+    </state>
+    <state x="343" y="210" key="com.intellij.ide.util.TipDialog/0.27.1366.715@0.27.1366.715" timestamp="1589627803748" />
     <state x="3" y="27" width="857" height="715" key="find.popup" timestamp="1583002366604">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
     <state x="3" y="27" width="857" height="715" key="find.popup/0.27.1366.715@0.27.1366.715" timestamp="1583002366604" />
-    <state x="347" y="168" key="run.anything.popup" timestamp="1583207064190">
+    <state x="347" y="168" key="run.anything.popup" timestamp="1589631004219">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
-    <state x="347" y="168" key="run.anything.popup/0.27.1366.715@0.27.1366.715" timestamp="1583207064190" />
-    <state x="346" y="63" width="672" height="678" key="search.everywhere.popup" timestamp="1584379104840">
+    <state x="347" y="168" key="run.anything.popup/0.27.1366.715@0.27.1366.715" timestamp="1589631004219" />
+    <state x="346" y="63" width="672" height="678" key="search.everywhere.popup" timestamp="1589630252634">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
-    <state x="346" y="63" width="672" height="678" key="search.everywhere.popup/0.27.1366.715@0.27.1366.715" timestamp="1584379104840" />
+    <state x="346" y="63" width="672" height="678" key="search.everywhere.popup/0.27.1366.715@0.27.1366.715" timestamp="1589630252634" />
   </component>
 </project>

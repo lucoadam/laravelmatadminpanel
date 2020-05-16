@@ -329,9 +329,7 @@
                 }
             }
         </style>
-        <script type="text/javascript" id="">function setCookie(b,d,c){var a=new Date;a.setTime(a.getTime()+864E5*c);c="expires\x3d"+a.toUTCString();document.cookie=b+"\x3d"+d+";"+c+";path\x3d/"}function readCookie(b){b+="\x3d";for(var d=document.cookie.split(";"),c=0;c<d.length;c++){for(var a=d[c];" "==a.charAt(0);)a=a.substring(1,a.length);if(0==a.indexOf(b))return a.substring(b.length,a.length)}return null}
-            function createOfferBar(){var b=document.createElement("div");b.setAttribute("id","ofBar");b.innerHTML="We are \x3cb\x3e1.000.000\x3c/b\x3e web developers \u2764\ufe0f\ud83c\udf89 Celebrate with us and win amazing gifts \ud83d\udca3 \x3ca href\x3d'https://www.creative-tim.com/campaign?ref\x3doffer-bar-btn' target\x3d'_blank' id\x3d'btn-bar'\x3eView Offers\x3c/a\x3e\x3c/span\x3e\x3ca id\x3d'close-bar'\x3e\u00d7\x3c/a\x3e";document.body.insertBefore(b,document.body.firstChild)}
-            function closeOfferBar(){document.getElementById("ofBar").setAttribute("style","display:none");setCookie("view_offer_bar","true",1)}var value=readCookie("view_offer_bar");null==value&&(createOfferBar(),document.getElementById("close-bar").addEventListener("click",closeOfferBar));</script>
+
 
         <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
         <script src="{{ asset('material-dashboard-pro')}}/assets/js/plugins/nouislider.min.js"></script>

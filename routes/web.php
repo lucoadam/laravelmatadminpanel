@@ -25,9 +25,13 @@ Route::get('/alish', function () {
     }
     return $parent;
 });
+Route::resource('/ravi','RaviController');
 Auth::routes();
 
+Route::get('/man',function(){
+   return view('users.anything') ;
 
+});
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('table-list', function () {

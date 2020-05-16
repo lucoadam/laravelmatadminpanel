@@ -16,13 +16,15 @@ class UserController extends Controller
      */
     public function index(User $model)
     {
-        $mod= $model->paginate(5);
-        $currentPage= $mod->currentPage();
-        foreach($mod as $key=>$each){
-            if($currentPage!==1)
-                $each->index = ($currentPage-1)*5+$key+1;
-            else
-                $each->index = $key+1;
+        $mod= $model->where('id','!=',1)->paginate(5);
+        if(count($mod)!=0) {
+            $currentPage = $mod->currentPage();
+            foreach ($mod as $key => $each) {
+                if ($currentPage !== 1)
+                    $each->index = ($currentPage - 1) * 5 + $key + 1;
+                else
+                    $each->index = $key + 1;
+            }
         }
         return view('users.index', ['users' => $mod]);
     }
