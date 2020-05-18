@@ -2,37 +2,31 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5143f38f-5844-4da3-9bfd-e5c17a64d938" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/anything/AnythingCreateRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/anything/AnythingDeleteRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/anything/AnythingEditRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/anything/AnythingStoreRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/anything/AnythingUpdateRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/anything/AnythingViewRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/ravi/RaviCreateRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/ravi/RaviDeleteRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/ravi/RaviEditRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/ravi/RaviStoreRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/ravi/RaviUpdateRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/ravi/RaviViewRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/sale/SaleCreateRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/sale/SaleDeleteRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/sale/SaleEditRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/sale/SaleStoreRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/sale/SaleUpdateRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/Http/Requests/sale/SaleViewRequest.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/errors/404.blade.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resources/views/users/anything.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/MenusController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/MenusController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UserController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ContentController.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/FileController.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ImageController.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/settings/DepartmentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/settings/DepartmentController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Middleware/TenderMiddleware.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Middleware/TenderMiddleware.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/database.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/database.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Content.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/File.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Image.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2020_05_15_704536_create_images_table.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2020_05_15_704537_create_files_table.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2020_05_15_704538_create_contents_table.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/content/create.blade.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/content/edit.blade.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/content/index.blade.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/file/create.blade.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/file/edit.blade.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/file/index.blade.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/image/create.blade.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/image/edit.blade.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/image/index.blade.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/layouts/navbars/sidebar.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/navbars/sidebar.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/users/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/users/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/welcome.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/welcome.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/settings/departments/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/settings/departments/index.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/Generator/admin/Content.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/Generator/admin/File.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/Generator/admin/Image.php" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +50,23 @@
     <option name="HIDDEN_KINDS">
       <set />
     </option>
-    <expand />
+    <expand>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="generate@localhost" type="feb32156:DbDataSourceImpl" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="generate@localhost" type="feb32156:DbDataSourceImpl" />
+        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="generate@localhost" type="feb32156:DbDataSourceImpl" />
+        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
+        <item name="generate: schema" type="ebfa3cd1:MariaImplModel$Schema" />
+      </path>
+    </expand>
     <select />
   </component>
   <component name="Git.Settings">
@@ -168,13 +178,13 @@
     <property name="nodejs_package_manager_path" value="npm" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/public" />
-      <recent name="$PROJECT_DIR$/resources/views/settings" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/routes/Generator/admin" />
       <recent name="$PROJECT_DIR$/app/Models" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/public" />
+      <recent name="$PROJECT_DIR$/resources/views/settings" />
     </key>
   </component>
   <component name="RunManager" selected="PHP Script.Unnamed">
@@ -258,22 +268,22 @@
       <screen x="0" y="27" width="1366" height="715" />
     </state>
     <state x="416" y="140" width="524" height="485" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.27.1366.715@0.27.1366.715" timestamp="1589630009451" />
-    <state width="1320" height="143" key="GridCell.Tab.0.bottom" timestamp="1589630255934">
+    <state width="1320" height="99" key="GridCell.Tab.0.bottom" timestamp="1589790456642">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
-    <state width="1320" height="143" key="GridCell.Tab.0.bottom/0.27.1366.715@0.27.1366.715" timestamp="1589630255933" />
-    <state width="1320" height="143" key="GridCell.Tab.0.center" timestamp="1589630255933">
+    <state width="1320" height="99" key="GridCell.Tab.0.bottom/0.27.1366.715@0.27.1366.715" timestamp="1589790456642" />
+    <state width="1320" height="99" key="GridCell.Tab.0.center" timestamp="1589790456642">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
-    <state width="1320" height="143" key="GridCell.Tab.0.center/0.27.1366.715@0.27.1366.715" timestamp="1589630255933" />
-    <state width="1320" height="143" key="GridCell.Tab.0.left" timestamp="1589630255932">
+    <state width="1320" height="99" key="GridCell.Tab.0.center/0.27.1366.715@0.27.1366.715" timestamp="1589790456642" />
+    <state width="1320" height="99" key="GridCell.Tab.0.left" timestamp="1589790456641">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
-    <state width="1320" height="143" key="GridCell.Tab.0.left/0.27.1366.715@0.27.1366.715" timestamp="1589630255932" />
-    <state width="1320" height="143" key="GridCell.Tab.0.right" timestamp="1589630255933">
+    <state width="1320" height="99" key="GridCell.Tab.0.left/0.27.1366.715@0.27.1366.715" timestamp="1589790456641" />
+    <state width="1320" height="99" key="GridCell.Tab.0.right" timestamp="1589790456642">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
-    <state width="1320" height="143" key="GridCell.Tab.0.right/0.27.1366.715@0.27.1366.715" timestamp="1589630255933" />
+    <state width="1320" height="99" key="GridCell.Tab.0.right/0.27.1366.715@0.27.1366.715" timestamp="1589790456642" />
     <state x="343" y="210" key="com.intellij.ide.util.TipDialog" timestamp="1589627803748">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
@@ -286,9 +296,20 @@
       <screen x="0" y="27" width="1366" height="715" />
     </state>
     <state x="347" y="168" key="run.anything.popup/0.27.1366.715@0.27.1366.715" timestamp="1589631004219" />
-    <state x="346" y="63" width="672" height="678" key="search.everywhere.popup" timestamp="1589630252634">
+    <state x="346" y="63" width="672" height="678" key="search.everywhere.popup" timestamp="1589790857218">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
-    <state x="346" y="63" width="672" height="678" key="search.everywhere.popup/0.27.1366.715@0.27.1366.715" timestamp="1589630252634" />
+    <state x="346" y="63" width="672" height="678" key="search.everywhere.popup/0.27.1366.715@0.27.1366.715" timestamp="1589790857218" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/resources/views/layouts/app.blade.php</url>
+          <line>571</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

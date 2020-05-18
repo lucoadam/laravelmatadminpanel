@@ -10,7 +10,7 @@
                 <h4 class="card-title ">{{ __('Departments') }}</h4>
                 <p class="card-category"> {{ __('Here you can manage department') }}</p>
               </div>
-              <div class="card-body">
+              <div class="card-body col-sm-12">
                 @if (session('status'))
                   <div class="row">
                     <div class="col-sm-12">
@@ -23,18 +23,13 @@
                     </div>
                   </div>
                 @endif
-                <div class="row">
-
-                  <div class=" col-7 right no-border">
-                    <input id="searchTable" type="text" value="" class="form-control" placeholder="Search...">
-                  </div>
-                    <div class="col-5 text-right">
+                <div >
                         <a href="{{ route('settings.department.create') }}" class="btn btn-sm btn-primary">{{ __('Add Department') }}</a>
                     </div>
-                </div>
+
                     @if(isset($departments))
-                <div class="table-responsive">
-                  <table class="table">
+                <div>
+                  <table id="dataTable" class="mdl-data-table" style="width:100%">
                     <thead class=" text-primary">
                     <th>
                         {{ __('Id') }}
@@ -65,7 +60,7 @@
                               <form id="{{__('formDepartment'.$department->id)}}" action="{{ route('settings.department.destroy', $department) }}" method="post">
                                   @csrf
                                   @method('delete')
-                              
+
                                   <a rel="tooltip" class="btn btn-success btn-link" href="{{ route('settings.department.edit', $department) }}" data-original-title="" title="">
                                     <i class="material-icons">edit</i>
                                     <div class="ripple-container"></div>
@@ -99,7 +94,6 @@
                       @endforeach
                     </tbody>
                   </table>
-                    {{ $departments->links() }}
                 </div>
                         @endif
               </div>
@@ -112,16 +106,15 @@
 @section('after-script')
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#searchTable').on('keyup',function(e){
-                d=$('.search-content');
-                for(let i=0;i<d.length;i++){
-                    if(d[i].innerText.match(e.target.value)){
-                        d[i].parentElement.removeAttribute('style');
-                        continue;
+            $('#dataTable').DataTable( {
+                autoWidth: false,
+                columnDefs: [
+                    {
+                        targets: ['_all'],
+                        className: 'mdc-data-table__cell'
                     }
-                    d[i].parentElement.style.display='none';
-                }
-            })
+                ],
+            } );
         })
     </script>
 @endsection

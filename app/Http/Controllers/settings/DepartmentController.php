@@ -22,7 +22,7 @@ class DepartmentController extends Controller
     public function index(Module $model)
     {
         //
-        return view('settings.departments.index',['departments' => $model->paginate(5)]);
+        return view('settings.departments.index',['departments' => $model->orderBy('id','desc')->get()]);
     }
 
     /**
@@ -367,7 +367,7 @@ class '.$model.'Controller extends Controller
      */
     public function index('.$model.'ViewRequest $request,' . $model .' $model)
     {
-        return view(\''.strtolower($model).'.index\', [\''.strtolower($model).'\' => $model->paginate(20)]);
+        return view(\''.strtolower($model).'.index\', [\''.strtolower($model).'\' => $model->all()]);
     }
 
     /**
@@ -443,7 +443,7 @@ class '.$model.'Controller extends Controller
         $fieldContent = '';
         foreach($fields as $key=>$value){
             $input = '<input class="form-control{{ $errors->has(\''.strtolower($key).'\') ? \' is-invalid\' : \'\' }}" name="'.strtolower($key).'" id="input-'.strtolower($key).'" type="text" placeholder="{{ __(\''.ucfirst($key).'\') }}" value="{{ old(\''.strtolower($key).'\') }}" required="true" aria-required="true"/>';
-            if($value=='text') {
+            if($value=='text'||$value=='longText') {
                 $input = '<textarea rows="5" class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"></textarea>';
             }else if($key=='file'){
                 $input = $input = '<input class="form-control{{ $errors->has(\''.strtolower($key).'\') ? \' is-invalid\' : \'\' }}" name="'.strtolower($key).'" id="input-'.strtolower($key).'" type="file" placeholder="{{ __(\''.ucfirst($key).'\') }}" value="{{ old(\''.strtolower($key).'\') }}" required="true" aria-required="true"/>
@@ -539,7 +539,7 @@ class '.$model.'Controller extends Controller
         $fieldContent = '';
         foreach($fields as $key=>$value){
                 $input = '<input class="form-control{{ $errors->has(\''.strtolower($key).'\') ? \' is-invalid\' : \'\' }}" name="'.strtolower($key).'" id="input-'.strtolower($key).'" type="text" placeholder="{{ __(\''.ucfirst($key).'\') }}" value="{{ old(\''.strtolower($key).'\', $'.strtolower($model).'->'.$key.') }}" required="true" aria-required="true"/>';
-                if($value=='text') {
+                if($value=='text'||$value=='longText') {
                     $input = '<textarea rows="5" class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true">{{$'.strtolower($model).'->'.$key.'}}</textarea>';
                 }else if($key=='file'){
                     $input = $input = '<input class="form-control{{ $errors->has(\''.strtolower($key).'\') ? \' is-invalid\' : \'\' }}" name="'.strtolower($key).'" id="input-'.strtolower($key).'" type="file" placeholder="{{ __(\''.ucfirst($key).'\') }}" value="{{ old(\''.strtolower($key).'\') }}" required="true" aria-required="true"/>
@@ -548,16 +548,19 @@ class '.$model.'Controller extends Controller
                       </button>';
                 }
                 else if($key=='image'){
-                    $input = ' <div class="fileinput fileinput-new text-center" data-provides="fileinput">
+                    $input = ' <div class="fileinput fileinput-exists text-center" data-provides="fileinput">
                       <div class="fileinput-new thumbnail img-raised">
                           <img src="http://style.anu.edu.au/_anu/4/images/placeholders/person_8x10.png" rel="nofollow" alt="...">
                       </div>
-                      <div class="fileinput-preview fileinput-exists thumbnail img-raised"></div>
+                      <div class="fileinput-preview fileinput-exists thumbnail img-raised">
+                         <img src="{{url($'.strtolower($model).'->image)}}" rel="nofollow" alt="...">
+                      </div>
                       <div>
         <span onclick="document.getElementById(\'input-image\').click()" class="btn btn-raised btn-round btn-default btn-file">
             <span class="fileinput-new">Select image</span>
             <span class="fileinput-exists">Change</span>
             <input id="input-image" type="file" name="image" />
+            <input type="hidden"  value="{{url($'.strtolower($model).'->image)}}" name="fileinput" />
         </span>
                           <a href="javascript:;" class="btn btn-danger btn-round fileinput-exists" data-dismiss="fileinput"><i class="fa fa-times"></i> Remove</a>
                           </div>
@@ -691,15 +694,12 @@ class '.$model.'Controller extends Controller
                   </div>
                 @endif
                 <div class="row">
-                    <div class=" col-7 right no-border">
-                        <input id="searchTable" type="text" value="" class="form-control" placeholder="Search...">
-                    </div>
-                    <div class="col-5 text-right">
+                    <div class="col-5">
                         <a href="{{ route(\''.strtolower($model).'.create\') }}" class="btn btn-sm btn-primary">{{ __(\'Add '.$model.'\') }}</a>
                     </div>
                 </div>
                 <div class="table-responsive">
-                  <table class="table">
+                  <table id="dataTable" class="table">
                     <thead class=" text-primary">
                     <th>
                         {{ __(\'Id\') }}
@@ -739,7 +739,6 @@ class '.$model.'Controller extends Controller
                       @endforeach
                     </tbody>
                   </table>
-                    {{ $'.strtolower($model).'->links() }}
                 </div>
               </div>
             </div>
@@ -750,28 +749,16 @@ class '.$model.'Controller extends Controller
 @endsection
 @section(\'after-script\')
     <script type="text/javascript">
-       $(document).ready(function () {
-            $(\'#searchTable\').on(\'keyup\',function() {
-                $value = $(this).val();
-                $.ajax({
-                    headers: {
-                        \'X-CSRF-TOKEN\': "{{csrf_token()}}"
-                    },
-                    type: \'get\',
-                    url: \'{{URL::to(\'search/'.strtolower($model).'s\')}}\',
-                    data: {
-                        \'search\': $value,
-                        \'searchFields\': '.json_encode($fieldMe).',
-                        \'token\': \'{{csrf_token()}}\',
-                        \'fields\': '.json_encode($fieldKey).'
-                    },
-                    success: function (data) {
-                        var d = JSON.parse(data)
-                        console.log(d.paginate)
-                        $(\'tbody\').html(d.content);
+        $(document).ready(function () {
+            $(\'#dataTable\').DataTable( {
+                autoWidth: false,
+                columnDefs: [
+                    {
+                        targets: [\'_all\'],
+                        className: \'mdc-data-table__cell\'
                     }
-                });
-            });
+                ],
+            } );
         })
 
     </script>
