@@ -2,31 +2,31 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5143f38f-5844-4da3-9bfd-e5c17a64d938" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/app/Http/Controllers/ClientController.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Middleware/ClientMiddleware.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/client/ClientCreateRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/client/ClientDeleteRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/client/ClientEditRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/client/ClientStoreRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/client/ClientUpdateRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Http/Requests/client/ClientViewRequest.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/Models/Client.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/main/2014_10_12_000000_create_users_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/main/2019_08_19_000000_create_failed_jobs_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/database/migrations/main/2020_05_12_142644_create_clients_table.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/maindb.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/client/create.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/client/edit.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/client/index.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routes/Generator/admin/Client.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ContentController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/FileController.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ImageController.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/settings/DepartmentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/settings/DepartmentController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Content.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/File.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Image.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2020_05_15_704536_create_images_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2020_05_15_704537_create_files_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/database/migrations/2020_05_15_704538_create_contents_table.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/content/create.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/content/edit.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/content/index.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/file/create.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/file/edit.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/file/index.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/image/create.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/image/edit.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/image/index.blade.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/settings/departments/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/settings/departments/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/Generator/admin/Content.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/Generator/admin/File.php" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/Generator/admin/Image.php" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Kernel.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Kernel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Middleware/TenderMiddleware.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Middleware/TenderMiddleware.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/database.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/database.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/auth/login.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/auth/login.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,18 +53,18 @@
     <expand>
       <path>
         <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
-        <item name="generate@localhost" type="feb32156:DbDataSourceImpl" />
+        <item name="client2@localhost" type="feb32156:DbDataSourceImpl" />
       </path>
       <path>
         <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
-        <item name="generate@localhost" type="feb32156:DbDataSourceImpl" />
+        <item name="client2@localhost" type="feb32156:DbDataSourceImpl" />
         <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
       </path>
       <path>
         <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
-        <item name="generate@localhost" type="feb32156:DbDataSourceImpl" />
+        <item name="client2@localhost" type="feb32156:DbDataSourceImpl" />
         <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
-        <item name="generate: schema" type="ebfa3cd1:MariaImplModel$Schema" />
+        <item name="client2: schema" type="ebfa3cd1:MariaImplModel$Schema" />
       </path>
     </expand>
     <select />
@@ -170,21 +170,24 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="mariadb" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/public" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/Http/Middleware" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app/Http/Middleware" />
+      <recent name="$PROJECT_DIR$/database/migrations" />
+      <recent name="$PROJECT_DIR$/public" />
+      <recent name="$PROJECT_DIR$/resources/views/settings" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/routes/Generator/admin" />
       <recent name="$PROJECT_DIR$/app/Models" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/public" />
-      <recent name="$PROJECT_DIR$/resources/views/settings" />
     </key>
   </component>
   <component name="RunManager" selected="PHP Script.Unnamed">
@@ -250,6 +253,7 @@
       <workItem from="1589288125209" duration="1514000" />
       <workItem from="1589525712871" duration="4621000" />
       <workItem from="1589627770293" duration="4183000" />
+      <workItem from="1589930557234" duration="1465000" />
     </task>
     <servers />
   </component>
@@ -260,30 +264,34 @@
     <option featureType="com.intellij.fileTypeFactory" implementationName="*.env" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="278" y="44" width="800" height="678" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589909018518">
+      <screen x="0" y="27" width="1366" height="715" />
+    </state>
+    <state x="278" y="44" width="800" height="678" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.27.1366.715@0.27.1366.715" timestamp="1589909018518" />
     <state x="435" y="27" width="476" height="715" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1582993276746">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
     <state x="435" y="27" width="476" height="715" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.27.1366.715@0.27.1366.715" timestamp="1582993276746" />
-    <state x="416" y="140" width="524" height="485" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1589630009451">
+    <state x="416" y="140" width="524" height="485" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1589908295217">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
-    <state x="416" y="140" width="524" height="485" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.27.1366.715@0.27.1366.715" timestamp="1589630009451" />
-    <state width="1320" height="99" key="GridCell.Tab.0.bottom" timestamp="1589790456642">
+    <state x="416" y="140" width="524" height="485" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.27.1366.715@0.27.1366.715" timestamp="1589908295217" />
+    <state width="1320" height="207" key="GridCell.Tab.0.bottom" timestamp="1589931793178">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
-    <state width="1320" height="99" key="GridCell.Tab.0.bottom/0.27.1366.715@0.27.1366.715" timestamp="1589790456642" />
-    <state width="1320" height="99" key="GridCell.Tab.0.center" timestamp="1589790456642">
+    <state width="1320" height="207" key="GridCell.Tab.0.bottom/0.27.1366.715@0.27.1366.715" timestamp="1589931793178" />
+    <state width="1320" height="207" key="GridCell.Tab.0.center" timestamp="1589931793177">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
-    <state width="1320" height="99" key="GridCell.Tab.0.center/0.27.1366.715@0.27.1366.715" timestamp="1589790456642" />
-    <state width="1320" height="99" key="GridCell.Tab.0.left" timestamp="1589790456641">
+    <state width="1320" height="207" key="GridCell.Tab.0.center/0.27.1366.715@0.27.1366.715" timestamp="1589931793177" />
+    <state width="1320" height="207" key="GridCell.Tab.0.left" timestamp="1589931793177">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
-    <state width="1320" height="99" key="GridCell.Tab.0.left/0.27.1366.715@0.27.1366.715" timestamp="1589790456641" />
-    <state width="1320" height="99" key="GridCell.Tab.0.right" timestamp="1589790456642">
+    <state width="1320" height="207" key="GridCell.Tab.0.left/0.27.1366.715@0.27.1366.715" timestamp="1589931793177" />
+    <state width="1320" height="207" key="GridCell.Tab.0.right" timestamp="1589931793178">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
-    <state width="1320" height="99" key="GridCell.Tab.0.right/0.27.1366.715@0.27.1366.715" timestamp="1589790456642" />
+    <state width="1320" height="207" key="GridCell.Tab.0.right/0.27.1366.715@0.27.1366.715" timestamp="1589931793178" />
     <state x="343" y="210" key="com.intellij.ide.util.TipDialog" timestamp="1589627803748">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
@@ -296,10 +304,10 @@
       <screen x="0" y="27" width="1366" height="715" />
     </state>
     <state x="347" y="168" key="run.anything.popup/0.27.1366.715@0.27.1366.715" timestamp="1589631004219" />
-    <state x="346" y="63" width="672" height="678" key="search.everywhere.popup" timestamp="1589790857218">
+    <state x="346" y="63" width="672" height="678" key="search.everywhere.popup" timestamp="1589931990616">
       <screen x="0" y="27" width="1366" height="715" />
     </state>
-    <state x="346" y="63" width="672" height="678" key="search.everywhere.popup/0.27.1366.715@0.27.1366.715" timestamp="1589790857218" />
+    <state x="346" y="63" width="672" height="678" key="search.everywhere.popup/0.27.1366.715@0.27.1366.715" timestamp="1589931990616" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

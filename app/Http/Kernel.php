@@ -2,6 +2,8 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\ClientMiddleware;
+use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\TenderMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -20,7 +22,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        TenderMiddleware::class,
+        TenderMiddleware::class
     ];
 
     /**
@@ -63,6 +65,7 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'showClient'=>ClientMiddleware::class
     ];
 
     /**

@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Schema;
 
 class DepartmentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('showClient');
+    }
+
     /**
      * Display a listing of the resource.
      *
