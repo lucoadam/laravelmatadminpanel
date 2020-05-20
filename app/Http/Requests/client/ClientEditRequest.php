@@ -15,7 +15,11 @@ class ClientEditRequest extends FormRequest
      */
     public function authorize()
     {
-        return auth()->check();
+        if(auth()->check()){
+            return auth()->user()->allow('edit-client');
+        }else{
+            return false;
+        }
     }
 
     /**

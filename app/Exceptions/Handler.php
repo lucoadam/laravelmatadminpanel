@@ -46,6 +46,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof GeneralException) {
+            return $this->setStatusCode(403)->respondWithError($exception->getMessage());
+        }
         return parent::render($request, $exception);
+
     }
 }

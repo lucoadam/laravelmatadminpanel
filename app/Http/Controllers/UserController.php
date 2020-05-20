@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\GeneralException;
 use App\User;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Hash;
@@ -47,8 +48,18 @@ class UserController extends Controller
      */
     public function store(UserRequest $request, User $model)
     {
+        $data = $request->merge(['password' => Hash::make($request->get('password'))])->except('assignees_roles', 'permissions');
 
-        $model->create($request->merge(['password' => Hash::make($request->get('password'))])->all());
+        $roles = $request->get('roles');
+        $permissions = $request->get('permissions');
+        if($user=$model->create($data)){
+            //Attach new roles
+            $user->attachRoles($roles);
+
+            // Attach New Permissions
+            $user->attachPermissions($permissions);
+        }
+
 
         return redirect()->route('user.index')->withStatus(__('User successfully created.'));
     }
@@ -67,17 +78,25 @@ class UserController extends Controller
     /**
      * Update the specified user in storage
      *
-     * @param  \App\Http\Requests\UserRequest  $request
-     * @param  \App\User  $user
+     * @param \App\Http\Requests\UserRequest $request
+     * @param \App\User $user
      * @return \Illuminate\Http\RedirectResponse
+     * @throws GeneralException
      */
     public function update(UserRequest $request, User  $user)
     {
+        $data = $request->except('roles', 'permissions');
         $hasPassword = $request->get('password');
+        $roles = $request->get('roles');
+        $permissions = $request->get('permissions');
         $user->update(
             $request->merge(['password' => Hash::make($request->get('password'))])
-                ->except([$hasPassword ? '' : 'password']
+                ->except(['roles','permissions',$hasPassword ? '' : 'password']
         ));
+        $this->checkUserRolesCount($roles);
+        $this->flushRoles($roles, $user);
+
+        $this->flushPermissions($permissions, $user);
 
         return redirect()->route('user.index')->withStatus(__('User successfully updated.'));
     }
@@ -94,4 +113,46 @@ class UserController extends Controller
 
         return redirect()->route('user.index')->withStatus(__('User successfully deleted.'));
     }
+
+    /**
+     * Flush roles out, then add array of new ones.
+     *
+     * @param $roles
+     * @param $user
+     */
+    protected function flushRoles($roles, $user)
+    {
+        //Flush roles out, then add array of new ones
+        $user->detachRoles($user->roles);
+        $user->attachRoles($roles);
+    }
+
+    /**
+     * Flush Permissions out, then add array of new ones.
+     *
+     * @param $permissions
+     * @param $user
+     */
+    protected function flushPermissions($permissions, $user)
+    {
+        //Flush permission out, then add array of new ones
+        $user->detachPermissions($user->permissions);
+        $user->attachPermissions($permissions);
+    }
+
+    /**
+     * @param  $roles
+     *
+     * @throws GeneralException
+     */
+    protected function checkUserRolesCount($roles)
+    {
+        //User Updated, Update Roles
+        //Validate that there's at least one role chosen
+        if (count($roles) == 0) {
+            throw new GeneralException("Role  is needed");
+        }
+    }
+
+
 }
