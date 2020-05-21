@@ -86,6 +86,7 @@
     ;
       @endphp
       @foreach($parent as $par)
+          @if(auth()->user()->allow('view-'.strtolower($par->name)))
             <li class="nav-item{{ $par->isActive ? ' active' : '' }}" >
                 <a class="nav-link {{ $par->url=='#' ? ($par->isActive?'':'collapsed') : '' }}" {!! $par->url=='#' ? 'aria-expanded="'.($par->isActive?'true':'false').'"' : '' !!} href="{{$par->url!='#'?route($par->url):$par->url.strtolower($par->name).'Management'}}" {!! $par->url=='#'?'data-toggle="collapse"':''!!}>
                     <i class="material-icons">{{$par->icon??'library_books'}}</i>
@@ -95,17 +96,20 @@
                     <div class="collapse {{ $par->isActive ? 'show' : '' }}" id="{{strtolower($par->name).'Management'}}">
                         <ul class="nav">
                             @foreach($par->children as $child)
+                                @if(auth()->user()->allow('view-'.strtolower($child->name)))
                             <li class="nav-item{{ $child->isActive ? ' active' : '' }}">
                                 <a class="nav-link" href="{{ route($child->url) }}">
                                     <i class="material-icons">{{$child->icon??'library_books'}}</i>
                                     <span class="sidebar-normal">{{ $child->name.' Management' }} </span>
                                 </a>
                             </li>
+                                @endif
                                 @endforeach
                         </ul>
                     </div>
                 @endif
             </li>
+            @endif
       @endforeach
 {{--      <li class="nav-item{{ $activePage == 'table' ? ' active' : '' }}">--}}
 {{--        <a class="nav-link" href="{{ route('table') }}">--}}

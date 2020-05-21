@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\settings\DepartmentRequest;
 use App\Models\Menu;
 use App\Models\Permission;
+use App\Models\Product;
 use App\Models\settings\Module;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Http\Request;
@@ -165,6 +166,7 @@ class DepartmentController extends Controller
     {
         //
         $modelName = ucfirst($department->name);
+        $permissions=Permission::where('name','like','%'.strtolower($modelName))->get();
         if($modelName!='Menus'){
         $mig = scandir(base_path() . '/database/migrations');
         // DB::table('migrations')->where('migration','2019_11_08_830097_create_librarys_table')->delete();
@@ -209,6 +211,10 @@ class DepartmentController extends Controller
         if ($menu->exists()) {
             $menu->delete();
         }
+        foreach ($permissions as $permission){
+            $permission->delete();
+        }
+
         $department->delete();
     }
         return redirect()->route('settings.department.index')->withStatus(__('Department successfully deleted.'));
@@ -415,7 +421,7 @@ class '.$model.'Controller extends Controller
      * @param  \App\\'.ucfirst($model).'  $'.strtolower($model).'
      * @return \Illuminate\View\View
      */
-    public function edit('.ucfirst($model).' $'.strtolower($model).')
+    public function edit('.$model.'EditRequest $request,'.ucfirst($model).' $'.strtolower($model).')
     {
         return view(\''.strtolower($model).'.edit\', compact(\''.strtolower($model).'\'));
     }
@@ -529,12 +535,15 @@ class '.$model.'Controller extends Controller
                 <h4 class="card-title">{{ __(\'Add '.$model.'\') }}</h4>
                 <p class="card-category"></p>
               </div>
+
               <div class="card-body ">
+               @if(auth()->user()->allow(\'view-\'.strtolower(\''.$model.'\')))
                 <div class="row">
                   <div class="col-md-12 text-right">
                       <a href="{{ route(\''.strtolower($model).'.index\') }}" class="btn btn-sm btn-primary">{{ __(\'Back to list\') }}</a>
                   </div>
-                </div>'.$fieldContent.'
+                </div>
+                @endif'.$fieldContent.'
               </div>
               <div class="card-footer ml-auto mr-auto">
                 <button type="submit" class="btn btn-primary">{{ __(\'Add '.$model.'\') }}</button>
@@ -629,11 +638,13 @@ class '.$model.'Controller extends Controller
                 <p class="card-category"></p>
               </div>
               <div class="card-body ">
+                 @if(auth()->user()->allow(\'view-\'.strtolower(\''.$model.'\')))
                 <div class="row">
                   <div class="col-md-12 text-right">
                       <a href="{{ route(\''.strtolower($model).'.index\') }}" class="btn btn-sm btn-primary">{{ __(\'Back to list\') }}</a>
                   </div>
-                </div>'.$fieldContent.'
+                </div>
+                @endif'.$fieldContent.'
               </div>
               <div class="card-footer ml-auto mr-auto">
                 <button type="submit" class="btn btn-primary">{{ __(\'Save\') }}</button>
@@ -706,11 +717,13 @@ class '.$model.'Controller extends Controller
                     </div>
                   </div>
                 @endif
+                 @if(auth()->user()->allow(\'create-\'.strtolower(\''.$model.'\')))
                 <div class="row">
                     <div class="col-5">
                         <a href="{{ route(\''.strtolower($model).'.create\') }}" class="btn btn-sm btn-primary">{{ __(\'Add '.$model.'\') }}</a>
                     </div>
                 </div>
+                @endif
                 <div class="table-responsive">
                   <table id="dataTable" class="table">
                     <thead class=" text-primary">
@@ -734,18 +747,23 @@ class '.$model.'Controller extends Controller
                             {{ $model->created_at->format(\'Y/m/d\') }}
                           </td>
                           <td class="td-actions text-right">
+                                 @if(auth()->user()->allow(\'delete-\'.strtolower(\''.$model.'\')))
                               <form action="{{ route(\''.strtolower($model).'.destroy\', $model) }}" method="post">
                                   @csrf
                                   @method(\'delete\')
-
+                                  @endif
+                                  @if(auth()->user()->allow(\'edit-\'.strtolower(\''.$model.'\')))
                                   <a rel="tooltip" class="btn btn-success btn-link" href="{{ route(\''.strtolower($model).'.edit\', $model) }}" data-original-title="" title="">
                                     <i class="material-icons">edit</i>
                                     <div class="ripple-container"></div>
                                   </a>
+                                  @endif
+                                   @if(auth()->user()->allow(\'delete-\'.strtolower(\''.$model.'\')))
                                   <button type="button" class="btn btn-danger btn-link" data-original-title="" title="" onclick="confirm(\'{{ __("Are you sure you want to delete this '.strtolower($model).'?") }}\') ? this.parentElement.submit() : \'\'">
                                       <i class="material-icons">close</i>
                                       <div class="ripple-container"></div>
                                   </button>
+                                  @endif
                               </form>
                           </td>
                         </tr>

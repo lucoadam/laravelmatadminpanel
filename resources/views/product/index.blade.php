@@ -23,11 +23,13 @@
                     </div>
                   </div>
                 @endif
+                 @if(auth()->user()->allow('create-'.strtolower('Product')))
                 <div class="row">
                     <div class="col-5">
                         <a href="{{ route('product.create') }}" class="btn btn-sm btn-primary">{{ __('Add Product') }}</a>
                     </div>
                 </div>
+                @endif
                 <div class="table-responsive">
                   <table id="dataTable" class="table">
                     <thead class=" text-primary">
@@ -35,7 +37,7 @@
                         {{ __('Id') }}
                     </th>
 						<th>
-                            {{ __("Title") }}
+                            {{ __("Name") }}
                           </th>
                       <th>
                         {{ __('Creation date') }}
@@ -51,24 +53,29 @@
                                 {{$model->id}}
                             </td>
 						<td>
-                                {{$model->title}}
+                                {{$model->name}}
                           </td>
                           <td>
                             {{ $model->created_at->format('Y/m/d') }}
                           </td>
                           <td class="td-actions text-right">
+                                 @if(auth()->user()->allow('delete-'.strtolower('Product')))
                               <form action="{{ route('product.destroy', $model) }}" method="post">
                                   @csrf
                                   @method('delete')
-
+                                  @endif
+                                  @if(auth()->user()->allow('edit-'.strtolower('Product')))
                                   <a rel="tooltip" class="btn btn-success btn-link" href="{{ route('product.edit', $model) }}" data-original-title="" title="">
                                     <i class="material-icons">edit</i>
                                     <div class="ripple-container"></div>
                                   </a>
+                                  @endif
+                                   @if(auth()->user()->allow('delete-'.strtolower('Product')))
                                   <button type="button" class="btn btn-danger btn-link" data-original-title="" title="" onclick="confirm('{{ __("Are you sure you want to delete this product?") }}') ? this.parentElement.submit() : ''">
                                       <i class="material-icons">close</i>
                                       <div class="ripple-container"></div>
                                   </button>
+                                  @endif
                               </form>
                           </td>
                         </tr>

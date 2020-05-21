@@ -55,7 +55,7 @@ class ProductController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\View\View
      */
-    public function edit(Product $product)
+    public function edit(ProductEditRequest $request,Product $product)
     {
         return view('product.edit', compact('product'));
     }
