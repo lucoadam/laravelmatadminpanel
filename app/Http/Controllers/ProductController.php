@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 use App\Models\Product;
-use App\Http\Requests\product\ProductCreateRequest;
-use App\Http\Requests\product\ProductEditRequest;
-use App\Http\Requests\product\ProductStoreRequest;
-use App\Http\Requests\product\ProductUpdateRequest;
-use App\Http\Requests\product\ProductDeleteRequest;
-use App\Http\Requests\product\ProductViewRequest;
+use App\Http\Requests\product\UserCreateRequest;
+use App\Http\Requests\product\UserEditRequest;
+use App\Http\Requests\product\UserStoreRequest;
+use App\Http\Requests\product\UserUpdateRequest;
+use App\Http\Requests\product\UserDeleteRequest;
+use App\Http\Requests\product\UserViewRequest;
 use Illuminate\Support\Facades\Hash;
 
 class ProductController extends Controller
@@ -18,7 +18,7 @@ class ProductController extends Controller
      * @param  \App\Product  $model
      * @return \Illuminate\View\View
      */
-    public function index(ProductViewRequest $request,Product $model)
+    public function index(UserViewRequest $request, Product $model)
     {
         return view('product.index', ['product' => $model->all()]);
     }
@@ -28,7 +28,7 @@ class ProductController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function create(ProductCreateRequest $request)
+    public function create(UserCreateRequest $request)
     {
 
         return view('product.create');
@@ -41,10 +41,10 @@ class ProductController extends Controller
      * @param  \App\Product  $model
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(ProductStoreRequest $request, Product $model)
+    public function store(UserStoreRequest $request, Product $model)
     {
         $input =$request->all();
-        
+
         $model->create($input);
         return redirect()->route('product.index')->withStatus(__('Product successfully created.'));
     }
@@ -55,7 +55,7 @@ class ProductController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\View\View
      */
-    public function edit(ProductEditRequest $request,Product $product)
+    public function edit(UserEditRequest $request, Product $product)
     {
         return view('product.edit', compact('product'));
     }
@@ -67,10 +67,10 @@ class ProductController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(ProductUpdateRequest $request,Product  $product)
+    public function update(UserUpdateRequest $request, Product  $product)
     {
           $input =$request->all();
-        
+
 
         $product->update($input);
         return redirect()->route('product.index')->withStatus(__('Product successfully updated.'));
@@ -82,7 +82,7 @@ class ProductController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(ProductDeleteRequest $request,Product  $product)
+    public function destroy(UserDeleteRequest $request, Product  $product)
     {
         $product->delete();
 

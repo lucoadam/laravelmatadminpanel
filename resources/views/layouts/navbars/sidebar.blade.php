@@ -17,6 +17,7 @@
             <p>{{ __('Dashboard') }}</p>
         </a>
       </li>
+        @if(auth()->user()->allow('view-user'))
       <li class="nav-item {{ ($activePage == 'profile' || $activePage == 'user-management') ? ' active' : '' }}">
         <a class="nav-link {{ ($activePage == 'profile' || $activePage == 'user-management') ? '' : 'collapsed' }}" data-toggle="collapse" href="#laravelExample" aria-expanded="{{ ($activePage == 'profile' || $activePage == 'user-management') ? 'true' : 'false' }}">
 {{--          <i><img style="width:25px" src="{{ asset('material') }}/img/laravel.svg"></i>--}}
@@ -41,8 +42,18 @@
           </ul>
         </div>
       </li>
+      @else
+            <li class="nav-item{{ $activePage == 'profile' ? ' active' : '' }}">
+                <a class="nav-link" href="{{ route('profile.edit') }}">
+                    <span class="sidebar-mini"> UP </span>
+                    <span class="sidebar-normal">{{ __('User profile') }} </span>
+                </a>
+            </li>
+      @endif
+
+      @if(auth()->user()->allow('view-modules'))
       <li class="nav-item {{ ($activePage == 'department-management') ? ' active' : '' }}">
-        <a class="nav-link {{ ($activePage == 'department-management') ? '' : 'collapsed' }}" data-toggle="collapse" href="#settingManagement" aria-expanded="{{ ($activePage == 'profile' || $activePage == 'user-management') ? 'true' : 'false' }}">
+        <a class="nav-link {{ ($activePage == 'department-management') ? '' : 'collapsed' }}" data-toggle="collapse" href="#settingManagement" aria-expanded="{{ ($activePage == 'department-management') ? 'true' : 'false' }}">
           {{--          <i><img style="width:25px" src="{{ asset('material') }}/img/laravel.svg"></i>--}}
           <p>{{ __('Setting Management') }}
             <b class="caret"></b>
@@ -59,6 +70,7 @@
           </ul>
         </div>
       </li>
+        @endif
       @php
           $parent= \App\Models\Menu::select(['id','name','url','icon'])->orderBy('name')->where('parent_id',0)->get();
 

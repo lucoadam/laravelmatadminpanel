@@ -43,6 +43,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('createandgenerate',function(){
         if(\Illuminate\Support\Facades\DB::getDefaultConnection()=='mysql') {
             $latest =\App\Models\Client::latest()->first();
+            $menus = \App\Models\Menu::select(['name','icon','url_type','url','parent_id','backend','open_in_new_tab','created_at','updated_at'])->get()->toArray();
+            $permissions = \App\Models\Permission::select(['name','display_name','status','created_by','created_at','updated_at'])->get()->toArray();
+
 //            $this->info($latest->database);
 
             try{
@@ -54,12 +57,39 @@ Route::group(['middleware' => 'auth'], function () {
 //                    $this->info($exception);
                 }
                 try {
-                    DB::table('users')->insert([
-                        'name' => $latest->name,
-                        'email' => $latest->email,
-                        'password' =>$latest->password,
-                    ]);
+                    if(\App\Models\Menu::count()===0) {
+                        foreach ($menus as $menu) {
+                            \App\Models\Menu::create($menu);
+                        }
+                    }
+
+                    if(\App\Models\Role::count()===0){
+
+                        $role=\App\Models\Role::create([
+                            'name'=>'Administrator',
+                            'all'=>1,
+                            'status'=>1,
+                            'created_by'=>1,
+                            "created_at" =>now(),
+                            "updated_at" => now()
+                        ]);
+                        \App\User::latest()->first()->attachRole($role);
+                    }
+                    if(\App\Models\Permission::count()===0) {
+                        foreach ($permissions as $permission) {
+                            $permission['created_by']=1;
+                            \App\Models\Permission::create($permission);
+                        }
+                    }
+                    if(DB::table('users')->count('id')===0) {
+                        DB::table('users')->insert([
+                            'name' => $latest->name,
+                            'email' => $latest->email,
+                            'password' => $latest->password,
+                        ]);
+                    }
                 } catch (\Illuminate\Database\QueryException $q) {
+                    dd($q);
 //                    $this->info($q);
                 }
             }catch (\InvalidArgumentException $exception){

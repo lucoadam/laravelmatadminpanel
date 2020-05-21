@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\GeneralException;
+use App\Http\Requests\user\UserCreateRequest;
+use App\Http\Requests\user\UserDeleteRequest;
+use App\Http\Requests\user\UserEditRequest;
+use App\Http\Requests\user\UserUpdateRequest;
+use App\Http\Requests\user\UserViewRequest;
 use App\Models\Permission;
 use App\Models\Role;
 use App\User;
-use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -17,7 +21,7 @@ class UserController extends Controller
      * @param  \App\User  $model
      * @return \Illuminate\View\View
      */
-    public function index(User $model)
+    public function index(UserViewRequest $request,User $model)
     {
         $mod= $model->where('id','!=',1)->paginate(5);
         if(count($mod)!=0) {
@@ -36,7 +40,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function create()
+    public function create(UserCreateRequest $request)
     {
         return view('users.create');
     }
@@ -48,7 +52,7 @@ class UserController extends Controller
      * @param  \App\User  $model
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(UserRequest $request, User $model)
+    public function store(UserStoreRequest $request, User $model)
     {
         $data = $request->merge(['password' => Hash::make($request->get('password'))])->except('assignees_roles', 'permissions');
 
@@ -72,7 +76,7 @@ class UserController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\View\View
      */
-    public function edit(User $user)
+    public function edit(UserEditRequest $request,User $user)
     {
 
         return view('users.edit')->with([
@@ -92,7 +96,7 @@ class UserController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @throws GeneralException
      */
-    public function update(UserRequest $request, User  $user)
+    public function update(UserUpdateRequest $request, User  $user)
     {
         $data = $request->except('roles', 'permissions');
         $hasPassword = $request->get('password');
@@ -116,7 +120,7 @@ class UserController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(User  $user)
+    public function destroy(UserDeleteRequest $request,User  $user)
     {
         $user->delete();
 
