@@ -116,7 +116,7 @@ class ClientController extends Controller
     {
         $msg='';
         if($client->exists()) {
-            DB::statement('drop database ' . $client->database);
+            DB::statement('drop database if exists ' . $client->database);
             $fileContent = require(base_path('config/database.php'));
 //        $fileContent['connections'];
             unset($fileContent['connections'][$client->database]);
