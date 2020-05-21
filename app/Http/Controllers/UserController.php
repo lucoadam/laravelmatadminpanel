@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\GeneralException;
+use App\Models\Permission;
+use App\Models\Role;
 use App\User;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Hash;
@@ -72,7 +74,14 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('users.edit', compact('user'));
+
+        return view('users.edit')->with([
+           'user'=>$user,
+           'userRoles'=>$user->roles->pluck('id')->all(),
+            'userPermissions'=>$user->permissions->pluck('id')->all(),
+            'permissions'=>Permission::all(),
+            'roles'=>Role::all()
+        ]);
     }
 
     /**

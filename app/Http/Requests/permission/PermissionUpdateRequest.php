@@ -15,7 +15,11 @@ class PermissionUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return auth()->check();
+        if(auth()->check()){
+            return auth()->user()->allow('update-permission');
+        }else{
+            return false;
+        }
     }
 
     /**

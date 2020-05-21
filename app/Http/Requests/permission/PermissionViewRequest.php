@@ -15,7 +15,11 @@ class PermissionViewRequest extends FormRequest
      */
     public function authorize()
     {
-        return auth()->check();
+        if(auth()->check()){
+            return auth()->user()->allow('view-permission');
+        }else{
+            return false;
+        }
     }
 
     /**

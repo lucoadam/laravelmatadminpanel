@@ -15,7 +15,10 @@ class ProductDeleteRequest extends FormRequest
      */
     public function authorize()
     {
-        return auth()->check();
+         if(auth()->check()){
+            return auth()->user()->allow('delete-product');
+        }
+        return false;
     }
 
     /**

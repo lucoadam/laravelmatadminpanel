@@ -17,9 +17,8 @@ class ClientViewRequest extends FormRequest
     {
         if(auth()->check()){
             return auth()->user()->allow('view-client');
-        }else{
-            return false;
         }
+        return false;
     }
 
     /**

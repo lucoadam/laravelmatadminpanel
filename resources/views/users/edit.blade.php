@@ -61,6 +61,41 @@
                     </div>
                   </div>
                 </div>
+                  <br/>
+                  <br/>
+                  <div class="associated-role row">
+                      <label class="col-sm-2 col-form-label">{{ __('Associated Roles') }}</label>
+
+                      <div class="col-sm-7" style="max-height:400px;overflow-y: scroll;">
+                          @if (!is_null($roles)&&$roles->count())
+                              @foreach ($roles as $role)
+                                  <label class="control control--checkbox">
+                                      <input data-all="{{$role->all}}" data-permission="{{json_encode($role->permissions->pluck('id')->all())}}" class="associatedRole" type="radio" name="roles[]" value="{{ $role->id }}" id="role_{{ $role->id }}" {{ is_array($userRoles) && in_array($role->id, $userRoles) ? 'checked' : '' }} /> <label for="role_{{ $role->id }}">{{ $role->name }}</label>
+                                      <div class="control__indicator"></div>
+                                  </label>
+                                  <br/>
+                              @endforeach
+                          @else
+                              <p>There are no available roles.</p>
+                          @endif
+                      </div>
+                  </div>
+                  <div class="associated-permission row ">
+                      <label class="col-sm-2 col-form-label">{{ __('Associated Permissions') }}</label>
+                      <div class="col-sm-7" style="max-height:400px;overflow-y: scroll;">
+                          @if (!is_null($permissions)&&$permissions->count())
+                              @foreach ($permissions as $perm)
+                                  <label class="control control--checkbox">
+                                      <input type="checkbox" name="permissions[{{ $perm->id }}]" class="associatedPermission" value="{{ $perm->id }}" data-id="{{$perm->id}}" id="perm_{{ $perm->id }}" {{ is_array($userPermissions) && in_array($perm->id, $userPermissions) ? 'checked' : '' }} /> <label for="perm_{{ $perm->id }}">{{ $perm->display_name }}</label>
+                                      <div class="control__indicator"></div>
+                                  </label>
+                                  <br/>
+                              @endforeach
+                          @else
+                              <p>There are no available permissions.</p>
+                          @endif
+                      </div>
+                  </div>
               </div>
               <div class="card-footer ml-auto mr-auto">
                 <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
@@ -71,4 +106,21 @@
       </div>
     </div>
   </div>
+@endsection
+@section('after-script')
+    <script>
+        $(document).ready(function(){
+           $('.associatedRole').on('click',function(){
+                var permission=$(this).data('permission');
+                var all =$(this).data('all');
+                $('.associatedPermission').each(function(index,item){
+                    if(all) {
+                       $(item).prop("checked", true);
+                    }else{
+                        $(item).prop("checked", permission.indexOf($(item).data('id'))!=-1);
+                    }
+                })
+           });
+        });
+    </script>
 @endsection

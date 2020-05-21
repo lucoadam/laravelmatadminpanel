@@ -15,7 +15,11 @@ class RoleEditRequest extends FormRequest
      */
     public function authorize()
     {
-        return auth()->check();
+        if(auth()->check()){
+            return auth()->user()->allow('edit-role');
+        }else{
+            return false;
+        }
     }
 
     /**

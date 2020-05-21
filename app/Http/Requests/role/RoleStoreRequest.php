@@ -15,7 +15,11 @@ class RoleStoreRequest extends FormRequest
      */
     public function authorize()
     {
-        return auth()->check();
+        if(auth()->check()){
+            return auth()->user()->allow('store-role');
+        }else{
+            return false;
+        }
     }
 
     /**

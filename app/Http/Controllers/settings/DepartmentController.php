@@ -5,6 +5,7 @@ namespace App\Http\Controllers\settings;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\settings\DepartmentRequest;
 use App\Models\Menu;
+use App\Models\Permission;
 use App\Models\settings\Module;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Http\Request;
@@ -53,7 +54,10 @@ class DepartmentController extends Controller
 
         if ($request->all()['name'] != 'module') {
 
-            $modelName = ucfirst($request->all()['name']);
+            $modelName = ucfirst(strtolower($request->all()['name']));
+            if($modelName=="Role"||$modelName=='Permission'||$modelName=='User'||$modelName=='Module'){
+                return redirect()->route('settings.department.create');
+            }
             $fields = json_decode($request->all()['field']);//array('name'=>'string','country'=>'string','city'=>'text','salary'=>'integer');
             $basePath = explode('public', public_path())[0];
             if (!Schema::hasTable(strtolower($modelName) . 's')) {
@@ -299,6 +303,7 @@ class '.ucfirst($model).' extends Model
         if($type!='Update'||$type!='Store')
             $fieldContent='';
 
+        Permission::create(['name'=>strtolower($type).'-'.strtolower($model),'display_name'=>ucfirst($type).' '.$model,'created_by'=>auth()->user()->id]);
         return '<?php
 
 namespace App\Http\Requests\\'.strtolower($model).';
@@ -316,7 +321,10 @@ class '.$model.$type.'Request extends FormRequest
      */
     public function authorize()
     {
-        return auth()->check();
+         if(auth()->check()){
+            return auth()->user()->allow(\''.strtolower($type).'-'.strtolower($model).'\');
+        }
+        return false;
     }
 
     /**
