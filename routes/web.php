@@ -21,6 +21,7 @@ Route::get('/', function () {
 Route::get('/alish', function () {
    $url = explode('://',url('/'))[1];
    $database = Client::where('url',$url);
+   dd($url,$database->get()->toArray(),Client::all()->toArray());
    if($database->exists()&&!auth()->check()){
        $database= $database->first()->database;
    }else{
@@ -57,6 +58,13 @@ Route::group(['middleware' => 'auth'], function () {
 //                    $this->info($exception);
                 }
                 try {
+                    if(DB::table('users')->count('id')===0) {
+                        DB::table('users')->insert([
+                            'name' => $latest->name,
+                            'email' => $latest->email,
+                            'password' => $latest->password,
+                        ]);
+                    }
                     if(\App\Models\Menu::count()===0) {
                         foreach ($menus as $menu) {
                             \App\Models\Menu::create($menu);
@@ -73,21 +81,20 @@ Route::group(['middleware' => 'auth'], function () {
                             "created_at" =>now(),
                             "updated_at" => now()
                         ]);
-                        \App\User::latest()->first()->attachRole($role);
+                        DB::table('role_user')->insert([
+                            'user_id'=>1,
+                            'role_id'=>1
+                        ]);
+
                     }
+
                     if(\App\Models\Permission::count()===0) {
                         foreach ($permissions as $permission) {
                             $permission['created_by']=1;
                             \App\Models\Permission::create($permission);
                         }
                     }
-                    if(DB::table('users')->count('id')===0) {
-                        DB::table('users')->insert([
-                            'name' => $latest->name,
-                            'email' => $latest->email,
-                            'password' => $latest->password,
-                        ]);
-                    }
+
                 } catch (\Illuminate\Database\QueryException $q) {
                     dd($q);
 //                    $this->info($q);
