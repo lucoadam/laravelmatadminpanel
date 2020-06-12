@@ -6,9 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\settings\DepartmentRequest;
 use App\Models\Menu;
 use App\Models\Permission;
-use App\Models\Product;
 use App\Models\settings\Module;
-use Illuminate\Database\Migrations\Migration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -16,6 +14,9 @@ use Illuminate\Support\Facades\Schema;
 
 class DepartmentController extends Controller
 {
+    private $modelCamelCase;
+    private $modelTableName;
+    private $modelName;
     public function __construct()
     {
         $this->middleware('showClient');
@@ -52,51 +53,53 @@ class DepartmentController extends Controller
     public function store(DepartmentRequest $request, Module $department)
     {
 //       dd($request->all());
-
         if ($request->all()['name'] != 'module') {
+            $this->modelCamelCase=$this->toCamelCase($request->all()['name']);
+            $this->modelTableName=$this->toTableName($request->all()['name']);
 
-            $modelName = ucfirst(strtolower($request->all()['name']));
+            $modelName = ucwords(strtolower($request->all()['name']));
+            $this->modelName = ucwords(strtolower($request->all()['name']));
             if($modelName=="Role"||$modelName=='Permission'||$modelName=='User'||$modelName=='Module'){
                 return redirect()->route('settings.department.create');
             }
             $fields = json_decode($request->all()['field']);//array('name'=>'string','country'=>'string','city'=>'text','salary'=>'integer');
             $basePath = explode('public', public_path())[0];
-            if (!Schema::hasTable(strtolower($modelName) . 's')) {
+            if (!Schema::hasTable(strtolower($this->modelTableName) . 's')) {
                 $maxMigration=explode('_',DB::table('migrations')->max('migration'))[3]+1;
-                $migrationPath = $basePath . 'database/migrations/' . now()->format('Y_m_d') . '_' . $maxMigration . '_create_' . strtolower($modelName) . 's_table.php';
+                $migrationPath = $basePath . 'database/migrations/' . now()->format('Y_m_d') . '_' . $maxMigration . '_create_' . strtolower($this->modelTableName) . 's_table.php';
                 $migrationContent = $this->migrationContent(strtolower($modelName), $fields);
                 $migrationGenerate = File::put($migrationPath, $migrationContent);
                 exec('cd ' . $basePath . ' && php artisan migrate');
             }
-            $modelPath = $basePath . 'app/Models/' . ucfirst($modelName) . '.php';
+            $modelPath = $basePath . 'app/Models/' . $this->modelCamelCase . '.php';
             $modelContent = $this->modelContent($modelName, $fields);
             $modelGenerate = File::put($modelPath, $modelContent);
 
-            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($modelName);
+            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($this->modelCamelCase);
             File::isDirectory($requestPath) or File::makeDirectory($requestPath, 0777, true, true);
-            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($modelName) . '/' . $modelName . 'StoreRequest.php';
+            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($this->modelCamelCase) . '/' . $this->modelCamelCase . 'StoreRequest.php';
             $requestContent = $this->requestContent($modelName, $fields, 'Store');
             $requestGenerate = File::put($requestPath, $requestContent);
-            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($modelName) . '/' . $modelName . 'UpdateRequest.php';
+            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($this->modelCamelCase) . '/' . $this->modelCamelCase . 'UpdateRequest.php';
             $requestContent = $this->requestContent($modelName, $fields, 'Update');
             $requestGenerate = File::put($requestPath, $requestContent);
-            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($modelName) . '/' . $modelName . 'EditRequest.php';
+            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($this->modelCamelCase) . '/' . $this->modelCamelCase . 'EditRequest.php';
             $requestContent = $this->requestContent($modelName, $fields, 'Edit');
             $requestGenerate = File::put($requestPath, $requestContent);
-            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($modelName) . '/' . $modelName . 'CreateRequest.php';
+            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($this->modelCamelCase) . '/' . $this->modelCamelCase . 'CreateRequest.php';
             $requestContent = $this->requestContent($modelName, $fields, 'Create');
             $requestGenerate = File::put($requestPath, $requestContent);
-            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($modelName) . '/' . $modelName . 'DeleteRequest.php';
+            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($this->modelCamelCase) . '/' . $this->modelCamelCase . 'DeleteRequest.php';
             $requestContent = $this->requestContent($modelName, $fields, 'Delete');
             $requestGenerate = File::put($requestPath, $requestContent);
-            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($modelName) . '/' . $modelName . 'ViewRequest.php';
+            $requestPath = $basePath . 'app/Http/Requests/' . strtolower($this->modelCamelCase) . '/' . $this->modelCamelCase . 'ViewRequest.php';
             $requestContent = $this->requestContent($modelName, $fields, 'View');
             $requestGenerate = File::put($requestPath, $requestContent);
 
-            $controllerPath = $basePath . '/app/Http/Controllers/' . $modelName . 'Controller.php';
+            $controllerPath = $basePath . '/app/Http/Controllers/' . $this->modelCamelCase . 'Controller.php';
             $controllerContent = $this->controllerContent($modelName,$fields);
             $contollergenerate = File::put($controllerPath, $controllerContent);
-            $viewPath = $basePath . 'resources/views/' . strtolower($modelName);
+            $viewPath = $basePath . 'resources/views/' . strtolower($this->modelCamelCase);
             File::isDirectory($viewPath) or File::makeDirectory($viewPath, 0777, true, true);
             $createContent = $this->createView($modelName, $fields);
             $createGenerate = File::put($viewPath . '/create.blade.php', $createContent);
@@ -106,14 +109,14 @@ class DepartmentController extends Controller
             $indexGenerate = File::put($viewPath . '/index.blade.php', $indexContent);
             $routesPath = $basePath . 'routes/Generator/admin';
             File::isDirectory($routesPath) or File::makeDirectory($routesPath, 0777, true, true);
-            File::put($routesPath . '/' . $modelName . '.php', '<?php' . "\n\t" . 'Route::resource(\'' . strtolower($modelName) . '\',\'' . $modelName . 'Controller\');');
+            File::put($routesPath . '/' . $this->modelCamelCase . '.php', '<?php' . "\n\t" . 'Route::resource(\'' . strtolower($this->modelCamelCase) . '\',\'' . $this->modelCamelCase . 'Controller\');');
             $department->create(['name' => $request->all()['name']]);
 
             if($request->has('parent')&&!is_null($request->get('parent'))){
                 $parent=Menu::firstOrCreate(['name'=>$request->get('parent'),'url'=>'#']);
-                Menu::firstOrCreate(['name'=>$request->all()['name'],'url'=>strtolower($request->all()['name']).'.index','parent_id'=>$parent->id]);
+                Menu::firstOrCreate(['name'=>$request->all()['name'],'url'=>strtolower($this->modelCamelCase).'.index','parent_id'=>$parent->id]);
             }else{
-                Menu::firstOrCreate(['name'=>$request->all()['name'],'url'=>strtolower($request->all()['name']).'.index']);
+                Menu::firstOrCreate(['name'=>$request->all()['name'],'url'=>strtolower($this->modelCamelCase).'.index']);
             }
         }
         return redirect()->route('settings.department.index')->withStatus(__('Department successfully created.'));
@@ -165,24 +168,32 @@ class DepartmentController extends Controller
     public function destroy(Module $department)
     {
         //
-        $modelName = ucfirst($department->name);
-        $permissions=Permission::where('name','like','%'.strtolower($modelName))->get();
+        $modelName = ucwords($department->name);
+        $this->modelName = ucwords($department->name);
+        $this->modelTableName = $this->toTableName($this->modelName);
+        $this->modelCamelCase = $this->toCamelCase($this->modelName);
+
+
+        $permissions=Permission::where('name','like','%'.strtolower($this->modelCamelCase))->get();
         if($modelName!='Menus'){
         $mig = scandir(base_path() . '/database/migrations');
         // DB::table('migrations')->where('migration','2019_11_08_830097_create_librarys_table')->delete();
-        $mArray = preg_grep('/' . strtolower($modelName) . 's/', $mig);
+        $mArray = preg_grep('/' . strtolower($this->modelTableName) . 's/', $mig);
+
         $basePath = explode('public', public_path())[0];
-        $modelPath = $basePath . 'app/Models/' . ucfirst($modelName) . '.php';
-        $requestPath = $basePath . 'app/Http/Requests/' . $modelName . 'Request.php';
-        $controllerPath = $basePath . '/app/Http/Controllers/' . $modelName . 'Controller.php';
-        $viewPath = $basePath . 'resources/views/' . strtolower($modelName);
+        $modelPath = $basePath . 'app/Models/' . $this->modelCamelCase . '.php';
+        $requestPath = $basePath . 'app/Http/Requests/' .strtolower($this->modelCamelCase);
+        $controllerPath = $basePath . '/app/Http/Controllers/' . $this->modelCamelCase . 'Controller.php';
+        $viewPath = $basePath . 'resources/views/' . strtolower($this->modelCamelCase);
         $routesPath = $basePath . 'routes/Generator/admin';
-        Schema::dropIfExists(strtolower($modelName) . 's');
+        Schema::dropIfExists(strtolower($this->modelTableName) . 's');
 
         if (count($mArray) == 1) {
             $migrationName = array_pop($mArray);
             $path = base_path() . '/database/migrations/' . $migrationName;
             $migrationName = explode('.', $migrationName)[0];
+            // dd(File::exists($path));
+            // return;
             if (File::exists($path)) {
                 File::delete($path);
                 DB::table('migrations')->where('migration', $migrationName)->delete();
@@ -197,20 +208,32 @@ class DepartmentController extends Controller
             $viewPath . '/index.blade.php',
             $viewPath . '/view.blade.php',
             $viewPath . '/edit.blade.php',
-            $routesPath . '/' . $modelName . '.php'
+            $routesPath . '/' . $this->modelCamelCase . '.php'
         ];
         foreach ($files as $file) {
             if (File::exists($file)) {
                 File::delete($file);
             }
         }
+        if(File::isDirectory($requestPath)){
+            File::deleteDirectory($requestPath);
+        }
         if(File::isDirectory($viewPath)){
             File::deleteDirectory($viewPath);
         }
-        $menu = Menu::where('url', strtolower($modelName) . '.index')->first();
-        if ($menu->exists()) {
-            $menu->delete();
-        }
+            $menu = Menu::where('url', strtolower($this->modelCamelCase) . '.index')->first();
+            if (!is_null($menu)) {
+                if($menu->parent_id!=0&&Menu::where('parent_id',$menu->parent_id)->count()==1) {
+                    $pMenu = Menu::find($menu->parent_id);
+                    if($pMenu->exists()){
+                        $menu->delete();
+                        $pMenu->delete();
+
+                    }
+                }else{
+                    $menu->delete();
+                }
+            }
         foreach ($permissions as $permission){
             $permission->delete();
         }
@@ -242,7 +265,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class Create'.ucfirst(strtolower($table)).'sTable extends Migration
+class Create'.$this->modelCamelCase.'sTable extends Migration
 {
     /**
      * Run the migrations.
@@ -251,7 +274,7 @@ class Create'.ucfirst(strtolower($table)).'sTable extends Migration
      */
     public function up()
     {
-        Schema::create("'.strtolower($table).'s", function (Blueprint $table) {
+        Schema::create("'.$this->modelTableName.'s", function (Blueprint $table) {
             $table->bigIncrements("id");'.$fieldContent.'
             $table->timestamps();
         });
@@ -264,7 +287,7 @@ class Create'.ucfirst(strtolower($table)).'sTable extends Migration
      */
     public function down()
     {
-        Schema::drop("'.strtolower($table).'s");
+        Schema::drop("'.$this->modelTableName.'s");
     }
 
 }';
@@ -279,7 +302,7 @@ class Create'.ucfirst(strtolower($table)).'sTable extends Migration
                 $reltable = explode('_', $key)[0];
                 if (Schema::hasTable($reltable.'s')) {
                     $methods="\n\t\t\t".'public function '.$reltable.'(){
-        return $this->belongsTo('.ucfirst($reltable).'::class,\''.$reltable.'_id\');
+        return $this->belongsTo('.$this->toCamelCase($reltable).'::class,\''.$reltable.'_id\');
     }';
                 }
             }
@@ -290,9 +313,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class '.ucfirst($model).' extends Model
+class '.$this->modelCamelCase.' extends Model
 {
-    protected $table = "'.strtolower($model).'s";
+    protected $table = "'.$this->modelTableName.'s";
     //
     protected $fillable =['.$fillableFields.'
     ];'.$methods.'
@@ -301,34 +324,35 @@ class '.ucfirst($model).' extends Model
 
     private function requestContent($model,$fields=['name'=>'string'],$type){
         $fieldContent='';
-        foreach($fields as $key=>$value){
-            $fieldContent .= "\n\t\t\t"."'".$key."' => [
+
+        if($type=='Update'||$type=='Store') {
+            foreach($fields as $key=>$value){
+                $fieldContent .= "\n\t\t\t"."'".$key."' => [
                 'required'
             ],";
+            }
         }
-        if($type!='Update'||$type!='Store')
-            $fieldContent='';
 
-        Permission::create(['name'=>strtolower($type).'-'.strtolower($model),'display_name'=>ucfirst($type).' '.$model,'created_by'=>auth()->user()->id]);
+        Permission::create(['name'=>strtolower($type).'-'.strtolower($this->modelCamelCase),'display_name'=>ucfirst($type).' '.$model,'created_by'=>auth()->user()->id]);
         return '<?php
 
-namespace App\Http\Requests\\'.strtolower($model).';
+namespace App\Http\Requests\\'.strtolower($this->modelCamelCase).';
 
-use App\Models\\'.$model.';
+use App\Models\\'.$this->modelCamelCase.';
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class '.$model.$type.'Request extends FormRequest
+class '.$this->modelCamelCase.$type.'Request extends FormRequest
 {
     /**
-     * Determine if the '.strtolower($model).' is authorized to make this request.
+     * Determine if the '.strtolower($this->modelCamelCase).' is authorized to make this request.
      *
      * @return bool
      */
     public function authorize()
     {
          if(auth()->check()){
-            return auth()->user()->allow(\''.strtolower($type).'-'.strtolower($model).'\');
+            return auth()->user()->allow(\''.strtolower($type).'-'.strtolower($this->toPermissionName()).'\');
         }
         return false;
     }
@@ -348,35 +372,35 @@ class '.$model.$type.'Request extends FormRequest
     }
 
     private function controllerContent($model,$fields){
-        $images= array_key_exists('image',$fields)?'if(isset($input[\'image\'])&&!is_null($input[\'image\'])) {
+        $images= property_exists($fields,'image')?'if(isset($input[\'image\'])&&!is_null($input[\'image\'])) {
             $inputPath=$request->image->store(\'public/assets/image\');
             $input[\'image\']="/".implode("storage",explode("public",$inputPath));
 
         }':'';
-        $files= array_key_exists('file',$fields)?"\n\t".'if(isset($input[\'file\'])&&!is_null($input[\'file\'])) {
+        $files= property_exists($fields,'file')?"\n\t".'if(isset($input[\'file\'])&&!is_null($input[\'file\'])) {
             $inputfilePath=$request->file->store(\'public/assets/file\');
             $input[\'file\']="/".implode("storage",explode("public",$inputfilePath));
 
         }':'';
-        $file=array_key_exists('file',$fields)?'else {
+        $file=property_exists($fields,'file')?'else {
             $input[\'file\'] = \'\';
         }':'';
-        $imag=array_key_exists('image',$fields)?'else {
+        $imag=property_exists($fields,'image')?'else {
             $input[\'image\'] = \'\';
         }':'';
         return '<?php
 
 namespace App\Http\Controllers;
-use App\Models\\'.$model.';
-use App\Http\Requests\\'.strtolower($model).'\\'.$model.'CreateRequest;
-use App\Http\Requests\\'.strtolower($model).'\\'.$model.'EditRequest;
-use App\Http\Requests\\'.strtolower($model).'\\'.$model.'StoreRequest;
-use App\Http\Requests\\'.strtolower($model).'\\'.$model.'UpdateRequest;
-use App\Http\Requests\\'.strtolower($model).'\\'.$model.'DeleteRequest;
-use App\Http\Requests\\'.strtolower($model).'\\'.$model.'ViewRequest;
+use App\Models\\'.$this->modelCamelCase.';
+use App\Http\Requests\\'.strtolower($this->modelCamelCase).'\\'.$this->modelCamelCase.'CreateRequest;
+use App\Http\Requests\\'.strtolower($this->modelCamelCase).'\\'.$this->modelCamelCase.'EditRequest;
+use App\Http\Requests\\'.strtolower($this->modelCamelCase).'\\'.$this->modelCamelCase.'StoreRequest;
+use App\Http\Requests\\'.strtolower($this->modelCamelCase).'\\'.$this->modelCamelCase.'UpdateRequest;
+use App\Http\Requests\\'.strtolower($this->modelCamelCase).'\\'.$this->modelCamelCase.'DeleteRequest;
+use App\Http\Requests\\'.strtolower($this->modelCamelCase).'\\'.$this->modelCamelCase.'ViewRequest;
 use Illuminate\Support\Facades\Hash;
 
-class '.$model.'Controller extends Controller
+class '.$this->modelCamelCase.'Controller extends Controller
 {
     /**
      * Display a listing of the '.strtolower($model).'
@@ -384,9 +408,9 @@ class '.$model.'Controller extends Controller
      * @param  \App\\' . $model . '  $model
      * @return \Illuminate\View\View
      */
-    public function index('.$model.'ViewRequest $request,' . $model .' $model)
+    public function index('.$this->modelCamelCase.'ViewRequest $request,' . $this->modelCamelCase .' $model)
     {
-        return view(\''.strtolower($model).'.index\', [\''.strtolower($model).'\' => $model->all()]);
+        return view(\''.strtolower($this->modelCamelCase).'.index\', [\''.strtolower($this->modelCamelCase).'\' => $model->all()]);
     }
 
     /**
@@ -394,10 +418,10 @@ class '.$model.'Controller extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function create('.$model.'CreateRequest $request)
+    public function create('.$this->modelCamelCase.'CreateRequest $request)
     {
 
-        return view(\''.strtolower($model).'.create\');
+        return view(\''.strtolower($this->modelCamelCase).'.create\');
     }
 
     /**
@@ -407,12 +431,12 @@ class '.$model.'Controller extends Controller
      * @param  \App\\'.ucfirst($model).'  $model
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store('.$model.'StoreRequest $request, '.ucfirst($model).' $model)
+    public function store('.$this->modelCamelCase.'StoreRequest $request, '.ucfirst($this->modelCamelCase).' $model)
     {
         $input =$request->all();
         '.$images.$imag.$files.$file.'
         $model->create($input);
-        return redirect()->route(\''.strtolower($model).'.index\')->withStatus(__(\''.ucfirst($model).' successfully created.\'));
+        return redirect()->route(\''.strtolower($this->modelCamelCase).'.index\')->withStatus(__(\''.$this->modelName.' successfully created.\'));
     }
 
     /**
@@ -421,9 +445,9 @@ class '.$model.'Controller extends Controller
      * @param  \App\\'.ucfirst($model).'  $'.strtolower($model).'
      * @return \Illuminate\View\View
      */
-    public function edit('.$model.'EditRequest $request,'.ucfirst($model).' $'.strtolower($model).')
+    public function edit('.$this->modelCamelCase.'EditRequest $request,'.$this->modelCamelCase.' $'.strtolower($this->modelCamelCase).')
     {
-        return view(\''.strtolower($model).'.edit\', compact(\''.strtolower($model).'\'));
+        return view(\''.strtolower($this->modelCamelCase).'.edit\', compact(\''.strtolower($this->modelCamelCase).'\'));
     }
 
     /**
@@ -433,13 +457,13 @@ class '.$model.'Controller extends Controller
      * @param  \App\\'.ucfirst($model).'  $'.strtolower($model).'
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update('.$model.'UpdateRequest $request,'.ucfirst($model).'  $'.strtolower($model).')
+    public function update('.$this->modelCamelCase.'UpdateRequest $request,'.$this->modelCamelCase.'  $'.strtolower($this->modelCamelCase).')
     {
           $input =$request->all();
         '.$images.$files.'
 
-        $'.strtolower($model).'->update($input);
-        return redirect()->route(\''.strtolower($model).'.index\')->withStatus(__(\''.ucfirst($model).' successfully updated.\'));
+        $'.strtolower($this->modelCamelCase).'->update($input);
+        return redirect()->route(\''.strtolower($this->modelCamelCase).'.index\')->withStatus(__(\''.$this->modelName.' successfully updated.\'));
     }
 
     /**
@@ -448,11 +472,11 @@ class '.$model.'Controller extends Controller
      * @param  \App\\'.ucfirst($model).'  $'.strtolower($model).'
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy('.$model.'DeleteRequest $request,'.ucfirst($model).'  $'.strtolower($model).')
+    public function destroy('.$this->modelCamelCase.'DeleteRequest $request,'.$this->modelCamelCase.'  $'.strtolower($this->modelCamelCase).')
     {
-        $'.strtolower($model).'->delete();
+        $'.strtolower($this->modelCamelCase).'->delete();
 
-        return redirect()->route(\''.strtolower($model).'.index\')->withStatus(__(\''.ucfirst($model).' successfully deleted.\'));
+        return redirect()->route(\''.strtolower($this->modelCamelCase).'.index\')->withStatus(__(\''.$this->modelName.' successfully deleted.\'));
     }
 }';
 
@@ -519,14 +543,14 @@ class '.$model.'Controller extends Controller
                   </div>
                 </div>';
         }
-        return '@extends(\'layouts.app\', [\'activePage\' => \''.strtolower($model).'-management\', \'titlePage\' => __(\''.ucfirst($model).' Management\')])
+        return '@extends(\'layouts.app\', [\'activePage\' => \''.strtolower($this->modelCamelCase).'-management\', \'titlePage\' => __(\''.($this->modelName).' Management\')])
 
 @section(\'content\')
   <div class="content">
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12">
-          <form method="post" action="{{ route(\''.strtolower($model).'.store\') }}" autocomplete="off" class="form-horizontal" '.((array_key_exists('image',$fields)||array_key_exists('file',$fields))?'enctype="multipart/form-data"':'').'>
+          <form method="post" action="{{ route(\''.strtolower($this->modelCamelCase).'.store\') }}" autocomplete="off" class="form-horizontal" '.((property_exists($fields,'image')||property_exists($fields,'file'))?'enctype="multipart/form-data"':'').'>
             @csrf
             @method(\'post\')
 
@@ -537,10 +561,10 @@ class '.$model.'Controller extends Controller
               </div>
 
               <div class="card-body ">
-               @if(auth()->user()->allow(\'view-\'.strtolower(\''.$model.'\')))
+               @if(auth()->user()->allow(\'view-\'.strtolower(\''.$this->toPermissionName().'\')))
                 <div class="row">
                   <div class="col-md-12 text-right">
-                      <a href="{{ route(\''.strtolower($model).'.index\') }}" class="btn btn-sm btn-primary">{{ __(\'Back to list\') }}</a>
+                      <a href="{{ route(\''.strtolower($this->modelCamelCase).'.index\') }}" class="btn btn-sm btn-primary">{{ __(\'Back to list\') }}</a>
                   </div>
                 </div>
                 @endif'.$fieldContent.'
@@ -560,9 +584,9 @@ class '.$model.'Controller extends Controller
     private function editView($model,$fields=['name'=>'string']){
         $fieldContent = '';
         foreach($fields as $key=>$value){
-                $input = '<input class="form-control{{ $errors->has(\''.strtolower($key).'\') ? \' is-invalid\' : \'\' }}" name="'.strtolower($key).'" id="input-'.strtolower($key).'" type="text" placeholder="{{ __(\''.ucfirst($key).'\') }}" value="{{ old(\''.strtolower($key).'\', $'.strtolower($model).'->'.$key.') }}" required="true" aria-required="true"/>';
+                $input = '<input class="form-control{{ $errors->has(\''.strtolower($key).'\') ? \' is-invalid\' : \'\' }}" name="'.strtolower($key).'" id="input-'.strtolower($key).'" type="text" placeholder="{{ __(\''.ucfirst($key).'\') }}" value="{{ old(\''.strtolower($key).'\', $'.strtolower($this->modelCamelCase).'->'.$key.') }}" required="true" aria-required="true"/>';
                 if($value=='text'||$value=='longText') {
-                    $input = '<textarea rows="5" class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true">{{$'.strtolower($model).'->'.$key.'}}</textarea>';
+                    $input = '<textarea rows="5" class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true">{{$'.array_key_exists.'->'.$key.'}}</textarea>';
                 }else if($key=='file'){
                     $input = $input = '<input class="form-control{{ $errors->has(\''.strtolower($key).'\') ? \' is-invalid\' : \'\' }}" name="'.strtolower($key).'" id="input-'.strtolower($key).'" type="file" placeholder="{{ __(\''.ucfirst($key).'\') }}" value="{{ old(\''.strtolower($key).'\') }}" required="true" aria-required="true"/>
                 <button onclick="document.getElementById(\'input-file\').click()" type="button" class="btn btn-fab btn-round btn-primary">
@@ -575,14 +599,14 @@ class '.$model.'Controller extends Controller
                           <img src="http://style.anu.edu.au/_anu/4/images/placeholders/person_8x10.png" rel="nofollow" alt="...">
                       </div>
                       <div class="fileinput-preview fileinput-exists thumbnail img-raised">
-                         <img src="{{url($'.strtolower($model).'->image)}}" rel="nofollow" alt="...">
+                         <img src="{{url($'.strtolower($this->modelCamelCase).'->image)}}" rel="nofollow" alt="...">
                       </div>
                       <div>
         <span onclick="document.getElementById(\'input-image\').click()" class="btn btn-raised btn-round btn-default btn-file">
             <span class="fileinput-new">Select image</span>
             <span class="fileinput-exists">Change</span>
             <input id="input-image" type="file" name="image" />
-            <input type="hidden"  value="{{url($'.strtolower($model).'->image)}}" name="fileinput" />
+            <input type="hidden"  value="{{url($'.strtolower($this->modelCamelCase).'->image)}}" name="fileinput" />
         </span>
                           <a href="javascript:;" class="btn btn-danger btn-round fileinput-exists" data-dismiss="fileinput"><i class="fa fa-times"></i> Remove</a>
                           </div>
@@ -621,14 +645,14 @@ class '.$model.'Controller extends Controller
                   </div>
                 </div>';
             }
-        return '@extends(\'layouts.app\', [\'activePage\' => \''.strtolower($model).'-management\', \'titlePage\' => __(\''.$model.' Management\')])
+        return '@extends(\'layouts.app\', [\'activePage\' => \''.strtolower($this->modelCamelCase).'-management\', \'titlePage\' => __(\''.$this->modelName.' Management\')])
 
 @section(\'content\')
   <div class="content">
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-12">
-          <form method="post" action="{{ route(\''.strtolower($model).'.update\', $'.strtolower($model).') }}" autocomplete="off" class="form-horizontal" '.((array_key_exists('image',$fields)||array_key_exists('file',$fields))?'enctype="multipart/form-data"':'').'>
+          <form method="post" action="{{ route(\''.strtolower($this->modelCamelCase).'.update\', $'.strtolower($this->modelCamelCase).') }}" autocomplete="off" class="form-horizontal" '.((property_exists($fields,'image')||property_exists($fields,'file'))?'enctype="multipart/form-data"':'').'>
             @csrf
             @method(\'put\')
 
@@ -638,10 +662,10 @@ class '.$model.'Controller extends Controller
                 <p class="card-category"></p>
               </div>
               <div class="card-body ">
-                 @if(auth()->user()->allow(\'view-\'.strtolower(\''.$model.'\')))
+                 @if(auth()->user()->allow(\'view-\'.strtolower(\''.$this->toPermissionName().'\')))
                 <div class="row">
                   <div class="col-md-12 text-right">
-                      <a href="{{ route(\''.strtolower($model).'.index\') }}" class="btn btn-sm btn-primary">{{ __(\'Back to list\') }}</a>
+                      <a href="{{ route(\''.strtolower($this->modelCamelCase).'.index\') }}" class="btn btn-sm btn-primary">{{ __(\'Back to list\') }}</a>
                   </div>
                 </div>
                 @endif'.$fieldContent.'
@@ -692,7 +716,7 @@ class '.$model.'Controller extends Controller
         array_push($fieldKey,'created_at');
         $fieldMe = $fieldKey;
         array_push($fieldKey,'actions');
-        return '@extends(\'layouts.app\', [\'activePage\' => \''.strtolower($model).'-management\', \'titlePage\' => __(\''.$model.' Management\')])
+        return '@extends(\'layouts.app\', [\'activePage\' => \''.strtolower($this->modelCamelCase).'-management\', \'titlePage\' => __(\''.$this->modelName.' Management\')])
 
 @section(\'content\')
   <div class="content">
@@ -701,7 +725,7 @@ class '.$model.'Controller extends Controller
         <div class="col-md-12">
             <div class="card">
               <div class="card-header card-header-primary">
-                <h4 class="card-title ">{{ __(\''.$model.'\') }}</h4>
+                <h4 class="card-title ">{{ __(\''.$this->modelName.'\') }}</h4>
                 <p class="card-category"> {{ __(\'Here you can manage '.strtolower($model).'\') }}</p>
               </div>
               <div class="card-body">
@@ -717,10 +741,10 @@ class '.$model.'Controller extends Controller
                     </div>
                   </div>
                 @endif
-                 @if(auth()->user()->allow(\'create-\'.strtolower(\''.$model.'\')))
+                 @if(auth()->user()->allow(\'create-\'.strtolower(\''.$this->toPermissionName().'\')))
                 <div class="row">
                     <div class="col-5">
-                        <a href="{{ route(\''.strtolower($model).'.create\') }}" class="btn btn-sm btn-primary">{{ __(\'Add '.$model.'\') }}</a>
+                        <a href="{{ route(\''.strtolower($this->modelCamelCase).'.create\') }}" class="btn btn-sm btn-primary">{{ __(\'Add '.$model.'\') }}</a>
                     </div>
                 </div>
                 @endif
@@ -738,7 +762,7 @@ class '.$model.'Controller extends Controller
                       </th>
                     </thead>
                     <tbody>
-                      @foreach($'.strtolower($model).' as $model)
+                      @foreach($'.strtolower($this->modelCamelCase).' as $model)
                         <tr>
                             <td>
                                 {{$model->id}}
@@ -747,18 +771,18 @@ class '.$model.'Controller extends Controller
                             {{ $model->created_at->format(\'Y/m/d\') }}
                           </td>
                           <td class="td-actions text-right">
-                                 @if(auth()->user()->allow(\'delete-\'.strtolower(\''.$model.'\')))
-                              <form action="{{ route(\''.strtolower($model).'.destroy\', $model) }}" method="post">
+                                 @if(auth()->user()->allow(\'delete-\'.strtolower(\''.$this->toPermissionName().'\')))
+                              <form action="{{ route(\''.strtolower($this->modelCamelCase).'.destroy\', $model) }}" method="post">
                                   @csrf
                                   @method(\'delete\')
                                   @endif
-                                  @if(auth()->user()->allow(\'edit-\'.strtolower(\''.$model.'\')))
-                                  <a rel="tooltip" class="btn btn-success btn-link" href="{{ route(\''.strtolower($model).'.edit\', $model) }}" data-original-title="" title="">
+                                  @if(auth()->user()->allow(\'edit-\'.strtolower(\''.$this->toPermissionName().'\')))
+                                  <a rel="tooltip" class="btn btn-success btn-link" href="{{ route(\''.strtolower($this->modelCamelCase).'.edit\', $model) }}" data-original-title="" title="">
                                     <i class="material-icons">edit</i>
                                     <div class="ripple-container"></div>
                                   </a>
                                   @endif
-                                   @if(auth()->user()->allow(\'delete-\'.strtolower(\''.$model.'\')))
+                                   @if(auth()->user()->allow(\'delete-\'.strtolower(\''.$this->toPermissionName().'\')))
                                   <button type="button" class="btn btn-danger btn-link" data-original-title="" title="" onclick="confirm(\'{{ __("Are you sure you want to delete this '.strtolower($model).'?") }}\') ? this.parentElement.submit() : \'\'">
                                       <i class="material-icons">close</i>
                                       <div class="ripple-container"></div>
@@ -794,5 +818,16 @@ class '.$model.'Controller extends Controller
 
     </script>
 @endsection';
+    }
+
+    private function toCamelCase($name){
+        return implode('',explode(' ',ucwords($name)));
+    }
+
+    private function toTableName($name){
+        return implode('_',explode(' ',strtolower($name)));
+    }
+    private function toPermissionName(){
+        return implode('-',explode(' ',strtolower($this->modelName)));
     }
 }

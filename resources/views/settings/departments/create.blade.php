@@ -5,45 +5,40 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
-                    <form method="post" action="{{ route('settings.department.store') }}" autocomplete="off" class="form-horizontal">
-                        @csrf
-                        @method('post')
 
-                        <div class="card ">
-                            <div class="card-header card-header-primary">
-                                <h4 class="card-title">{{ __('Add Department') }}</h4>
-                                <p class="card-category"></p>
+<div class="modal fade" id="loginModal" tabindex="-1" role="">
+    <div class="modal-dialog modal-login" role="document">
+        <div class="modal-content">
+            <div class="card card-signup card-plain">
+                <div class="modal-header">
+                  <div class="card-header card-header-primary text-center">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                      <i class="material-icons">clear</i>
+                    </button>
+
+                    <h4 class="card-title">Add Fields To Module</h4>
+
+                  </div>
+                </div>
+                <div class="modal-body">
+                    <form class="form" method="" action="">
+                        <div class="card-body">
+
+                            <div class="form-group bmd-form-group">
+                                <div class="input-group">
+                                  <div class="input-group-prepend">
+                                    <div class="input-group-text"><i class="material-icons">face</i></div>
+                                  </div>
+                                  <input placeholder="Column Name" id="nametxt" class="form-control" autofocus="autofocus" name="sname" type="text"/>
+
+                                </div>
                             </div>
-                            <div class="card-body ">
-                                <div class="row">
-                                    <div class="col-md-12 text-right">
-                                        <a href="{{ route('settings.department.index') }}" class="btn btn-sm btn-primary">{{ __('Back to list') }}</a>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <label class="col-sm-2 col-form-label">{{ __('Name') }}</label>
-                                    <div class="col-sm-7">
-                                        <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
-                                            <input class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" id="input-name" type="text" placeholder="{{ __('Name') }}" value="{{ old('name') }}" required="true" aria-required="true"/>
-                                            @if ($errors->has('name'))
-                                                <span id="name-error" class="error text-danger" for="input-name">{{ $errors->first('name') }}</span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
 
-                                @if(env('APP_ENV')=='local')
-                                    <div class="row">
-                                        <p>
-                                            <label class="control-label" for="name">Name:</label>
-                                        </p><div class="controls">
-                                            <input placeholder="Column Name" id="nametxt" autofocus="autofocus" name="sname" type="text">          </div>
-                                        <p></p>
+                            <div class="form-group bmd-form-group">
+                                <div class="input-group">
+                                <label for="ColumnType">Column Type</label>
 
-                                        <p>
-                                            <label class="control-label" for="type">Type:</label>
-                                        </p><div class="controls">
-                                            <select id="ColumnType" name="type">
+                                  <select id="ColumnType"  class="form-control selectpicker" data-style="btn btn-link" name="type">
                                                 <optgroup label="LARAVEL TYPES">
                                                     <option value="increments">INCREMENTS</option>
                                                     <option value="smallIncrements">SMALL INCREMENTS</option>
@@ -97,10 +92,64 @@
                                                 </optgroup>
                                             </select>
 
-                                        </div>
-                                        <p><button class="btn btn-primary" onclick="event.preventDefault();addNewContent()">Add</button></p>
-                                        <p><button class="btn btn-primary" onclick="event.preventDefault();removePrevious()">Remove</button></p>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group bmd-form-group">
+                                <div class="input-group">
+                                  <div class="input-group-prepend">
+                                    <div class="input-group-text"><i class="material-icons">lock_outline</i></div>
+                                  </div>
+                                  <!-- <input type="password" placeholder="Password..." class="form-control"> -->
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
+                <div class="modal-footer justify-content-center">
+                    <a href="#" onclick="event.preventDefault();addNewContent()" class="btn btn-primary btn-link btn-wd btn-lg">Add</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                    <form method="post" action="{{ route('settings.department.store') }}" autocomplete="off" class="form-horizontal">
+                        @csrf
+                        @method('post')
+
+                        <div class="card ">
+                            <div class="card-header card-header-primary">
+                                <h4 class="card-title">{{ __('Add Department') }}</h4>
+                                <p class="card-category"></p>
+                            </div>
+                            <div class="card-body ">
+                                <div class="row">
+                                    <div class="col-md-12 text-right">
+                                        <a href="{{ route('settings.department.index') }}" class="btn btn-sm btn-primary">{{ __('Back to list') }}</a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="col-sm-2 col-form-label">{{ __('Name') }}</label>
+                                    <div class="col-sm-7">
+                                        <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
+                                            <input class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" id="input-name" type="text" placeholder="{{ __('Name') }}" value="{{ old('name') }}" required="true" aria-required="true"/>
+                                            @if ($errors->has('name'))
+                                                <span id="name-error" class="error text-danger" for="input-name">{{ $errors->first('name') }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if(env('APP_ENV')=='local')
+                                    <div class="row">
+                                    <button class="btn btn-round" onclick="event.preventDefault();" data-toggle="modal" data-target="#loginModal">
+    Add Fields<i class="material-icons">assignment</i>
+
+</button>
+                                        <!-- <p><button class="btn btn-primary" onclick="event.preventDefault();addNewContent()">Add</button></p>
+                                     -->   <button class="btn btn-round" onclick="event.preventDefault();removePrevious()">Remove</button>
+                                     </div>
                                     <div class="row">
                                         <label class="col-sm-2 col-form-label">{{__('Parent Menu(Optional)')}}</label>
                                         <div class="col-sm-7">
