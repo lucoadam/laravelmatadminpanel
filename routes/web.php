@@ -12,6 +12,7 @@
 */
 
 use App\Models\Client;
+use App\Models\settings\Module;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
@@ -19,25 +20,24 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/alish', function () {
-   $url = explode('://',url('/'))[1];
-   $database = Client::where('url',$url);
-   dd($url,$database->get()->toArray(),Client::all()->toArray());
-   if($database->exists()&&!auth()->check()){
-       $database= $database->first()->database;
-   }else{
-       $database= null;
-   }
-   if(!is_null($database)){
-       DB::setDefaultConnection($database);
-   }
-   dd(DB::getDefaultConnection());
+
+    $mod =Module::latest()->first();
+    dd($mod);
+
+//    $url = explode('://',url('/'))[1];
+//    $database = Client::where('url',$url);
+//    dd($url,$database->get()->toArray(),Client::all()->toArray());
+//    if($database->exists()&&!auth()->check()){
+//        $database= $database->first()->database;
+//    }else{
+//        $database= null;
+//    }
+//    if(!is_null($database)){
+//        DB::setDefaultConnection($database);
+//    }
+//    dd(DB::getDefaultConnection());
 });
 Auth::routes();
-
-Route::get('/man',function(){
-   return view('users.anything') ;
-
-});
 
 Route::group(['middleware' => 'auth'], function () {
 
@@ -153,6 +153,6 @@ Route::group(['middleware' => 'auth','prefix'=>'admin'], function () {
         }
 
     Route::group(['prefix'=>'settings','as'=>'settings.','namespace'=>'settings'],function(){
-        Route::resource('department','DepartmentController');
+        Route::resource('module','ModuleController');
     });
 });

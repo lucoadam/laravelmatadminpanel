@@ -59,12 +59,12 @@
             <b class="caret"></b>
           </p>
         </a>
-        <div class="collapse {{ ($activePage == 'profile' || $activePage == 'department-management') ? 'show' : '' }}" id="settingManagement">
+        <div class="collapse {{ ($activePage == 'profile' || $activePage == 'module-management') ? 'show' : '' }}" id="settingManagement">
           <ul class="nav">
-            <li class="nav-item{{ $activePage == 'department-management' ? ' active' : '' }}">
-              <a class="nav-link" href="{{ route('settings.department.index') }}">
+            <li class="nav-item{{ $activePage == 'module-management' ? ' active' : '' }}">
+              <a class="nav-link" href="{{ route('settings.module.index') }}">
                 <span class="sidebar-mini"> UP </span>
-                <span class="sidebar-normal">{{ __('Department Management') }} </span>
+                <span class="sidebar-normal">{{ __('Module Management') }} </span>
               </a>
             </li>
           </ul>
