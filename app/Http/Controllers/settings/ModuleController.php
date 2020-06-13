@@ -85,24 +85,24 @@ class ModuleController extends Controller
              * Checking if the migration really exists
              */
             if (count($mArray) > 0) {
-                /**
-                 * Checking the table exists in database and droping the corresponding table
-                 * if exists.
-                 */
-                if(Schema::hasTable(strtolower($this->modelTableName) . 's')){
-                    Schema::dropIfExists(strtolower($this->modelTableName) . 's');
-                }
-                /**
-                 * Checking for the particular migration to be in the migration table and
-                 * getting the acutal name of migration also removing the migration file
-                 * if exists.
-                 */
-                $migrationName = array_pop($mArray);
-                $path = base_path() . '/database/migrations/' . $migrationName;
-                $migrationName = explode('.', $migrationName)[0];
-                if (File::exists($path)) {
-                    File::delete($path);
-                    DB::table('migrations')->where('migration', $migrationName)->delete();
+                foreach($mArray as $migrationName){
+                    /**
+                     * Checking and clearing each multi migration fields
+                     */
+                    if(strpos($migrationName,'_add_foreign_keys_to_')){
+                        $tableName=explode('_table.php',explode('_add_foreign_keys_to_',$migrationName)[1])[0];
+                        Schema::dropIfExists($tableName);
+                    }
+
+                    $path = base_path() . '/database/migrations/' . $migrationName;
+                    $migrationName = explode('.', $migrationName)[0];
+
+                    if (File::exists($path)) {
+                        File::delete($path);
+                        DB::table('migrations')->where('migration', $migrationName)->delete();
+                        Schema::dropIfExists(strtolower($this->modelTableName) . 's');
+
+                    }
                 }
 
             }
@@ -274,47 +274,50 @@ class ModuleController extends Controller
             }
             Schema::dropIfExists(strtolower($this->modelTableName) . 's');
 
-        }
-        $files = [
-            $modelPath,
-            $requestPath,
-            $controllerPath,
-            $viewPath . '/create.blade.php',
-            $viewPath . '/index.blade.php',
-            $viewPath . '/view.blade.php',
-            $viewPath . '/edit.blade.php',
-            $routesPath . '/' . $this->modelCamelCase . '.php'
-        ];
-        foreach ($files as $file) {
-            if (File::exists($file)) {
-                File::delete($file);
-            }
-        }
-        if(File::isDirectory($requestPath)){
-            File::deleteDirectory($requestPath);
-        }
-        if(File::isDirectory($viewPath)){
-            File::deleteDirectory($viewPath);
-        }
-            $menu = Menu::where('url', strtolower($this->modelCamelCase) . '.index')->first();
-            if (!is_null($menu)) {
-                if($menu->parent_id!=0&&Menu::where('parent_id',$menu->parent_id)->count()==1) {
-                    $pMenu = Menu::find($menu->parent_id);
-                    if($pMenu->exists()){
-                        $menu->delete();
-                        $pMenu->delete();
-
-                    }
-                }else{
-                    $menu->delete();
                 }
-            }
-        foreach ($permissions as $permission){
-            $permission->delete();
-        }
+                $files = [
+                    $modelPath,
+                    $requestPath,
+                    $controllerPath,
+                    $viewPath . '/create.blade.php',
+                    $viewPath . '/index.blade.php',
+                    $viewPath . '/view.blade.php',
+                    $viewPath . '/edit.blade.php',
+                    $routesPath . '/' . $this->modelCamelCase . '.php'
+                ];
+                foreach ($files as $file) {
+                    if (File::exists($file)) {
+                        File::delete($file);
+                    }
+                }
+                if(File::isDirectory($requestPath)){
+                    File::deleteDirectory($requestPath);
+                }
+                if(File::isDirectory($viewPath)){
+                    File::deleteDirectory($viewPath);
+                }
+                $menu = Menu::where('url', strtolower($this->modelCamelCase) . '.index')->first();
+                if (!is_null($menu)) {
+                    if($menu->parent_id!=0&&Menu::where('parent_id',$menu->parent_id)->count()==1) {
+                        $pMenu = Menu::find($menu->parent_id);
+                        if($pMenu->exists()){
+                            $menu->delete();
+                            $pMenu->delete();
 
-        $module->delete();
-    }
+                        }
+                    }else{
+                        $menu->delete();
+                    }
+                }
+                foreach ($permissions as $permission){
+                    $permission->delete();
+                }
+
+                $module->delete();
+
+        }else{
+            return redirect()->route('settings.module.index')->withErrors(__('Module not found!!'));
+        }
         return redirect()->route('settings.module.index')->withStatus(__('Department successfully deleted.'));
     }
 
@@ -434,15 +437,15 @@ class Create'.$this->modelCamelCase.'sTable extends Migration
             $reltable = $columnName[0].'s';
             if (Schema::hasTable($reltable)) {
                 if(count($columnName)==2){
-                    $methods.="\n\t\t\t".'public function '.$reltable.'(){
-                        return $this->belongsTo('.$this->toCamelCase($reltable).'::class,\''.$columnName[0].'_id\');
+                    $methods.="\n\t\t\t".'public function '.$columnName[0].'(){
+                        return $this->belongsTo('.$this->toCamelCase($columnName[0]).'::class,\''.$columnName[0].'_id\');
                     }'."\n";
                     $fillableFields .="\n\t\t\t"."'".$columnName[0]."_id',";
                 }elseif(strpos($key,'__multiple')){
 
-                    $methods.="\n\t\t\tpublic function ".$reltable."()
+                    $methods.="\n\t\t\tpublic function ".$columnName[0]."()
                     {
-                        return $"."this->belongsToMany('".$reltable."', '".$this->modelTableName."_".$columnName[0]."', '".$this->modelTableName."_id', '".$columnName[0]."_id');
+                        return $"."this->belongsToMany(".$this->toCamelCase($columnName[0])."::class, '".$this->modelTableName."_".$columnName[0]."', '".$this->modelTableName."_id', '".$columnName[0]."_id');
                     }\n\t\t\t /**
                     * Alias to eloquent many-to-many relation's attach() method.
                     *
@@ -460,7 +463,7 @@ class Create'.$this->modelCamelCase.'sTable extends Migration
                         $".$columnName[0]." = $".$columnName[0]."['id'];
                        }
 
-                       $"."this"."->".$reltable."()->attach($".$columnName[0].");
+                       $"."this"."->".$columnName[0]."()->attach($".$columnName[0].");
                    }
 
                    /**
@@ -480,7 +483,7 @@ class Create'.$this->modelCamelCase.'sTable extends Migration
                            $".$columnName[0]." = $".$columnName[0]."['id'];
                        }
 
-                       $"."this"."->".$reltable."()->deatach($".$columnName[0].");
+                       $"."this"."->".$columnName[0]."()->deatach($".$columnName[0].");
                    }
 
                    /**
@@ -602,6 +605,44 @@ class '.$this->modelCamelCase.$type.'Request extends FormRequest
     }
 
     private function controllerContent($model,$fields){
+        $storeMultipleRel = '';
+        $inputExcept='';
+        $updateMultipleRel = '';
+        $deleteMultipleRel = '';
+        foreach($fields as $key=>$field){
+            $columnName = explode('__',$key);
+            $reltable = $columnName[0].'s';
+            if (Schema::hasTable($reltable)&&strpos($key,'__multiple')){
+                $inputExcept.='"'.$columnName[0].'_id",';
+                $storeMultipleRel .= '
+                //Attach '.strtolower($columnName[0]).'s to '.strtolower($this->modelCamelCase).'
+                $'.strtolower($columnName[0]).'s = [];
+
+                if (is_array($request->get(\''.strtolower($columnName[0]).'_id\')) && count($request->get(\''.strtolower($columnName[0]).'_id\'))) {
+                    foreach ($request->get(\''.strtolower($columnName[0]).'_id\') as $'.strtolower($columnName[0]).') {
+                        if (is_numeric($'.strtolower($columnName[0]).')) {
+                            array_push($'.strtolower($columnName[0]).'s, $'.strtolower($columnName[0]).');
+                        }
+                    }
+                }
+                $model->attach'.strtolower($columnName[0]).'s($'.strtolower($columnName[0]).'s);';
+                $updateMultipleRel .= ' $'.strtolower($this->modelCamelCase).'->'.strtolower($columnName[0]).'()->sync([]);
+
+                //Attach '.strtolower($columnName[0]).'s to '.strtolower($this->modelCamelCase).'
+                $'.strtolower($columnName[0]).'s = [];
+
+                if (is_array($request->get(\''.strtolower($columnName[0]).'_id\')) && count($request->get(\''.strtolower($columnName[0]).'_id\'))) {
+                    foreach ($request->get(\''.strtolower($columnName[0]).'_id\') as $'.strtolower($columnName[0]).') {
+                        if (is_numeric($'.strtolower($columnName[0]).')) {
+                            array_push($'.strtolower($columnName[0]).'s, $'.strtolower($columnName[0]).');
+                        }
+                    }
+                }
+                $'.strtolower($this->modelCamelCase).'->attach'.strtolower($columnName[0]).'s($'.strtolower($columnName[0]).'s);';
+                $deleteMultipleRel .= ' $'.strtolower($this->modelCamelCase).'->'.strtolower($columnName[0]).'()->sync([]);';
+            }
+        }
+
 
         $storeMedias =property_exists($fields,'images')?"\n\t".'public function storeMedia(){'."\n\t\t".'$images=$input[\'file\']->store(\'public/assets/images\');'."\n\t\t".'$newStd = new \stdClass();}'."\n\t\t":'';
         $images= property_exists($fields,'image')?'if(isset($input[\'image\'])&&!is_null($input[\'image\'])) {
@@ -656,6 +697,7 @@ use App\Http\Requests\\'.strtolower($this->modelCamelCase).'\\'.$this->modelCame
 use App\Http\Requests\\'.strtolower($this->modelCamelCase).'\\'.$this->modelCamelCase.'DeleteRequest;
 use App\Http\Requests\\'.strtolower($this->modelCamelCase).'\\'.$this->modelCamelCase.'ViewRequest;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class '.$this->modelCamelCase.'Controller extends Controller
 {
@@ -690,9 +732,10 @@ class '.$this->modelCamelCase.'Controller extends Controller
      */
     public function store('.$this->modelCamelCase.'StoreRequest $request, '.ucfirst($this->modelCamelCase).' $model)
     {
-        $input =$request->all();
+        $input =$request->except(['.$inputExcept.'\'_token\',\'_method\']);
         '.$images.$imag.$files.$file.'
-        $model->create($input);
+        $model=$model->create($input);
+        '.$storeMultipleRel.'
         return redirect()->route(\''.strtolower($this->modelCamelCase).'.index\')->withStatus(__(\''.$this->modelName.' successfully created.\'));
     }
 
@@ -720,6 +763,7 @@ class '.$this->modelCamelCase.'Controller extends Controller
         '.$updateImages.$files.'
 
         $'.strtolower($this->modelCamelCase).'->update($input);
+        '.$updateMultipleRel.'
         return redirect()->route(\''.strtolower($this->modelCamelCase).'.index\')->withStatus(__(\''.$this->modelName.' successfully updated.\'));
     }
 
@@ -732,6 +776,7 @@ class '.$this->modelCamelCase.'Controller extends Controller
     public function destroy('.$this->modelCamelCase.'DeleteRequest $request,'.$this->modelCamelCase.'  $'.strtolower($this->modelCamelCase).')
     {
         '.$deleteImages.'
+        '.$deleteMultipleRel.'
         $'.strtolower($this->modelCamelCase).'->delete();
 
         return redirect()->route(\''.strtolower($this->modelCamelCase).'.index\')->withStatus(__(\''.$this->modelName.' successfully deleted.\'));
@@ -777,7 +822,7 @@ class '.$this->modelCamelCase.'Controller extends Controller
                     $'.$reltable.'s = \App\Models\\'.$this->toCamelCase($columnName[0]).'::all();
                   @endphp
 
-                              <select class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="'.$columnName[0].'_id[]" multiple="true">
+                              <select class="{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="'.$columnName[0].'_id[]" multiple="true">
                                   <option selected disabled value="">'.$this->toCamelCase($columnName[0]).'</option>
                                   @foreach($'.$reltable.'s as $'.$reltable.')
                                       <option value="{{$'.$reltable.'->id}}">{{$'.$reltable.'->'.$columnName[1].'}}</option>
@@ -869,9 +914,9 @@ class '.$this->modelCamelCase.'Controller extends Controller
                 <button onclick="document.getElementById(\'input-file\').click()" type="button" class="btn btn-fab btn-round btn-primary">
                         <i class="material-icons">attach_file</i>
                       </button>';
-                }
-                else if($key=='image'){
-                    $input = ' <div class="fileinput fileinput-exists text-center" data-provides="fileinput">
+            }
+            else if($key=='image'){
+                $input = ' <div class="fileinput fileinput-exists text-center" data-provides="fileinput">
                       <div class="fileinput-new thumbnail img-raised">
                           <img src="http://style.anu.edu.au/_anu/4/images/placeholders/person_8x10.png" rel="nofollow" alt="...">
                       </div>
@@ -894,12 +939,13 @@ class '.$this->modelCamelCase.'Controller extends Controller
                     if(strpos($key,'__multiple')){
                         $input = '@php
                         $'.$reltable.'s = \App\Models\\'.$this->toCamelCase($columnName[0]).'::all();
+                        $selected = $'.strtolower($this->modelCamelCase).'->'.$columnName[0].'->pluck("id")->all();
                       @endphp
 
-                                  <select class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="'.$columnName[0].'_id" multiple="true">
-                                      <option selected disabled value="">'.$this->toCamelCase($columnName[0]).'</option>
+                                  <select class="{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="'.$columnName[0].'_id[]" multiple="true">
+                                      <option disabled value="">'.$this->toCamelCase($columnName[0]).'</option>
                                       @foreach($'.$reltable.'s as $'.$reltable.')
-                                          <option value="{{$'.$reltable.'->id}}">{{$'.$reltable.'->'.$columnName[1].'}}</option>
+                                          <option value="{{$'.$reltable.'->id}}"{!!in_array($'.$reltable.'->id,$selected)?"selected":""!!}>{{$'.$reltable.'->'.$columnName[1].'}}</option>
                                       @endforeach
                                   </select>';
 
@@ -909,23 +955,25 @@ class '.$this->modelCamelCase.'Controller extends Controller
                         $'.$reltable.'s = \App\Models\\'.$this->toCamelCase($columnName[0]).'::all();
                       @endphp
 
-                                  <select class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="'.$columnName[0].'_id">
+                                  <select class="{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="'.$columnName[0].'_id" multiple="true">
                                       <option selected disabled value="">'.$this->toCamelCase($columnName[0]).'</option>
                                       @foreach($'.$reltable.'s as $'.$reltable.')
-                                          <option value="{{$'.$reltable.'->id}}">{{$'.$reltable.'->'.$columnName[1].'}}</option>
+                                          <option value="{{$'.$reltable.'->id}}"{!!($'.$reltable.'->id==$'.strtolower($this->modelCamelCase).'->'.$columnName[0].'_id'.')?"selected":""!!}>{{$'.$reltable.'->'.$columnName[1].'}}</option>
                                       @endforeach
                                   </select>';
+
                     }else{
-                        $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="number" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\',\'{{$'.strtolower($this->modelCamelCase).'->'.$columnName[0].'_id'.'}}\') }}" required="true" aria-required="true"/>';
+                        $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="number" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\',$'.strtolower($this->modelCamelCase).'->'.$key.') }}" required="true" aria-required="true"/>';
                     }
 
 
                 }else if($value=='integer'||$value=='bigInteger'){
-                    $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="number" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\',\'{{$'.strtolower($this->modelCamelCase).'->'.$key.'}}\') }}" required="true" aria-required="true"/>';
+                    $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="number" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\',$'.strtolower($this->modelCamelCase).'->'.$key.') }}" required="true" aria-required="true"/>';
                 }else {
-                    $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\',\'{{$'.strtolower($this->modelCamelCase).'->'.$key.'}}\') }}" required="true" aria-required="true"/>';
+                    $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\',$'.strtolower($this->modelCamelCase).'->'.$key.') }}" required="true" aria-required="true"/>';
                 }
-                $fieldContent .= "\n\t\t\t\t\t".'<div class="row">
+
+            $fieldContent .= "\n\t\t\t\t\t".'<div class="row">
                   <label class="col-sm-2 col-form-label">{{ __(\''.ucfirst(implode(" ",explode("_",$key))).'\') }}</label>
                   <div class="col-sm-7">
                     <div class="form-group{{ $errors->has(\''.strtolower($key).'\') ? \' has-danger\' : \'\' }}">
@@ -936,7 +984,7 @@ class '.$this->modelCamelCase.'Controller extends Controller
                     </div>
                   </div>
                 </div>';
-            }
+        }
         return '@extends(\'layouts.app\', [\'activePage\' => \''.strtolower($this->modelCamelCase).'-management\', \'titlePage\' => __(\''.$this->modelName.' Management\')])
 
 @section(\'content\')
@@ -981,8 +1029,10 @@ class '.$this->modelCamelCase.'Controller extends Controller
         $fieldMe= array();
         array_push($fieldKey,'id');
         foreach($fields as $key=>$value){
+            $columnName = explode('__',$key);
+            $reltable = $columnName[0].'s';
             $titleContent .= "\n\t\t\t\t\t\t".'<th>
-                            {{ __("'.ucfirst(implode(" ",explode("_",$key))).'") }}
+                            {{ __("'.ucfirst(implode(" ",explode("_",$columnName[0]))).'") }}
                           </th>';
             if($key=='image'){
                 $bodyContent .= "\n\t\t\t\t\t\t".'<td>
@@ -997,6 +1047,20 @@ class '.$this->modelCamelCase.'Controller extends Controller
                                 <a href="{{ url("/").$model->'.$key.' }}">Download</a>
                             </div>
                           </td>';
+            }elseif(Schema::hasTable($reltable)){
+                if(count($columnName)==2){
+                    $bodyContent .= "\n\t\t\t\t\t\t".'<td>
+                        {{$model->'.$columnName[0].'->'.$columnName[1].'}}
+                    </td>';
+                }elseif(strpos($key,'__multiple')){
+                    $bodyContent .= "\n\t\t\t\t\t\t".'<td>
+                        {{implode(", ",$model->'.$columnName[0].'->pluck("'.$columnName[1].'")->all())}}
+                    </td>';
+                }else{
+                    $bodyContent .= "\n\t\t\t\t\t\t".'<td>
+                        {{$model->'.$key.'}}
+                    </td>';
+                }
             }else{
                 $bodyContent .= "\n\t\t\t\t\t\t".'<td>
                                 {{$model->'.$key.'}}
@@ -1113,7 +1177,7 @@ class '.$this->modelCamelCase.'Controller extends Controller
     }
 
     private function toCamelCase($name){
-        return implode('',explode(' ',ucwords($name)));
+        return implode('',explode('_',implode('',explode(' ',ucwords($name)))));
     }
 
     private function toTableName($name){
