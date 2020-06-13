@@ -75,7 +75,7 @@
           $parent= \App\Models\Menu::select(['id','name','url','icon'])->orderBy('name')->where('parent_id',0)->get();
 
      foreach($parent as $p){
-          if(isset($activePage)&& $activePage == strtolower($p->name).'-management'){
+          if(isset($activePage)&& $activePage == implode('',explode(' ',strtolower($p->name))).'-management'){
             $p->isActive = true;
           }else{
               $p->isActive=false;
@@ -84,7 +84,7 @@
          if($child->exists()){
              $children=$child->get();
              foreach ($children as $item) {
-                  if(isset($activePage)&& $activePage == strtolower($item->name).'-management'){
+                  if(isset($activePage)&& $activePage == implode('',explode(' ',strtolower($item->name))).'-management'){
                     $item->isActive = true;
                      $p->isActive = true;
                   }else{
