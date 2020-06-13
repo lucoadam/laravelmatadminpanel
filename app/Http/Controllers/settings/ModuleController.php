@@ -402,6 +402,31 @@ class '.$this->modelCamelCase.$type.'Request extends FormRequest
             $input[\'image\']="/".implode("storage",explode("public",$inputPath));
 
         }':'';
+
+        $updateImages = property_exists($fields,'image')?'if(isset($input["image"])&&!is_null($input["image"])) {
+            if(isset($'.strtolower($this->modelCamelCase).'->image) && !empty($'.strtolower($this->modelCamelCase).'->image)){
+                //deleting previous file
+                $imageToDelete = str_replace("/storage","",$'.strtolower($this->modelCamelCase).'->image);
+                Storage::delete("/public".$imageToDelete);
+            }
+            $inputPath=$request->image->store("public/assets/image");
+            $input["image"]="/".implode("storage",explode("public",$inputPath));
+        }else if ($request->has("image")){
+            if(is_null($input["image"])){
+                if(isset($'.strtolower($this->modelCamelCase).'->image) && !empty($'.strtolower($this->modelCamelCase).'->image)){
+                    //deleting previous file
+                    $imageToDelete = str_replace("/storage","",$'.strtolower($this->modelCamelCase).'->image);
+                    Storage::delete("/public".$imageToDelete);
+                }
+                $input["image"] = "";
+            }
+        }':'';
+
+        $deleteImages = property_exists($fields,'image')?'if(isset($'.strtolower($this->modelCamelCase).'->image) && !empty($'.strtolower($this->modelCamelCase).'->image)){
+            $image = str_replace("/storage","",$'.strtolower($this->modelCamelCase).'->image);
+            Storage::delete("/public".$image);
+        }':'';
+
         $files= property_exists($fields,'file')?"\n\t".'if(isset($input[\'file\'])&&!is_null($input[\'file\'])) {
             $inputfilePath=$request->file->store(\'public/assets/file\');
             $input[\'file\']="/".implode("storage",explode("public",$inputfilePath));
@@ -485,7 +510,7 @@ class '.$this->modelCamelCase.'Controller extends Controller
     public function update('.$this->modelCamelCase.'UpdateRequest $request,'.$this->modelCamelCase.'  $'.strtolower($this->modelCamelCase).')
     {
           $input =$request->all();
-        '.$images.$files.'
+        '.$updateImages.$files.'
 
         $'.strtolower($this->modelCamelCase).'->update($input);
         return redirect()->route(\''.strtolower($this->modelCamelCase).'.index\')->withStatus(__(\''.$this->modelName.' successfully updated.\'));
@@ -499,6 +524,7 @@ class '.$this->modelCamelCase.'Controller extends Controller
      */
     public function destroy('.$this->modelCamelCase.'DeleteRequest $request,'.$this->modelCamelCase.'  $'.strtolower($this->modelCamelCase).')
     {
+        '.$deleteImages.'
         $'.strtolower($this->modelCamelCase).'->delete();
 
         return redirect()->route(\''.strtolower($this->modelCamelCase).'.index\')->withStatus(__(\''.$this->modelName.' successfully deleted.\'));
