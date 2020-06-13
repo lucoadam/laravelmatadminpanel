@@ -143,12 +143,14 @@
 
                                 @if(env('APP_ENV')=='local')
                                     <div class="row">
-                                    <button class="btn btn-round" onclick="event.preventDefault();" data-toggle="modal" data-target="#loginModal">
-    Add Fields<i class="material-icons">assignment</i>
+                                        <div class="col-sm-6 offset-sm-2">
+                                            <button class="btn btn-round" onclick="event.preventDefault();" data-toggle="modal" data-target="#loginModal">
+                                                Add Fields<i class="material-icons">assignment</i>
 
-</button>
-                                        <!-- <p><button class="btn btn-primary" onclick="event.preventDefault();addNewContent()">Add</button></p>
-                                     -->   <button class="btn btn-round" onclick="event.preventDefault();removePrevious()">Remove</button>
+                                            </button>
+                                            <!-- <p><button class="btn btn-primary" onclick="event.preventDefault();addNewContent()">Add</button></p>-->
+                                            <button class="btn btn-round" onclick="event.preventDefault();removePrevious()">Remove</button>
+                                        </div>
                                      </div>
                                     <div class="row">
                                         <label class="col-sm-2 col-form-label">{{__('Parent Menu(Optional)')}}</label>

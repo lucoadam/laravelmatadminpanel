@@ -60,7 +60,7 @@ class ModuleController extends Controller
             $modelName = ucwords(strtolower($request->all()['name']));
             $this->modelName = ucwords(strtolower($request->all()['name']));
             if($modelName=="Role"||$modelName=='Permission'||$modelName=='User'||$modelName=='Module'){
-                return redirect()->route('settings.department.create');
+                return redirect()->route('settings.module.create');
             }
             $fields = json_decode($request->all()['field']);//array('name'=>'string','country'=>'string','city'=>'text','salary'=>'integer');
             $mig = scandir(base_path() . '/database/migrations');
@@ -138,7 +138,7 @@ class ModuleController extends Controller
                 Menu::firstOrCreate(['name'=>$request->all()['name'],'url'=>strtolower($this->modelCamelCase).'.index']);
             }
         }
-        return redirect()->route('settings.department.index')->withStatus(__('Department successfully created.'));
+        return redirect()->route('settings.module.index')->withStatus(__('Department successfully created.'));
 
     }
 
@@ -175,7 +175,7 @@ class ModuleController extends Controller
     {
         //
         $department->update($request->all());
-        return redirect()->route('settings.department.index')->withStatus(__('Department successfully updated.'));
+        return redirect()->route('settings.module.index')->withStatus(__('Department successfully updated.'));
     }
 
     /**
@@ -184,82 +184,86 @@ class ModuleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Module $department)
+    public function destroy(Module $module)
     {
-        //
-        $modelName = ucwords($department->name);
-        $this->modelName = ucwords($department->name);
-        $this->modelTableName = $this->toTableName($this->modelName);
-        $this->modelCamelCase = $this->toCamelCase($this->modelName);
+        if(isset($module)&&!is_null($module)){
+            $modelName = ucwords($module->name);
+            $this->modelName = ucwords($module->name);
+            $this->modelTableName = $this->toTableName($this->modelName);
+            $this->modelCamelCase = $this->toCamelCase($this->modelName);
 
+            $permissions=Permission::where('name','like','%'.strtolower($this->modelCamelCase))->get();
+            if($modelName!='Menus'){
+                //determines all migration the migration folder
+                $mig = scandir(base_path() . '/database/migrations');
+                // DB::table('migrations')->where('migration','2019_11_08_830097_create_librarys_table')->delete();
+                //filter the match migration
+                $mArray = preg_grep('/' . strtolower($this->modelTableName) . 's/', $mig);
+                //gives the main directory folder
+                $basePath = explode('public', public_path())[0];
+                //determines model path
+                $modelPath = $basePath . 'app/Models/' . $this->modelCamelCase . '.php';
+                //determines required
+                $requestPath = $basePath . 'app/Http/Requests/' .strtolower($this->modelCamelCase);
+                $controllerPath = $basePath . '/app/Http/Controllers/' . $this->modelCamelCase . 'Controller.php';
+                $viewPath = $basePath . 'resources/views/' . strtolower($this->modelCamelCase);
+                $routesPath = $basePath . 'routes/Generator/admin';
+                Schema::dropIfExists(strtolower($this->modelTableName) . 's');
 
-        $permissions=Permission::where('name','like','%'.strtolower($this->modelCamelCase))->get();
-        if($modelName!='Menus'){
-        $mig = scandir(base_path() . '/database/migrations');
-        // DB::table('migrations')->where('migration','2019_11_08_830097_create_librarys_table')->delete();
-        $mArray = preg_grep('/' . strtolower($this->modelTableName) . 's/', $mig);
-
-        $basePath = explode('public', public_path())[0];
-        $modelPath = $basePath . 'app/Models/' . $this->modelCamelCase . '.php';
-        $requestPath = $basePath . 'app/Http/Requests/' .strtolower($this->modelCamelCase);
-        $controllerPath = $basePath . '/app/Http/Controllers/' . $this->modelCamelCase . 'Controller.php';
-        $viewPath = $basePath . 'resources/views/' . strtolower($this->modelCamelCase);
-        $routesPath = $basePath . 'routes/Generator/admin';
-        Schema::dropIfExists(strtolower($this->modelTableName) . 's');
-
-        if (count($mArray) == 1) {
-            $migrationName = array_pop($mArray);
-            $path = base_path() . '/database/migrations/' . $migrationName;
-            $migrationName = explode('.', $migrationName)[0];
-            // dd(File::exists($path));
-            // return;
-            if (File::exists($path)) {
-                File::delete($path);
-                DB::table('migrations')->where('migration', $migrationName)->delete();
-            }
-
-        }
-        $files = [
-            $modelPath,
-            $requestPath,
-            $controllerPath,
-            $viewPath . '/create.blade.php',
-            $viewPath . '/index.blade.php',
-            $viewPath . '/view.blade.php',
-            $viewPath . '/edit.blade.php',
-            $routesPath . '/' . $this->modelCamelCase . '.php'
-        ];
-        foreach ($files as $file) {
-            if (File::exists($file)) {
-                File::delete($file);
-            }
-        }
-        if(File::isDirectory($requestPath)){
-            File::deleteDirectory($requestPath);
-        }
-        if(File::isDirectory($viewPath)){
-            File::deleteDirectory($viewPath);
-        }
-            $menu = Menu::where('url', strtolower($this->modelCamelCase) . '.index')->first();
-            if (!is_null($menu)) {
-                if($menu->parent_id!=0&&Menu::where('parent_id',$menu->parent_id)->count()==1) {
-                    $pMenu = Menu::find($menu->parent_id);
-                    if($pMenu->exists()){
-                        $menu->delete();
-                        $pMenu->delete();
-
+                if (count($mArray) == 1) {
+                    $migrationName = array_pop($mArray);
+                    $path = base_path() . '/database/migrations/' . $migrationName;
+                    $migrationName = explode('.', $migrationName)[0];
+                    if (File::exists($path)) {
+                        File::delete($path);
+                        DB::table('migrations')->where('migration', $migrationName)->delete();
                     }
-                }else{
-                    $menu->delete();
-                }
-            }
-        foreach ($permissions as $permission){
-            $permission->delete();
-        }
 
-        $department->delete();
-    }
-        return redirect()->route('settings.department.index')->withStatus(__('Department successfully deleted.'));
+                }
+                $files = [
+                    $modelPath,
+                    $requestPath,
+                    $controllerPath,
+                    $viewPath . '/create.blade.php',
+                    $viewPath . '/index.blade.php',
+                    $viewPath . '/view.blade.php',
+                    $viewPath . '/edit.blade.php',
+                    $routesPath . '/' . $this->modelCamelCase . '.php'
+                ];
+                foreach ($files as $file) {
+                    if (File::exists($file)) {
+                        File::delete($file);
+                    }
+                }
+                if(File::isDirectory($requestPath)){
+                    File::deleteDirectory($requestPath);
+                }
+                if(File::isDirectory($viewPath)){
+                    File::deleteDirectory($viewPath);
+                }
+                $menu = Menu::where('url', strtolower($this->modelCamelCase) . '.index')->first();
+                if (!is_null($menu)) {
+                    if($menu->parent_id!=0&&Menu::where('parent_id',$menu->parent_id)->count()==1) {
+                        $pMenu = Menu::find($menu->parent_id);
+                        if($pMenu->exists()){
+                            $menu->delete();
+                            $pMenu->delete();
+
+                        }
+                    }else{
+                        $menu->delete();
+                    }
+                }
+                foreach ($permissions as $permission){
+                    $permission->delete();
+                }
+
+                $module->delete();
+            }
+        }else{
+            return redirect()->route('settings.module.index')->withErrors(__('Module not found!!'));
+        }
+        return redirect()->route('settings.module.index')->withStatus(__('Department successfully deleted.'));
     }
 
 
@@ -449,6 +453,7 @@ use App\Http\Requests\\'.strtolower($this->modelCamelCase).'\\'.$this->modelCame
 use App\Http\Requests\\'.strtolower($this->modelCamelCase).'\\'.$this->modelCamelCase.'DeleteRequest;
 use App\Http\Requests\\'.strtolower($this->modelCamelCase).'\\'.$this->modelCamelCase.'ViewRequest;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class '.$this->modelCamelCase.'Controller extends Controller
 {
@@ -635,17 +640,17 @@ class '.$this->modelCamelCase.'Controller extends Controller
     private function editView($model,$fields=['name'=>'string']){
         $fieldContent = '';
         foreach($fields as $key=>$value){
-                $input = '<input class="form-control{{ $errors->has(\''.strtolower($key).'\') ? \' is-invalid\' : \'\' }}" name="'.strtolower($key).'" id="input-'.strtolower($key).'" type="text" placeholder="{{ __(\''.ucfirst($key).'\') }}" value="{{ old(\''.strtolower($key).'\', $'.strtolower($this->modelCamelCase).'->'.$key.') }}" required="true" aria-required="true"/>';
-                if($value=='text'||$value=='longText') {
-                    $input = '<textarea rows="5" class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true">{{$'.array_key_exists.'->'.$key.'}}</textarea>';
-                }else if($key=='file'){
-                    $input = $input = '<input class="form-control{{ $errors->has(\''.strtolower($key).'\') ? \' is-invalid\' : \'\' }}" name="'.strtolower($key).'" id="input-'.strtolower($key).'" type="file" placeholder="{{ __(\''.ucfirst($key).'\') }}" value="{{ old(\''.strtolower($key).'\') }}" required="true" aria-required="true"/>
+            $input = '<input class="form-control{{ $errors->has(\''.strtolower($key).'\') ? \' is-invalid\' : \'\' }}" name="'.strtolower($key).'" id="input-'.strtolower($key).'" type="text" placeholder="{{ __(\''.ucfirst($key).'\') }}" value="{{ old(\''.strtolower($key).'\', $'.strtolower($this->modelCamelCase).'->'.$key.') }}" required="true" aria-required="true"/>';
+            if($value=='text'||$value=='longText') {
+                $input = '<textarea rows="5" class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true">{{$'.array_key_exists.'->'.$key.'}}</textarea>';
+            }else if($key=='file'){
+                $input = $input = '<input class="form-control{{ $errors->has(\''.strtolower($key).'\') ? \' is-invalid\' : \'\' }}" name="'.strtolower($key).'" id="input-'.strtolower($key).'" type="file" placeholder="{{ __(\''.ucfirst($key).'\') }}" value="{{ old(\''.strtolower($key).'\') }}" required="true" aria-required="true"/>
                 <button onclick="document.getElementById(\'input-file\').click()" type="button" class="btn btn-fab btn-round btn-primary">
                         <i class="material-icons">attach_file</i>
                       </button>';
-                }
-                else if($key=='image'){
-                    $input = ' <div class="fileinput fileinput-exists text-center" data-provides="fileinput">
+            }
+            else if($key=='image'){
+                $input = ' <div class="fileinput fileinput-exists text-center" data-provides="fileinput">
                       <div class="fileinput-new thumbnail img-raised">
                           <img src="http://style.anu.edu.au/_anu/4/images/placeholders/person_8x10.png" rel="nofollow" alt="...">
                       </div>
@@ -663,11 +668,11 @@ class '.$this->modelCamelCase.'Controller extends Controller
                           </div>
                           </div>
                  ';
-                }else if($value=='integer'||$value=='bigInteger') {
-                    if(count(explode('_',$key))==2&&explode('_',$key)[1]=='id') {
-                        $reltable = explode('_', $key)[0];
-                        if (Schema::hasTable($reltable . 's')) {
-                            $input = '@php
+            }else if($value=='integer'||$value=='bigInteger') {
+                if(count(explode('_',$key))==2&&explode('_',$key)[1]=='id') {
+                    $reltable = explode('_', $key)[0];
+                    if (Schema::hasTable($reltable . 's')) {
+                        $input = '@php
                     $'.$reltable.'s = \App\Models\\'.ucfirst($reltable).'::all();
                   @endphp
 
@@ -677,14 +682,14 @@ class '.$this->modelCamelCase.'Controller extends Controller
                                       <option value="{{$'.$reltable.'->id}}">{{$'.$reltable.'->name}}</option>
                                   @endforeach
                               </select>';
-                        }else{
-                            $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="number" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"/>';
-                        }
-                    }else {
+                    }else{
                         $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="number" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"/>';
                     }
+                }else {
+                    $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="number" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"/>';
                 }
-                $fieldContent .= "\n\t\t\t\t\t".'<div class="row">
+            }
+            $fieldContent .= "\n\t\t\t\t\t".'<div class="row">
                   <label class="col-sm-2 col-form-label">{{ __(\''.ucfirst(implode(" ",explode("_",$key))).'\') }}</label>
                   <div class="col-sm-7">
                     <div class="form-group{{ $errors->has(\''.strtolower($key).'\') ? \' has-danger\' : \'\' }}">
@@ -695,7 +700,7 @@ class '.$this->modelCamelCase.'Controller extends Controller
                     </div>
                   </div>
                 </div>';
-            }
+        }
         return '@extends(\'layouts.app\', [\'activePage\' => \''.strtolower($this->modelCamelCase).'-management\', \'titlePage\' => __(\''.$this->modelName.' Management\')])
 
 @section(\'content\')

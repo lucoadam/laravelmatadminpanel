@@ -1,12 +1,13 @@
-## Installing this app
-- Create a database 
-- Copy .env.example as .env
-- Edit the database name and auth in .env file
-- Run (composer install) command
-- Run (php artisan key:generate)
-- Run (php artisan migrate)
-- Run (php artisan db:seed)
-- Finally (php artisan serve)
-- For login credentials
-    - Email: admin@admin.com
-    - Password: secret123
+ ## Installing this app
+- `Create a database` 
+- `Copy .env.example as .env`
+- `Edit the database name and auth in .env file`
+- `Run (composer install) command`
+- `Run (php artisan key:generate)`
+- `Run (php artisan migrate)`
+- `Run (php artisan db:seed)`
+- `Run (php artisan storage:link)`
+- `Finally (php artisan serve)`
+- `For login credentials`
+    - `Email: admin@admin.com`
+    - `Password: admin`
