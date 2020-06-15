@@ -174,19 +174,38 @@
                 @endif
             </div>
             <div class="card-footer ml-auto mr-auto">
-                <button type="submit" class="btn btn-primary">{{ __('Add Department') }}</button>
+                <button type="submit" class="btn btn-primary">{{ __('Add Module') }}</button>
             </div>
         </div>
+        <input id="plural" type="hidden" name="plural"/>
+        <input id="singular" type="hidden" name="singular"/>
         </form>
     </div>
     </div>
     </div>
     </div>
+ @endsection
+ @section('after-script')
+ <script src="{{ asset('material')}}/js/pluraize.js"></script>
     <script>
+        console.log(pluralize('test'),pluralize.isPlural('test'))
+        // pluralize.isPlural('test') //=> false
+        // pluralize.isSingular('test')
         window.prevKey=[];
         function addNewContent(){
 
             var name=document.getElementById('nametxt').value;
+            var inputName = document.getElementById('input-name').value;
+            if(inputName&&inputName.length>2){
+                if(pluralize.isPlural(inputName)){
+                    document.getElementById('plural').value=inputName
+                    document.getElementById('singular').value=pluralize.singular(inputName)
+                }else{
+                    document.getElementById('singular').value=inputName
+                    document.getElementById('plural').value=pluralize(inputName)
+                }
+
+            }
             if(name!='') {
                 var type = document.getElementById('ColumnType').value;
                 var prev = document.getElementById('input-field').value;

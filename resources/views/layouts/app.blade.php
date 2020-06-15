@@ -35,7 +35,8 @@
         <!-- CSS Just for demo purpose, don't include it in your project -->
         <link href="{{ asset('material-dashboard-pro')}}/assets/demo/demo.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/material-components-web/4.0.0/material-components-web.min.css" rel="stylesheet">
-{{--        <link href="https://cdn.datatables.net/1.10.21/css/dataTables.material.min.css" rel="stylesheet">--}}
+        @yield('after-style')
+        {{--        <link href="https://cdn.datatables.net/1.10.21/css/dataTables.material.min.css" rel="stylesheet">--}}
 {{--    <!--     Fonts and icons     -->--}}
 {{--    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />--}}
 {{--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">--}}

@@ -27,7 +27,7 @@
                         <a href="{{ route('settings.module.create') }}" class="btn btn-sm btn-primary">{{ __('Add Module') }}</a>
                     </div>
 
-                    @if(isset($departments))
+                    @if(isset($modules))
                 <div>
                   <table id="dataTable" class="mdl-data-table" style="width:100%">
                     <thead class=" text-primary">
@@ -45,33 +45,33 @@
                       </th>
                     </thead>
                     <tbody>
-                      @foreach($departments as $department)
+                      @foreach($modules as $module)
                         <tr>
                             <td>
-                                {{$department->id}}
+                                {{$module->id}}
                             </td>
                           <td class="search-content">
-                            {{ $department->name }}
+                            {{ $module->name }}
                           </td>
                           <td>
-                            {{ $department->created_at->format('Y-m-d') }}
+                            {{ $module->created_at->format('Y-m-d') }}
                           </td>
                           <td class="td-actions text-right">
-                              <form id="{{__('formDepartment'.$department->id)}}" action="{{ route('settings.module.destroy', $department) }}" method="post">
+                              <form id="{{__('formModule'.$module->id)}}" action="{{ route('settings.module.destroy', $module) }}" method="post">
                                   @csrf
                                   @method('delete')
 
-                                  <a rel="tooltip" class="btn btn-success btn-link" href="{{ route('settings.module.edit', $department) }}" data-original-title="" title="">
+                                  <a rel="tooltip" class="btn btn-success btn-link" href="{{ route('settings.module.edit', $module) }}" data-original-title="" title="">
                                     <i class="material-icons">edit</i>
                                     <div class="ripple-container"></div>
                                   </a>
-                                  <button type="button" class="btn btn-danger btn-link" data-toggle="modal" data-target="#departmentDelete{{$department->id}}" data-original-title="" title="">
+                                  <button type="button" class="btn btn-danger btn-link" data-toggle="modal" data-target="#moduleDelete{{$module->id}}" data-original-title="" title="">
                                       <i class="material-icons">close</i>
                                       <div class="ripple-container"></div>
                                   </button>
 
                                   <!-- Modal -->
-                                  <div class="modal fade" id="departmentDelete{{$department->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                  <div class="modal fade" id="moduleDelete{{$module->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                       <div class="modal-dialog" role="document">
                                           <div class="modal-content">
                                               <div class="modal-header">
@@ -81,7 +81,7 @@
                                                   </button>
                                               </div>
                                               <div class="modal-footer">
-                                                  <button type="button" onClick="document.getElementById('{{__('formDepartment'.$department->id)}}').submit()" class="btn btn-primary">Yes</button>
+                                                  <button type="button" onClick="document.getElementById('{{__('formModule'.$module->id)}}').submit()" class="btn btn-primary">Yes</button>
                                                   <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
 
                                               </div>
