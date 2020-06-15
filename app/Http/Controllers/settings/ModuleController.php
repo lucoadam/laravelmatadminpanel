@@ -185,7 +185,7 @@ class ModuleController extends Controller
                 Menu::firstOrCreate(['name'=>$request->all()['name'],'url'=>strtolower($this->modelCamelCase).'.index']);
             }
         }
-        return redirect()->route('settings.module.index')->withStatus(__('Department successfully created.'));
+        return redirect()->route('settings.module.index')->withStatus(__('Module successfully created.'));
 
     }
 
@@ -222,7 +222,7 @@ class ModuleController extends Controller
     {
         //
         $module->update($request->all());
-        return redirect()->route('settings.module.index')->withStatus(__('Department successfully updated.'));
+        return redirect()->route('settings.module.index')->withStatus(__('Module successfully updated.'));
     }
 
     /**
@@ -318,7 +318,7 @@ class ModuleController extends Controller
         }else{
             return redirect()->route('settings.module.index')->withErrors(__('Module not found!!'));
         }
-        return redirect()->route('settings.module.index')->withStatus(__('Department successfully deleted.'));
+        return redirect()->route('settings.module.index')->withStatus(__('Module successfully deleted.'));
     }
 
     private function multiRelationMigrationContent($modelName,$tableName,$relatedModule){
@@ -384,11 +384,19 @@ class ModuleController extends Controller
                     $fieldContent .= "\n\t\t\t" . '$table->bigInteger("' . $columnName[0] . '_id")->unsigned();';
                     $fieldContent .= "\n\t\t\t" . '$table->foreign("' . $columnName[0] . '_id")->references("id")->on("'.$reltable.'")->onUpdate("RESTRICT")->onDelete("CASCADE");';
                 }else{
-                    $fieldContent .= "\n\t\t\t" . '$table->' . $field . '("' . $key . '");';
+                    if($field == "date" || $field == "datetime" || $field == "time"){
+                        $fieldContent .= "\n\t\t\t" . '$table->String("' . $key . '");';
+                    }else{
+                        $fieldContent .= "\n\t\t\t" . '$table->' . $field . '("' . $key . '");';
+                    }
                 }
 
             }else{
-                $fieldContent .= "\n\t\t\t" . '$table->' . $field . '("' . $key . '");';
+                if($field == "date" || $field == "datetime" || $field == "time"){
+                    $fieldContent .= "\n\t\t\t" . '$table->String("' . $key . '");';
+                }else{
+                    $fieldContent .= "\n\t\t\t" . '$table->' . $field . '("' . $key . '");';
+                }
             }
         }
         return '<?php
@@ -759,7 +767,7 @@ class '.$this->modelCamelCase.'Controller extends Controller
      */
     public function update('.$this->modelCamelCase.'UpdateRequest $request,'.$this->modelCamelCase.'  $'.strtolower($this->modelCamelCase).')
     {
-          $input =$request->all();
+         $input =$request->except(['.$inputExcept.'\'_token\',\'_method\']);
         '.$updateImages.$files.'
 
         $'.strtolower($this->modelCamelCase).'->update($input);
@@ -787,6 +795,9 @@ class '.$this->modelCamelCase.'Controller extends Controller
 
     private function createView($model,$fields=['name'=>'string']){
         $fieldContent = '';
+        $afterScripts = '';
+        $initialAfterScripts = '';
+
         foreach($fields as $key=>$value){
             $columnName = explode('__',$key);
             $reltable = $columnName[0].'s';
@@ -848,6 +859,65 @@ class '.$this->modelCamelCase.'Controller extends Controller
 
             }else if($value=='integer'||$value=='bigInteger'){
                 $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="number" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"/>';
+            }else if ($value=='date'){
+
+                $afterScripts .="$('.datepicker').datetimepicker({\n\t\t\t".
+                    "format: 'MM/DD/YYYY',
+                    icons: {
+                        time: \"fa fa-clock-o\",
+                        date: \"fa fa-calendar\",
+                        up: \"fa fa-chevron-up\",
+                        down: \"fa fa-chevron-down\",
+                        previous: 'fa fa-chevron-left',
+                        next: 'fa fa-chevron-right',
+                        today: 'fa fa-screenshot',
+                        clear: 'fa fa-trash',
+                        close: 'fa fa-remove'
+                    }
+                });\n\t\t";
+                $initialAfterScripts .= "document.getElementById('input-". strtolower($key) ."').value = month + \"/\" + day + \"/\" + year;\n\t\t\t";
+
+                $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }} datepicker" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="" required="true" aria-required="true"/>';
+            } else if($value == 'datetime'){
+
+                $afterScripts .="$('.datetimepicker').datetimepicker({\n\t\t\t".
+                    "icons: {
+                            time: \"fa fa-clock-o\",
+                            date: \"fa fa-calendar\",
+                            up: \"fa fa-chevron-up\",
+                            down: \"fa fa-chevron-down\",
+                            previous: 'fa fa-chevron-left',
+                            next: 'fa fa-chevron-right',
+                            today: 'fa fa-screenshot',
+                            clear: 'fa fa-trash',
+                            close: 'fa fa-remove'
+                        }
+                    });\n\t\t";
+                $initialAfterScripts .= "document.getElementById('input-". strtolower($key) ."').value = month + \"/\" + day + \"/\" + year +\" \"+ strTime;\n\t\t\t";
+
+                $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }} datetimepicker" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="" required="true" aria-required="true"/>';
+
+            }else if($value == 'time'){
+
+                $afterScripts .="$('.timepicker').datetimepicker({\n\t\t\t".
+                    "format: 'h:mm A',
+                        icons: {
+                            time: \"fa fa-clock-o\",
+                            date: \"fa fa-calendar\",
+                            up: \"fa fa-chevron-up\",
+                            down: \"fa fa-chevron-down\",
+                            previous: 'fa fa-chevron-left',
+                            next: 'fa fa-chevron-right',
+                            today: 'fa fa-screenshot',
+                            clear: 'fa fa-trash',
+                            close: 'fa fa-remove'
+                        }
+                   });\n\t\t";
+
+                $initialAfterScripts .= "document.getElementById('input-". strtolower($key) ."').value = strTime;\n\t\t\t";
+
+                $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }} timepicker" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="" required="true" aria-required="true"/>';
+
             }else {
                 $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"/>';
             }
@@ -898,11 +968,34 @@ class '.$this->modelCamelCase.'Controller extends Controller
       </div>
     </div>
   </div>
-@endsection';
+@endsection'.
+    "\n". '@section(\'after-script\')'."\n\t".
+    "<script>\n\t\t".
+
+        "$afterScripts"."\n\t".
+        "$(document).ready(
+            function () {"."\n\t\t\t".
+                "var date = new Date();
+                var year = date.getFullYear();
+                var month = date.getMonth() + 1;
+                var day = date.getDate();
+                var hours = date.getHours();
+                  var minutes = date.getMinutes();
+                  var ampm = hours >= 12 ? 'pm' : 'am';
+                  hours = hours % 12;
+                  hours = hours ? hours : 12; // the hour '0' should be '12'
+                  minutes = minutes < 10 ? '0'+minutes : minutes;
+                  var strTime = hours + ':' + minutes + ' ' + ampm.toUpperCase();"."\n\t\t\t".
+                "$initialAfterScripts"."\n\t\t".
+            "}
+        );
+     </script>\n@endsection";
     }
 
     private function editView($model,$fields=['name'=>'string']){
         $fieldContent = '';
+        $afterScripts = '';
+
         foreach($fields as $key=>$value){
             $columnName = explode('__',$key);
             $reltable = $columnName[0].'s';
@@ -969,6 +1062,61 @@ class '.$this->modelCamelCase.'Controller extends Controller
 
                 }else if($value=='integer'||$value=='bigInteger'){
                     $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="number" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\',$'.strtolower($this->modelCamelCase).'->'.$key.') }}" required="true" aria-required="true"/>';
+                }else if ($value=='date'){
+
+                    $afterScripts .="$('.datepicker').datetimepicker({\n\t\t\t".
+                        "format: 'MM/DD/YYYY',
+                        icons: {
+                            time: \"fa fa-clock-o\",
+                            date: \"fa fa-calendar\",
+                            up: \"fa fa-chevron-up\",
+                            down: \"fa fa-chevron-down\",
+                            previous: 'fa fa-chevron-left',
+                            next: 'fa fa-chevron-right',
+                            today: 'fa fa-screenshot',
+                            clear: 'fa fa-trash',
+                            close: 'fa fa-remove'
+                        }
+                    });\n\t\t";
+
+                    $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }} datepicker" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\',$'.strtolower($this->modelCamelCase).'->'.$key.') }}" required="true" aria-required="true"/>';
+                } else if($value == 'datetime'){
+
+                    $afterScripts .="$('.datetimepicker').datetimepicker({\n\t\t\t".
+                        "icons: {
+                                time: \"fa fa-clock-o\",
+                                date: \"fa fa-calendar\",
+                                up: \"fa fa-chevron-up\",
+                                down: \"fa fa-chevron-down\",
+                                previous: 'fa fa-chevron-left',
+                                next: 'fa fa-chevron-right',
+                                today: 'fa fa-screenshot',
+                                clear: 'fa fa-trash',
+                                close: 'fa fa-remove'
+                            }
+                        });\n\t\t";
+
+                    $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }} datetimepicker" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\',$'.strtolower($this->modelCamelCase).'->'.$key.') }}" required="true" aria-required="true"/>';
+
+                }else if($value == 'time'){
+
+                    $afterScripts .="$('.timepicker').datetimepicker({\n\t\t\t".
+                        "format: 'h:mm A',
+                            icons: {
+                                time: \"fa fa-clock-o\",
+                                date: \"fa fa-calendar\",
+                                up: \"fa fa-chevron-up\",
+                                down: \"fa fa-chevron-down\",
+                                previous: 'fa fa-chevron-left',
+                                next: 'fa fa-chevron-right',
+                                today: 'fa fa-screenshot',
+                                clear: 'fa fa-trash',
+                                close: 'fa fa-remove'
+                            }
+                       });\n\t\t";
+
+                    $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }} timepicker" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\',$'.strtolower($this->modelCamelCase).'->'.$key.') }}" required="true" aria-required="true"/>';
+
                 }else {
                     $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\',$'.strtolower($this->modelCamelCase).'->'.$key.') }}" required="true" aria-required="true"/>';
                 }
@@ -1019,7 +1167,12 @@ class '.$this->modelCamelCase.'Controller extends Controller
       </div>
     </div>
   </div>
-@endsection';
+@endsection'.
+        "\n". '@section(\'after-script\')'."\n\t".
+        "<script>\n\t\t".
+
+        "$afterScripts"."\n\t".
+     "</script>\n@endsection";
     }
 
     private function viewIndex($model,$fields=['name'=>'string']){
