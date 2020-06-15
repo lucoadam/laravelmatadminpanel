@@ -27,7 +27,7 @@
                         <a href="{{ route('settings.module.create') }}" class="btn btn-sm btn-primary">{{ __('Add Module') }}</a>
                     </div>
 
-                    @if(isset($departments))
+                    @if(isset($modules))
                 <div>
                   <table id="dataTable" class="mdl-data-table" style="width:100%">
                     <thead class=" text-primary">
@@ -45,7 +45,7 @@
                       </th>
                     </thead>
                     <tbody>
-                      @foreach($departments as $department)
+                      @foreach($modules as $department)
                         <tr>
                             <td>
                                 {{$department->id}}
