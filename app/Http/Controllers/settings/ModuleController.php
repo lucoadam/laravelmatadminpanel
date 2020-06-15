@@ -952,7 +952,9 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
                   }
                 </script>';
             }elseif($value=='boolean'){
-                $input ='<input type="checkbox" name="'.$key.'"/>';
+                $input ='<label class="form-check-label"><input class="form-check-input" type="checkbox" name="'.$key.'"/>Click to Check <span class="form-check-sign">
+                <span class="check"></span>
+              </span></label>';
             }
             else if ($key == 'file') {
                 $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="file" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"/>
@@ -1045,7 +1047,9 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
                 $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }} datetimepicker" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="" required="true" aria-required="true"/>';
 
             }elseif($value=='boolean'){
-                $input ='<input type="checkbox" name="'.$key.'"/>';
+                $input ='<label class="form-check-label"><input class="form-check-input" type="checkbox" name="'.$key.'"/>Click to Check <span class="form-check-sign">
+                <span class="check"></span>
+              </span></label>';
             }else if($value == 'time'){
 
                 $afterScripts .="$('.timepicker').datetimepicker({\n\t\t\t".
@@ -1071,9 +1075,9 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
                 $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"/>';
             }
             $fieldContent .= "\n\t\t\t\t\t" . '<div class="row">
-                  <label class="col-sm-2 col-form-label">{{ __(\'' . ucfirst(implode(" ", explode("_", $key))) . '\') }}</label>
+                  <label class="col-sm-2 col-form-label"'.($value=='boolean'?' style="padding-top:5px;"':'').'>{{ __(\'' . ucfirst(implode(" ", explode("_", $key))) . '\') }}</label>
                   <div class="col-sm-7">
-                    <div class="form-group{{ $errors->has(\'' . strtolower($key) . '\') ? \' has-danger\' : \'\' }}">
+                    <div class="'.($value=='boolean'?'form-check ':'').'form-group{{ $errors->has(\'' . strtolower($key) . '\') ? \' has-danger\' : \'\' }}">
                       ' . $input . '
                       @if ($errors->has(\'' . strtolower($key) . '\'))
                         <span id="' . strtolower($key) . '-error" class="error text-danger" for="input-' . strtolower($key) . '">{{ $errors->first(\'' . strtolower($key) . '\') }}</span>
@@ -1247,7 +1251,9 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
                 </script>
               ';
             }elseif($value=='boolean'){
-                $input ='<input type="checkbox" name="'.$key.'"{{($'.strtolower($this->modelCamelCase).'->'.strtolower($key).'?"checked":"")}}/>';
+                $input ='<label class="form-check-label"><input class="form-check-input" type="checkbox" name="'.$key.'"{{($'.strtolower($this->modelCamelCase).'->'.strtolower($key).'?"checked":"")}}/>Click to Check <span class="form-check-sign">
+                <span class="check"></span>
+              </span></label>';
             }
             else if ($value == 'text' || $value == 'longText') {
                 $input = '<textarea rows="5" class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true">{{$' . strtolower($this->modelCamelCase) . '->' . $key . '}}</textarea>';
@@ -1371,9 +1377,9 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
             }
 
             $fieldContent .= "\n\t\t\t\t\t" . '<div class="row">
-                  <label class="col-sm-2 col-form-label">{{ __(\'' . ucfirst(implode(" ", explode("_", $key))) . '\') }}</label>
+                  <label class="col-sm-2 col-form-label"'.($value=='boolean'?' style="padding-top:5px;"':'').'>{{ __(\'' . ucfirst(implode(" ", explode("_", $key))) . '\') }}</label>
                   <div class="col-sm-7">
-                    <div class="form-group{{ $errors->has(\'' . strtolower($key) . '\') ? \' has-danger\' : \'\' }}">
+                    <div class="'.($value=='boolean'?'form-check ':'').'form-group{{ $errors->has(\'' . strtolower($key) . '\') ? \' has-danger\' : \'\' }}">
                       ' . $input . '
                       @if ($errors->has(\'' . strtolower($key) . '\'))
                         <span id="' . strtolower($key) . '-error" class="error text-danger" for="input-' . strtolower($key) . '">{{ $errors->first(\'' . strtolower($key) . '\') }}</span>
