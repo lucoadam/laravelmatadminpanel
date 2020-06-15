@@ -186,7 +186,8 @@ class ModuleController extends Controller
                 Menu::firstOrCreate(['name' => $request->all()['name'], 'url' => strtolower($this->modelCamelCase) . '.index']);
             }
         }
-        return redirect()->route('settings.module.index')->withStatus(__('Department successfully created.'));
+        return redirect()->route('settings.module.index')->withStatus(__('Module successfully created.'));
+
     }
 
     /**
@@ -222,7 +223,7 @@ class ModuleController extends Controller
     {
         //
         $module->update($request->all());
-        return redirect()->route('settings.module.index')->withStatus(__('Department successfully updated.'));
+        return redirect()->route('settings.module.index')->withStatus(__('Module successfully updated.'));
     }
 
     /**
@@ -314,7 +315,7 @@ class ModuleController extends Controller
         } else {
             return redirect()->route('settings.module.index')->withErrors(__('Module not found!!'));
         }
-        return redirect()->route('settings.module.index')->withStatus(__('Department successfully deleted.'));
+        return redirect()->route('settings.module.index')->withStatus(__('Module successfully deleted.'));
     }
 
     private function multiRelationMigrationContent($modelName, $tableName, $relatedModule)
@@ -378,12 +379,27 @@ class ModuleController extends Controller
                     array_push($this->multiMigration, $each);
                 } else if (count($columnName) == 2) {
                     $fieldContent .= "\n\t\t\t" . '$table->bigInteger("' . $columnName[0] . '_id")->unsigned();';
-                    $fieldContent .= "\n\t\t\t" . '$table->foreign("' . $columnName[0] . '_id")->references("id")->on("' . $reltable . '")->onUpdate("RESTRICT")->onDelete("CASCADE");';
-                } else {
+                    $fieldContent .= "\n\t\t\t" . '$table->foreign("' . $columnName[0] . '_id")->references("id")->on("'.$reltable.'")->onUpdate("RESTRICT")->onDelete("CASCADE");';
+                }else{
+                    if($field == "date" || $field == "datetime" || $field == "time"){
+                        $fieldContent .= "\n\t\t\t" . '$table->String("' . $key . '");';
+                    }elseif($field=="boolean"){
+                        $fieldContent .= "\n\t\t\t" . '$table->boolean("' . $key . '")->default(0);';
+                    }
+                    else{
+                        $fieldContent .= "\n\t\t\t" . '$table->' . $field . '("' . $key . '");';
+                    }
+                }
+
+            }else{
+                if($field == "date" || $field == "datetime" || $field == "time"){
+                    $fieldContent .= "\n\t\t\t" . '$table->String("' . $key . '");';
+                }elseif($field=="boolean"){
+                    $fieldContent .= "\n\t\t\t" . '$table->boolean("' . $key . '")->default(0);';
+                }else{
                     $fieldContent .= "\n\t\t\t" . '$table->' . $field . '("' . $key . '");';
                 }
-            } else {
-                $fieldContent .= "\n\t\t\t" . '$table->' . $field . '("' . $key . '");';
+
             }
         }
         return '<?php
@@ -547,15 +563,17 @@ class ' . $this->modelCamelCase . ' extends Model
                         ],";
                     } else if (strpos($key, '__multiple')) {
                         continue;
-                    } else {
+                    } else if($value!='boolean'){
                         $fieldContent .= "\n\t\t\t" . "'" . $key . "' => [
                             'required'
                         ],";
                     }
                 } else {
-                    $fieldContent .= "\n\t\t\t" . "'" . $key . "' => [
-                        'required'
-                    ],";
+                    if($value!='boolean'){
+                        $fieldContent .= "\n\t\t\t" . "'" . $key . "' => [
+                            'required'
+                        ],";
+                    }
                 }
             }
         }
@@ -606,6 +624,7 @@ class ' . $this->modelCamelCase . $type . 'Request extends FormRequest
         $inputExcept = '';
         $updateMultipleRel = '';
         $deleteMultipleRel = '';
+       $checkbox ='';
         $storeMultipleFiles = property_exists($fields, 'images') ? "\n\t\t"
             .'if(isset($input[\'images\'])&&!is_null($input[\'images\'])) {'."\n\t\t\t"
             .'$input[\'images\'] = json_encode($input[\'images\']);'."\n\t\t"
@@ -667,6 +686,11 @@ class ' . $this->modelCamelCase . $type . 'Request extends FormRequest
                 }
                 $' . strtolower($this->modelCamelCase) . '->attach' . strtolower($columnName[0]) . 's($' . strtolower($columnName[0]) . 's);';
                 $deleteMultipleRel .= ' $' . strtolower($this->modelCamelCase) . '->' . strtolower($columnName[0]) . '()->sync([]);';
+            }elseif($field=='boolean'){
+                $checkbox = "\n\t\t"
+                .'if(isset($input[\''.$key.'\'])&&!is_null($input[\''.$key.'\'])) {'."\n\t\t\t"
+                .'$input[\''.$key.'\'] = 1;'."\n\t\t"
+                .'}'."\n\t\t";
             }
         }
 
@@ -771,7 +795,7 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
     public function store(' . $this->modelCamelCase . 'StoreRequest $request, ' . ucfirst($this->modelCamelCase) . ' $model)
     {
         $input =$request->except([' . $inputExcept . '\'_token\',\'_method\']);
-        ' . $images . $imag . $files . $file . '
+        ' . $images . $imag . $files . $file .$checkbox. '
         ' . $storeMultipleFiles . '
         $model=$model->create($input);
         ' . $storeMultipleRel . '
@@ -801,7 +825,7 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
     {
         $input =$request->except([' . $inputExcept . '\'_token\',\'_method\']);
           ' . $updateMultipleFiles . '
-        ' . $updateImages . $files . '
+        ' . $updateImages . $files .$checkbox. '
 
         $' . strtolower($this->modelCamelCase) . '->update($input);
         ' . $updateMultipleRel . '
@@ -830,6 +854,9 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
     {
         $fieldContent = '';
         $afterScripts = '';
+        $imagesScripts = '';
+        $imagesStyles = '';
+        $initialAfterScripts= '';
         foreach ($fields as $key => $value) {
             $columnName = explode('__', $key);
             $reltable = $columnName[0] . 's';
@@ -837,11 +864,10 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
             if($key=="images"){
                 $input ='<div class="needsclick dropzone" id="images-dropzone">
                 </div>';
-                $afterScripts .= '
-                @section(\'after-style\')
+                $imagesStyles .="\n".'@section(\'after-style\')
                 <link href="{{ asset(\'assets\') }}/css/dropzone.min.css" rel="stylesheet" />
-                @endsection
-                @section(\'after-script\')
+                @endsection';
+                $imagesScripts .= '
                 <script src="{{ asset(\'assets\') }}/js/dropzone.min.js"></script>
                 <script type="text/javascript">
                   var uploadedImageMap = {}
@@ -924,10 +950,12 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
                       return _results
                     }
                   }
-                </script>
-              @endsection';
-            }else if ($key == 'file') {
-                $input = $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="file" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"/>
+                </script>';
+            }elseif($value=='boolean'){
+                $input ='<input type="checkbox" name="'.$key.'"/>';
+            }
+            else if ($key == 'file') {
+                $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="file" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"/>
                 <button onclick="document.getElementById(\'input-file\').click()" type="button" class="btn btn-fab btn-round btn-primary">
                         <i class="material-icons">attach_file</i>
                       </button>';
@@ -978,7 +1006,68 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
                 $input = '<textarea rows="5" class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"></textarea>';
             }else if ($value == 'integer' || $value == 'bigInteger') {
                 $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="number" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"/>';
-            } else {
+            }else if ($value=='date'){
+
+                $afterScripts .="$('.datepicker').datetimepicker({\n\t\t\t".
+                    "format: 'MM/DD/YYYY',
+                    icons: {
+                        time: \"fa fa-clock-o\",
+                        date: \"fa fa-calendar\",
+                        up: \"fa fa-chevron-up\",
+                        down: \"fa fa-chevron-down\",
+                        previous: 'fa fa-chevron-left',
+                        next: 'fa fa-chevron-right',
+                        today: 'fa fa-screenshot',
+                        clear: 'fa fa-trash',
+                        close: 'fa fa-remove'
+                    }
+                });\n\t\t";
+                $initialAfterScripts .= "document.getElementById('input-". strtolower($key) ."').value = month + \"/\" + day + \"/\" + year;\n\t\t\t";
+
+                $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }} datepicker" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="" required="true" aria-required="true"/>';
+            } else if($value == 'datetime'){
+
+                $afterScripts .="$('.datetimepicker').datetimepicker({\n\t\t\t".
+                    "icons: {
+                            time: \"fa fa-clock-o\",
+                            date: \"fa fa-calendar\",
+                            up: \"fa fa-chevron-up\",
+                            down: \"fa fa-chevron-down\",
+                            previous: 'fa fa-chevron-left',
+                            next: 'fa fa-chevron-right',
+                            today: 'fa fa-screenshot',
+                            clear: 'fa fa-trash',
+                            close: 'fa fa-remove'
+                        }
+                    });\n\t\t";
+                $initialAfterScripts .= "document.getElementById('input-". strtolower($key) ."').value = month + \"/\" + day + \"/\" + year +\" \"+ strTime;\n\t\t\t";
+
+                $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }} datetimepicker" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="" required="true" aria-required="true"/>';
+
+            }elseif($value=='boolean'){
+                $input ='<input type="checkbox" name="'.$key.'"/>';
+            }else if($value == 'time'){
+
+                $afterScripts .="$('.timepicker').datetimepicker({\n\t\t\t".
+                    "format: 'h:mm A',
+                        icons: {
+                            time: \"fa fa-clock-o\",
+                            date: \"fa fa-calendar\",
+                            up: \"fa fa-chevron-up\",
+                            down: \"fa fa-chevron-down\",
+                            previous: 'fa fa-chevron-left',
+                            next: 'fa fa-chevron-right',
+                            today: 'fa fa-screenshot',
+                            clear: 'fa fa-trash',
+                            close: 'fa fa-remove'
+                        }
+                   });\n\t\t";
+
+                $initialAfterScripts .= "document.getElementById('input-". strtolower($key) ."').value = strTime;\n\t\t\t";
+
+                $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }} timepicker" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="" required="true" aria-required="true"/>';
+
+            }else {
                 $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"/>';
             }
             $fieldContent .= "\n\t\t\t\t\t" . '<div class="row">
@@ -1028,13 +1117,39 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
       </div>
     </div>
   </div>
-@endsection'.$afterScripts;
+@endsection'.
+    $imagesStyles.
+    "\n". '@section(\'after-script\')'."\n\t".
+    $imagesScripts.
+    "<script>\n\t\t".
+
+        "$afterScripts"."\n\t".
+        "$(document).ready(
+            function () {"."\n\t\t\t".
+                "var date = new Date();
+                var year = date.getFullYear();
+                var month = date.getMonth() + 1;
+                var day = date.getDate();
+                var hours = date.getHours();
+                  var minutes = date.getMinutes();
+                  var ampm = hours >= 12 ? 'pm' : 'am';
+                  hours = hours % 12;
+                  hours = hours ? hours : 12; // the hour '0' should be '12'
+                  minutes = minutes < 10 ? '0'+minutes : minutes;
+                  var strTime = hours + ':' + minutes + ' ' + ampm.toUpperCase();"."\n\t\t\t".
+                "$initialAfterScripts"."\n\t\t".
+            "}
+        );
+     </script>\n@endsection";
     }
 
     private function editView($model, $fields = ['name' => 'string'])
     {
         $fieldContent = '';
         $afterScripts='';
+        $initialAfterScripts='';
+        $imagesScripts='';
+        $imagesStyles='';
         foreach ($fields as $key => $value) {
             $columnName = explode('__', $key);
             $reltable = $columnName[0] . 's';
@@ -1042,11 +1157,11 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
             if($key=="images"){
                 $input ='<div class="needsclick dropzone" id="images-dropzone">
                 </div>';
-                $afterScripts .= '
+                $imagesStyles .="\n".'
                 @section(\'after-style\')
                 <link href="{{ asset(\'assets\') }}/css/dropzone.min.css" rel="stylesheet" />
-                @endsection
-                @section(\'after-script\')
+                @endsection';
+                $imagesScripts.='
                 <script src="{{ asset(\'assets\') }}/js/dropzone.min.js"></script>
                 <script type="text/javascript">
                   var uploadedImageMap = {}
@@ -1130,7 +1245,9 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
                     }
                   }
                 </script>
-              @endsection';
+              ';
+            }elseif($value=='boolean'){
+                $input ='<input type="checkbox" name="'.$key.'"{{($'.strtolower($this->modelCamelCase).'->'.strtolower($key).'?"checked":"")}}/>';
             }
             else if ($value == 'text' || $value == 'longText') {
                 $input = '<textarea rows="5" class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true">{{$' . strtolower($this->modelCamelCase) . '->' . $key . '}}</textarea>';
@@ -1158,35 +1275,96 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
                           </div>
                           </div>
                  ';
-            } else if (Schema::hasTable($reltable)) {
-
+            } elseif (Schema::hasTable($reltable)) {
                 if (strpos($key, '__multiple')) {
                     $input = '@php
-                        $' . $reltable . 's = \App\Models\\' . $this->toCamelCase($columnName[0]) . '::all();
-                        $selected = $' . strtolower($this->modelCamelCase) . '->' . $columnName[0] . '->pluck("id")->all();
-                      @endphp
+                    $' . $reltable . 's = \App\Models\\' . $this->toCamelCase($columnName[0]) . '::all();
+                    $selected = $' . strtolower($this->modelCamelCase) . '->' . $columnName[0] . '->pluck("id")->all();
+                    @endphp
 
-                                  <select class="{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . $columnName[0] . '_id[]" multiple="true">
-                                      <option disabled value="">' . $this->toCamelCase($columnName[0]) . '</option>
-                                      @foreach($' . $reltable . 's as $' . $reltable . ')
-                                          <option value="{{$' . $reltable . '->id}}"{!!in_array($' . $reltable . '->id,$selected)?"selected":""!!}>{{$' . $reltable . '->' . $columnName[1] . '}}</option>
-                                      @endforeach
-                                  </select>';
-                } else if (count($columnName) == 2) {
-                    $input = '@php
-                        $' . $reltable . 's = \App\Models\\' . $this->toCamelCase($columnName[0]) . '::all();
-                      @endphp
+                    <select class="{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . $columnName[0] . '_id[]" multiple="true">
+                        <option disabled value="">' . $this->toCamelCase($columnName[0]) . '</option>
+                        @foreach($' . $reltable . 's as $' . $reltable . ')
+                        <option value="{{$' . $reltable . '->id}}" {!!in_array($' . $reltable . '->id,$selected)?"selected":""!!}>{{$' . $reltable . '->' . $columnName[1] . '}}</option>
+                                                          @endforeach
+                                                      </select>' ;
+                    } else if (count($columnName)==2) {
+                        $input='@php
+                                            $' . $reltable . 's = \App\Models\\' . $this->toCamelCase($columnName[0]) . '::all();
+                            @endphp
 
-                                  <select class="{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . $columnName[0] . '_id" multiple="true">
-                                      <option selected disabled value="">' . $this->toCamelCase($columnName[0]) . '</option>
-                                      @foreach($' . $reltable . 's as $' . $reltable . ')
-                                          <option value="{{$' . $reltable . '->id}}"{!!($' . $reltable . '->id==$' . strtolower($this->modelCamelCase) . '->' . $columnName[0] . '_id' . ')?"selected":""!!}>{{$' . $reltable . '->' . $columnName[1] . '}}</option>
-                                      @endforeach
-                                  </select>';
-                } else {
-                    $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="number" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\',$' . strtolower($this->modelCamelCase) . '->' . $key . ') }}" required="true" aria-required="true"/>';
-                }
-            } else if ($value == 'integer' || $value == 'bigInteger') {
+                            <select class="{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . $columnName[0] . '_id" multiple="true">
+                                <option selected disabled value="">' . $this->toCamelCase($columnName[0]) . '</option>
+                                @foreach($' . $reltable . 's as $' . $reltable . ')
+                                <option value="{{$' . $reltable . '->id}}" {!!($' . $reltable . '->id==$' . strtolower($this->modelCamelCase) . '->' . $columnName[0] . '_id' . ')?"selected":""!!}>{{$' . $reltable . '->' . $columnName[1] . '}}</option>
+                                @endforeach
+                            </select>';
+
+
+
+
+                            }else if($value=='integer'||$value=='bigInteger'){
+                            $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="number" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\',$'.strtolower($this->modelCamelCase).'->'.$key.') }}" required="true" aria-required="true" />';
+                            }else if ($value=='date'){
+
+                            $afterScripts .="$('.datepicker').datetimepicker({\n\t\t\t".
+                            "format: 'MM/DD/YYYY',
+                            icons: {
+                            time: \"fa fa-clock-o\",
+                            date: \"fa fa-calendar\",
+                            up: \"fa fa-chevron-up\",
+                            down: \"fa fa-chevron-down\",
+                            previous: 'fa fa-chevron-left',
+                            next: 'fa fa-chevron-right',
+                            today: 'fa fa-screenshot',
+                            clear: 'fa fa-trash',
+                            close: 'fa fa-remove'
+                            }
+                            });\n\t\t";
+
+                            $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }} datepicker" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\',$'.strtolower($this->modelCamelCase).'->'.$key.') }}" required="true" aria-required="true" />';
+                            } else if($value == 'datetime'){
+
+                            $afterScripts .="$('.datetimepicker').datetimepicker({\n\t\t\t".
+                            "icons: {
+                            time: \"fa fa-clock-o\",
+                            date: \"fa fa-calendar\",
+                            up: \"fa fa-chevron-up\",
+                            down: \"fa fa-chevron-down\",
+                            previous: 'fa fa-chevron-left',
+                            next: 'fa fa-chevron-right',
+                            today: 'fa fa-screenshot',
+                            clear: 'fa fa-trash',
+                            close: 'fa fa-remove'
+                            }
+                            });\n\t\t";
+
+                            $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }} datetimepicker" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\',$'.strtolower($this->modelCamelCase).'->'.$key.') }}" required="true" aria-required="true" />';
+
+                            }else if($value == 'time'){
+
+                            $afterScripts .="$('.timepicker').datetimepicker({\n\t\t\t".
+                            "format: 'h:mm A',
+                            icons: {
+                            time: \"fa fa-clock-o\",
+                            date: \"fa fa-calendar\",
+                            up: \"fa fa-chevron-up\",
+                            down: \"fa fa-chevron-down\",
+                            previous: 'fa fa-chevron-left',
+                            next: 'fa fa-chevron-right',
+                            today: 'fa fa-screenshot',
+                            clear: 'fa fa-trash',
+                            close: 'fa fa-remove'
+                            }
+                            });\n\t\t";
+
+                            $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }} timepicker" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\',$'.strtolower($this->modelCamelCase).'->'.$key.') }}" required="true" aria-required="true" />';
+
+                            }else {
+                            $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\',$'.strtolower($this->modelCamelCase).'->'.$key.') }}" required="true" aria-required="true" />';
+                            }
+
+            } elseif ($value == 'integer' || $value == 'bigInteger') {
                 $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="number" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\',$' . strtolower($this->modelCamelCase) . '->' . $key . ') }}" required="true" aria-required="true"/>';
             } else {
                 $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="text" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\',$' . strtolower($this->modelCamelCase) . '->' . $key . ') }}" required="true" aria-required="true"/>';
@@ -1238,7 +1416,14 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
       </div>
     </div>
   </div>
-@endsection'.$afterScripts;
+@endsection'.
+$imagesStyles.
+        "\n". '@section(\'after-script\')'."\n\t".
+        $imagesScripts.
+        "<script>\n\t\t".
+
+        "$afterScripts"."\n\t".
+     "</script>\n@endsection";
     }
 
     private function viewIndex($model, $fields = ['name' => 'string'])

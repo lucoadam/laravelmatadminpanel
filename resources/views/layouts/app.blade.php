@@ -357,7 +357,9 @@
         <!--  Notifications Plugin    -->
         <script src="{{ asset('material-dashboard-pro')}}/assets/js/plugins/bootstrap-notify.js"></script>
         <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
-        <script src="{{ asset('material-dashboard-pro')}}/assets/js/material-dashboard.min.js?v=2.1.1" type="text/javascript"></script>
+        <script src="{{ asset('material-dashboard-pro')}}/assets/js/material-dashboard.min.js?v=2.1.1" type="text/javascript">
+
+        </script>
         <!-- Sharrre libray -->
         <script src="{{ asset('material-dashboard-pro')}}/assets/demo/jquery.sharrre.js"></script>
         <script>
@@ -570,4 +572,5 @@
         @stack('js')
         @yield('after-script')
     </body>
+
 </html>
