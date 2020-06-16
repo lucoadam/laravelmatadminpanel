@@ -20,7 +20,11 @@ class RoleController extends Controller
      */
     public function index(RoleViewRequest $request,Role $model)
     {
-        return view('role.index', ['role' => $model->all()]);
+        $mod=$model->all();
+        foreach($mod as $k=>$m){
+            $m->index=$k+1;
+        }
+        return view('role.index', ['role' => $mod]);
     }
 
     /**

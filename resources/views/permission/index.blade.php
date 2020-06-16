@@ -35,7 +35,7 @@
                   <table id="dataTable" class="table">
                     <thead class=" text-primary">
                     <th>
-                        {{ __('Id') }}
+                        {{ __('S.N.') }}
                     </th>
 						<th>
                             {{ __("Name") }}
@@ -54,7 +54,7 @@
                       @foreach($permission as $model)
                         <tr>
                             <td>
-                                {{$model->id}}
+                                {{$model->index}}
                             </td>
 						<td>
                                 {{$model->name}}
