@@ -15,7 +15,10 @@
             @method('put')
 
             <div class="card ">
-              <div class="card-header card-header-primary">
+              <div class="card-header card-header-rose card-header-icon">
+                <div class="card-icon">
+                    <i class="material-icons">edit</i>
+                   </div>
                 <h4 class="card-title">{{ __('Edit Role') }}</h4>
                 <p class="card-category"></p>
               </div>

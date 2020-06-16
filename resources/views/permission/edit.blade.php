@@ -10,7 +10,10 @@
             @method('put')
 
             <div class="card ">
-              <div class="card-header card-header-primary">
+              <div class="card-header card-header-icon card-header-rose">
+                <div class="card-icon">
+                    <i class="material-icons">edit</i>
+                   </div>
                 <h4 class="card-title">{{ __('Edit Permission') }}</h4>
                 <p class="card-category"></p>
               </div>

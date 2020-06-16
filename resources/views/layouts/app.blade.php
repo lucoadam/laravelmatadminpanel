@@ -563,8 +563,6 @@
                 $(this).parent().siblings().trigger('focusout');
             });
         </script>
-        <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-        <script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.material.min.js"></script>
         @stack('js')
         @yield('after-script')
     </body>

@@ -126,7 +126,7 @@
           searchPlaceholder: "Search users",
         },
         "columnDefs": [
-          { "orderable": false, "targets": 4 },
+          { "orderable": false, "targets":4},
         ],
       });
     });

@@ -13,8 +13,8 @@ class CreatePermissionUserTable extends Migration
     public function up()
     {
         Schema::create('permission_user', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('permission_id')->unsigned()->index('permission_user_permission_id_foreign');
+            $table->bigIncrements('id');
+            $table->bigInteger('permission_id')->unsigned()->index('permission_user_permission_id_foreign');
             $table->bigInteger('user_id')->unsigned()->index('permission_user_user_id_foreign');
         });
     }
