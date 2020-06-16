@@ -42,7 +42,7 @@
             @if(auth()->user()->allow('view-permission'))
             <li class="nav-item{{ $activePage == 'permission-management' ? ' active' : '' }}">
                 <a class="nav-link" href="{{ route('permission.index') }}">
-                  <span class="sidebar-mini"> UM </span>
+                  <span class="sidebar-mini"> PM </span>
                   <span class="sidebar-normal"> {{ __('Permission Management') }} </span>
                 </a>
               </li>
@@ -50,7 +50,7 @@
               @if(auth()->user()->allow('view-role'))
               <li class="nav-item{{ $activePage == 'role-management' ? ' active' : '' }}">
                   <a class="nav-link" href="{{ route('role.index') }}">
-                    <span class="sidebar-mini"> UM </span>
+                    <span class="sidebar-mini"> RM </span>
                     <span class="sidebar-normal"> {{ __('Role Management') }} </span>
                   </a>
                 </li>
@@ -79,7 +79,7 @@
           <ul class="nav">
             <li class="nav-item{{ $activePage == 'module-management' ? ' active' : '' }}">
               <a class="nav-link" href="{{ route('settings.module.index') }}">
-                <span class="sidebar-mini"> UP </span>
+                <span class="sidebar-mini"> MP </span>
                 <span class="sidebar-normal">{{ __('Module Management') }} </span>
               </a>
             </li>
