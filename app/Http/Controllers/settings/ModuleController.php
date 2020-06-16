@@ -958,7 +958,7 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
             }
             else if ($key == 'file') {
                 $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="file" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"/>
-                <button onclick="document.getElementById(\'input-file\').click()" type="button" class="btn btn-fab btn-round btn-primary">
+                <button onclick="document.getElementById(\'input-file\').click()" type="button" class="btn btn-fab btn-round btn-rose">
                         <i class="material-icons">attach_file</i>
                       </button>';
             } else if ($key == 'image') {
@@ -1097,7 +1097,10 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
             @method(\'post\')
 
             <div class="card ">
-              <div class="card-header card-header-primary">
+              <div class="card-header card-header-rose card-header-icon">
+              <div class="card-icon">
+              <i class="material-icons">add</i>
+             </div>
                 <h4 class="card-title">{{ __(\'Add ' . $model . '\') }}</h4>
                 <p class="card-category"></p>
               </div>
@@ -1106,13 +1109,13 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
                @if(auth()->user()->allow(\'view-\'.strtolower(\'' . $this->toPermissionName() . '\')))
                 <div class="row">
                   <div class="col-md-12 text-right">
-                      <a href="{{ route(\'' . strtolower($this->modelCamelCase) . '.index\') }}" class="btn btn-sm btn-primary">{{ __(\'Back to list\') }}</a>
+                      <a href="{{ route(\'' . strtolower($this->modelCamelCase) . '.index\') }}" class="btn btn-sm btn-rose">{{ __(\'Back to list\') }}</a>
                   </div>
                 </div>
                 @endif' . $fieldContent . '
               </div>
               <div class="card-footer ml-auto mr-auto">
-                <button type="submit" class="btn btn-primary">{{ __(\'Add ' . $model . '\') }}</button>
+                <button type="submit" class="btn btn-rose">{{ __(\'Add ' . $model . '\') }}</button>
               </div>
             </div>
           </form>
@@ -1266,7 +1269,7 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
                 $input = '<textarea rows="5" class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true">{{$' . strtolower($this->modelCamelCase) . '->' . $key . '}}</textarea>';
             } else if ($key == 'file') {
                 $input = $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="file" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"/>
-                <button onclick="document.getElementById(\'input-file\').click()" type="button" class="btn btn-fab btn-round btn-primary">
+                <button onclick="document.getElementById(\'input-file\').click()" type="button" class="btn btn-fab btn-round btn-rose">
                         <i class="material-icons">attach_file</i>
                       </button>';
             } else if ($key == 'image') {
@@ -1406,7 +1409,10 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
             @method(\'put\')
 
             <div class="card ">
-              <div class="card-header card-header-primary">
+              <div class="card-header card-header-rose card-header-icon">
+              <div class="card-icon">
+              <i class="material-icons">edit</i>
+             </div>
                 <h4 class="card-title">{{ __(\'Edit ' . $model . '\') }}</h4>
                 <p class="card-category"></p>
               </div>
@@ -1414,13 +1420,13 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
                  @if(auth()->user()->allow(\'view-\'.strtolower(\'' . $this->toPermissionName() . '\')))
                 <div class="row">
                   <div class="col-md-12 text-right">
-                      <a href="{{ route(\'' . strtolower($this->modelCamelCase) . '.index\') }}" class="btn btn-sm btn-primary">{{ __(\'Back to list\') }}</a>
+                      <a href="{{ route(\'' . strtolower($this->modelCamelCase) . '.index\') }}" class="btn btn-sm btn-rose">{{ __(\'Back to list\') }}</a>
                   </div>
                 </div>
                 @endif' . $fieldContent . '
               </div>
               <div class="card-footer ml-auto mr-auto">
-                <button type="submit" class="btn btn-primary">{{ __(\'Save\') }}</button>
+                <button type="submit" class="btn btn-rose">{{ __(\'Save\') }}</button>
               </div>
             </div>
           </form>
@@ -1444,9 +1450,11 @@ $imagesStyles.
         $bodyContent = '';
         $fieldKey = array();
         $fieldMe = array();
+        $count=2;
         array_push($fieldKey, 'id');
         foreach ($fields as $key => $value) {
             $columnName = explode('__', $key);
+            $count++;
             $reltable = $columnName[0] . 's';
             $titleContent .= "\n\t\t\t\t\t\t" . '<th>
                             {{ __("' . ucfirst(implode(" ", explode("_", $columnName[0]))) . '") }}
@@ -1525,7 +1533,10 @@ $imagesStyles.
       <div class="row">
         <div class="col-md-12">
             <div class="card">
-              <div class="card-header card-header-primary">
+              <div class="card-header card-header-rose card-header-icon">
+                <div class="card-icon">
+                 <i class="material-icons">group</i>
+                </div>
                 <h4 class="card-title ">{{ __(\'' . $this->modelName . '\') }}</h4>
                 <p class="card-category"> {{ __(\'Here you can manage ' . strtolower($model) . '\') }}</p>
               </div>
@@ -1542,23 +1553,22 @@ $imagesStyles.
                     </div>
                   </div>
                 @endif
-                 @if(auth()->user()->allow(\'create-\'.strtolower(\'' . $this->toPermissionName() . '\')))
+                @if(auth()->user()->allow(\'create-\'.strtolower(\'' . $this->toPermissionName() . '\')))
                 <div class="row">
-                    <div class="col-5">
-                        <a href="{{ route(\'' . strtolower($this->modelCamelCase) . '.create\') }}" class="btn btn-sm btn-primary">{{ __(\'Add ' . $model . '\') }}</a>
+                    <div class="col-12 text-right">
+                        <a href="{{ route(\'' . strtolower($this->modelCamelCase) . '.create\') }}" class="btn btn-sm btn-rose">{{ __(\'Add ' . $model . '\') }}</a>
                     </div>
                 </div>
                 @endif
-                <div class="table-responsive">
-                  <table id="dataTable" class="table">
+                  <table id="dataTable" class="table table-striped table-no-bordered table-hover dataTable no-footer dtr-inline" style="width:100%" role="grid" aria-describedby="datatables_info">
                     <thead class=" text-primary">
-                    <th>
+                    <th class="sorting_desc">
                         {{ __(\'Id\') }}
                     </th>' . $titleContent . '
                       <th>
                         {{ __(\'Creation date\') }}
                       </th>
-                      <th class="text-right">
+                      <th class="td-actions text-right">
                         {{ __(\'Actions\') }}
                       </th>
                     </thead>
@@ -1595,7 +1605,6 @@ $imagesStyles.
                       @endforeach
                     </tbody>
                   </table>
-                </div>
               </div>
             </div>
         </div>
@@ -1604,20 +1613,28 @@ $imagesStyles.
   </div>
 @endsection
 @section(\'after-script\')
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $(\'#dataTable\').DataTable( {
-                autoWidth: false,
-                columnDefs: [
-                    {
-                        targets: [\'_all\'],
-                        className: \'mdc-data-table__cell\'
-                    }
-                ],
-            } );
-        })
-
-    </script>
+<script src="https://material-dashboard-pro-laravel.creative-tim.com/material/js/plugins/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function() {
+      $(\'#dataTable\').fadeIn(1100);
+      $(\'#dataTable\').DataTable({
+        "pagingType": "full_numbers",
+        "lengthMenu": [
+          [10, 25, 50, -1],
+          [10, 25, 50, "All"]
+        ],
+        responsive: true,
+        autoWidth: false,
+        language: {
+          search: "_INPUT_",
+          searchPlaceholder: "Search",
+        },
+        "columnDefs": [
+          { "orderable": false, "targets":  '.$count.' },
+        ],
+      });
+    });
+  </script>
 @endsection';
     }
 

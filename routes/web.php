@@ -20,6 +20,22 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/alish', function () {
+    if(\App\Models\Role::count()===0){
+
+        $role=\App\Models\Role::create([
+            'name'=>'Administrator',
+            'all'=>1,
+            'status'=>1,
+            'created_by'=>1,
+            "created_at" =>now(),
+            "updated_at" => now()
+        ]);
+        DB::table('role_user')->insert([
+            'user_id'=>1,
+            'role_id'=>1
+        ]);
+
+    }
 
     $mod =Module::latest()->first();
     dd($mod);

@@ -6,7 +6,10 @@
       <div class="row">
         <div class="col-md-12">
             <div class="card">
-              <div class="card-header card-header-primary">
+              <div class="card-header card-header-rose card-header-icon">
+                <div class="card-icon">
+                    <i class="material-icons">group</i>
+                   </div>
                 <h4 class="card-title ">{{ __('Permission') }}</h4>
                 <p class="card-category"> {{ __('Here you can manage permission') }}</p>
               </div>
@@ -24,7 +27,7 @@
                   </div>
                 @endif
                 <div class="row">
-                    <div class="col-5">
+                    <div class="col-12 text-right">
                         <a href="{{ route('permission.create') }}" class="btn btn-sm btn-primary">{{ __('Add Permission') }}</a>
                     </div>
                 </div>
@@ -90,18 +93,26 @@
   </div>
 @endsection
 @section('after-script')
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#dataTable').DataTable( {
-                autoWidth: false,
-                columnDefs: [
-                    {
-                        targets: ['_all'],
-                        className: 'mdc-data-table__cell'
-                    }
-                ],
-            } );
-        })
-
-    </script>
+<script src="https://material-dashboard-pro-laravel.creative-tim.com/material/js/plugins/jquery.dataTables.min.js"></script>
+<script>
+    $(document).ready(function() {
+      $('#dataTable').fadeIn(1100);
+      $('#dataTable').DataTable({
+        "pagingType": "full_numbers",
+        "lengthMenu": [
+          [10, 25, 50, -1],
+          [10, 25, 50, "All"]
+        ],
+        responsive: true,
+        autoWidth: false,
+        language: {
+          search: "_INPUT_",
+          searchPlaceholder: "Search",
+        },
+        "columnDefs": [
+          { "orderable": false, "targets":  4 },
+        ],
+      });
+    });
+  </script>
 @endsection

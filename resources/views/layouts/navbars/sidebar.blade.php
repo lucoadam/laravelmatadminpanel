@@ -18,14 +18,14 @@
         </a>
       </li>
         @if(auth()->user()->allow('view-user'))
-      <li class="nav-item {{ ($activePage == 'profile' || $activePage == 'user-management') ? ' active' : '' }}">
-        <a class="nav-link {{ ($activePage == 'profile' || $activePage == 'user-management') ? '' : 'collapsed' }}" data-toggle="collapse" href="#laravelExample" aria-expanded="{{ ($activePage == 'profile' || $activePage == 'user-management') ? 'true' : 'false' }}">
+      <li class="nav-item {{ ($activePage == 'profile' || $activePage == 'user-management'|| $activePage == 'role-management'|| $activePage == 'permission-management') ? ' active' : '' }}">
+        <a class="nav-link {{ ($activePage == 'profile' || $activePage == 'user-management'|| $activePage == 'role-management'|| $activePage == 'permission-management') ? '' : 'collapsed' }}" data-toggle="collapse" href="#laravelExample" aria-expanded="{{ ($activePage == 'profile' || $activePage == 'user-management'|| $activePage == 'role-management'|| $activePage == 'permission-management') ? 'true' : 'false' }}">
 {{--          <i><img style="width:25px" src="{{ asset('material') }}/img/laravel.svg"></i>--}}
           <p>{{ __('User Management') }}
             <b class="caret"></b>
           </p>
         </a>
-        <div class="collapse {{ ($activePage == 'profile' || $activePage == 'user-management') ? 'show' : '' }}" id="laravelExample">
+        <div class="collapse {{ ($activePage == 'profile' || $activePage == 'user-management'|| $activePage == 'role-management'|| $activePage == 'permission-management') ? 'show' : '' }}" id="laravelExample">
           <ul class="nav">
             <li class="nav-item{{ $activePage == 'profile' ? ' active' : '' }}">
               <a class="nav-link" href="{{ route('profile.edit') }}">
@@ -39,6 +39,22 @@
                 <span class="sidebar-normal"> {{ __('User Management') }} </span>
               </a>
             </li>
+            @if(auth()->user()->allow('view-permission'))
+            <li class="nav-item{{ $activePage == 'permission-management' ? ' active' : '' }}">
+                <a class="nav-link" href="{{ route('permission.index') }}">
+                  <span class="sidebar-mini"> UM </span>
+                  <span class="sidebar-normal"> {{ __('Permission Management') }} </span>
+                </a>
+              </li>
+              @endif
+              @if(auth()->user()->allow('view-role'))
+              <li class="nav-item{{ $activePage == 'role-management' ? ' active' : '' }}">
+                  <a class="nav-link" href="{{ route('role.index') }}">
+                    <span class="sidebar-mini"> UM </span>
+                    <span class="sidebar-normal"> {{ __('Role Management') }} </span>
+                  </a>
+                </li>
+                @endif
           </ul>
         </div>
       </li>
