@@ -33,8 +33,10 @@ class UserController extends Controller
         //             $each->index = $key + 1;
         //     }
         // }
+        $count=count($mod)+1;
         foreach($mod as $k=>$m){
-            $m->index=$k+1;
+            $m->index=$count-1;
+            $count--;
         }
         return view('users.index', ['users' => $mod]);
     }

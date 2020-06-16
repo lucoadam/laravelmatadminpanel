@@ -31,7 +31,13 @@ class ModuleController extends Controller
     public function index(Module $model)
     {
         //
-        return view('settings.modules.index', ['modules' => $model->orderBy('id', 'desc')->get()]);
+        $mod=$model->all();
+        $count=count($mod)+1;
+        foreach($mod as $k=>$m){
+            $m->index=$count-1;
+            $count--;
+        }
+        return view('settings.modules.index', ['modules' => $mod]);
     }
 
     /**
@@ -771,9 +777,11 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
      */
     public function index(' . $this->modelCamelCase . 'ViewRequest $request,' . $this->modelCamelCase . ' $model)
     {
-        $mod = $model->all();
+        $mod=$model->all();
+        $count=count($mod)+1;
         foreach($mod as $k=>$m){
-            $m->index=$k+1;
+            $m->index=$count-1;
+            $count--;
         }
         return view(\'' . strtolower($this->modelCamelCase) . '.index\', [\'' . strtolower($this->modelCamelCase) . '\' => $mod]);
     }

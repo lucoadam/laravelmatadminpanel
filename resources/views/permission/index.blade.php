@@ -34,6 +34,7 @@
                 <div class="table-responsive">
                   <table id="dataTable" class="table">
                     <thead class=" text-primary">
+
                     <th>
                         {{ __('S.N.') }}
                     </th>

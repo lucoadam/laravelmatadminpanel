@@ -21,8 +21,10 @@ class PermissionController extends Controller
     public function index(PermissionViewRequest $request,Permission $model)
     {
         $mod=$model->all();
+        $count=count($mod)+1;
         foreach($mod as $k=>$m){
-            $m->index=$k+1;
+            $m->index=$count-1;
+            $count--;
         }
         return view('permission.index', ['permission' => $mod]);
     }

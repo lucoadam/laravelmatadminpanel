@@ -28,9 +28,14 @@ class ClientController extends Controller
      */
     public function index(ClientViewRequest $request,Client $model)
     {
+        $mod=$model->all();
+        $count=count($mod)+1;
+        foreach($mod as $k=>$m){
+            $m->index=$count-1;
+            $count--;
+        }
 
-
-        return view('client.index', ['client' => $model->all()]);
+        return view('client.index', ['client' => $mod]);
     }
 
     /**

@@ -36,7 +36,7 @@
                   <table id="dataTable" class="table table-striped table-no-bordered table-hover dataTable no-footer dtr-inline"  style="width:100%">
                     <thead class=" text-primary">
                     <th >
-                        {{ __('Id') }}
+                        {{ __('S.N.') }}
                     </th>
                       <th>
                           {{ __('Name') }}
@@ -52,7 +52,7 @@
                       @foreach($modules as $module)
                         <tr>
                             <td tabindex="0">
-                                {{$module->id}}
+                                {{$module->index}}
                             </td>
                           <td>
                             {{ $module->name }}
@@ -112,6 +112,7 @@
     $(document).ready(function() {
       $('#dataTable').fadeIn(1100);
       $('#dataTable').DataTable({
+
         "pagingType": "full_numbers",
         "lengthMenu": [
           [10, 25, 50, -1],

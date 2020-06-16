@@ -21,8 +21,10 @@ class RoleController extends Controller
     public function index(RoleViewRequest $request,Role $model)
     {
         $mod=$model->all();
+        $count=count($mod)+1;
         foreach($mod as $k=>$m){
-            $m->index=$k+1;
+            $m->index=$count-1;
+            $count--;
         }
         return view('role.index', ['role' => $mod]);
     }
