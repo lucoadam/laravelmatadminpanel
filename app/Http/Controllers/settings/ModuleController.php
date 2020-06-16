@@ -1460,12 +1460,13 @@ $imagesStyles.
                             {{ __("' . ucfirst(implode(" ", explode("_", $columnName[0]))) . '") }}
                           </th>';
             if ($key == 'image') {
-                $bodyContent .= "\n\t\t\t\t\t\t" . '<td>
-                            <div class="fileinput fileinput-new text-center">
-                            <div class="fileinput-new thumbnail img-raised">
-                                <img src="{{ url("/").$model->' . $key . ' }}" rel="nofollow" alt="Image not found">
-                            </div>
-                          </td>';
+                $bodyContent .= "\n\t\t\t\t\t\t" . '<td style="width: 150px !important;">
+                    <div class="fileinput fileinput-new text-center" style="margin-bottom: 0px !important;">
+                        <div class="fileinput-new thumbnail img-raised" style="width: 150px; margin-bottom: 0px !important;">
+                            <img src="{{ url("/").$model->image }}" width="150" style="height: 100px !important; object-fit: fill;" rel="nofollow" alt="Image not found">
+                        </div>
+                    </div>
+                  </td>';
             } elseif ($key == 'file') {
                 $bodyContent .= "\n\t\t\t\t\t\t" . '<td>
                             <div class="fileinput-new thumbnail img-raised">
@@ -1473,33 +1474,35 @@ $imagesStyles.
                             </div>
                           </td>';
             }elseif($key=='images'){
-                $bodyContent.= "\n\t\t\t\t\t\t" . '<td>@if(isset($model->images)&&is_array($arr=json_decode($model->images))&&$count=count($arr))
-                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                        <div class="carousel-inner">
-                            @foreach($arr as $key=>$im)
-                                @if($key < 1)
-                                    <div class="carousel-item active" style="border-radius: 10px;">
-                                        <img class="d-block w-100 h-25" src="{{url(\'/\').\'/\'.$im}}" style="height: 150px !important; object-fit: fill; border-radius: 10px;" alt="*Slide*">
-                                    </div>
-                                @else
-                                    <div class="carousel-item" style="border-radius: 10px;">
-                                        <img class="d-block w-100 h-25" src="{{url(\'/\').\'/\'.$im}}" style="height: 150px !important; object-fit: fill; border-radius: 10px;" alt="*Slide*" >
-                                    </div>
-                                @endif
-                            @endforeach
+                $bodyContent.= "\n\t\t\t\t\t\t" . '<td style="width: 150px !important;">
+                    @if(isset($model->images)&&is_array($arr=json_decode($model->images))&&$count=count($arr))
+                        <div id="carouselExampleIndicators{{$model->id}}" class="carousel slide" data-ride="carousel">
+                            <div class="carousel-inner">
+                                @foreach($arr as $key=>$im)
+                                    @if($key < 1)
+                                        <div class="carousel-item active" style="border-radius: 10px; width: 80px !important;">
+                                            <img class="d-block " src="{{url(\'/\').\'/\'.$im}}" width="150"  style="height: 100px !important;  object-fit: contain; border-radius: 10px;" alt="*Slide*">
+                                        </div>
+                                    @else
+                                        <div class="carousel-item" style="border-radius: 10px; width: 80px !important;">
+                                            <img class="d-block " src="{{url(\'/\').\'/\'.$im}}" width="150" style="height: 100px !important; object-fit: contain; border-radius: 10px;" alt="*Slide*" >
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                            @if($count!=1)
+                                <a class="carousel-control-prev" href="#carouselExampleIndicators{{$model->id}}" role="button" data-slide="prev" style="background: linear-gradient(to right,purple 0%, white 100%) !important; border-radius: 10px 0px 0px 10px;">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true" ></span>
+                                    <span class="sr-only" >Previous</span>
+                                </a>
+                                <a class="carousel-control-next" href="#carouselExampleIndicators{{$model->id}}" role="button" data-slide="next" style="background: linear-gradient(to left,purple 0%, white 100%) !important; border-radius: 0px 10px 10px 0px;">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            @endif
                         </div>
-                        @if($count!=1)
-                            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev" style="background: linear-gradient(to right,purple 0%, white 100%) !important; border-radius: 10px 0px 0px 10px;">
-                                <span class="carousel-control-prev-icon" aria-hidden="true" ></span>
-                                <span class="sr-only" >Previous</span>
-                            </a>
-                            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next" style="background: linear-gradient(to left,purple 0%, white 100%) !important; border-radius: 0px 10px 10px 0px;">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="sr-only">Next</span>
-                            </a>
-                        @endif
-                    </div>
-                @endif </td>';
+                    @endif
+                </td>';
             } elseif (Schema::hasTable($reltable)) {
                 if (count($columnName) == 2) {
                     $bodyContent .= "\n\t\t\t\t\t\t" . '<td>
