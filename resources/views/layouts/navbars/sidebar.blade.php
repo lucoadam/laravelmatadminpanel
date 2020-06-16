@@ -1,4 +1,4 @@
-<div class="sidebar" data-color="orange" data-background-color="white" data-image="{{ asset('material') }}/img/sidebar-1.jpg">
+<div class="sidebar" data-color="rose" data-background-color="black">
   <!--
       Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
 
@@ -9,7 +9,7 @@
       {{ env('APP_NAME','Admin Panel') }}
     </a>
   </div>
-  <div class="sidebar-wrapper">
+  <div class="sidebar-wrapper ps-container ps-theme-default ps-active-y">
     <ul class="nav">
       <li class="nav-item{{ $activePage == 'dashboard' ? ' active' : '' }}">
         <a class="nav-link" href="{{ route('home') }}">
