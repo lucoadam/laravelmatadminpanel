@@ -1467,14 +1467,11 @@ $imagesStyles.
                             </div>
                           </td>';
             }elseif($key=='images'){
-                $bodyContent.= "\n\t\t\t\t\t\t" . '<td>@if(isset($model->images)&&is_array(json_decode($model->images)))
+                $bodyContent.= "\n\t\t\t\t\t\t" . '<td>@if(isset($model->images)&&is_array($arr=json_decode($model->images))&&$count=count($arr))
                     <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                         <div class="carousel-inner">
-                            @php
-                                $count = 0;
-                            @endphp
-                            @foreach(json_decode($model->images) as $im)
-                                @if($count < 1)
+                            @foreach($arr as $key=>$im)
+                                @if($key < 1)
                                     <div class="carousel-item active" style="border-radius: 10px;">
                                         <img class="d-block w-100 h-25" src="{{url(\'/\').\'/\'.$im}}" style="height: 150px !important; object-fit: fill; border-radius: 10px;" alt="*Slide*">
                                     </div>
@@ -1483,19 +1480,18 @@ $imagesStyles.
                                         <img class="d-block w-100 h-25" src="{{url(\'/\').\'/\'.$im}}" style="height: 150px !important; object-fit: fill; border-radius: 10px;" alt="*Slide*" >
                                     </div>
                                 @endif
-                                @php
-                                    $count++;
-                                @endphp
                             @endforeach
                         </div>
-                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev" style="background: linear-gradient(to right,purple 0%, white 100%) !important; border-radius: 10px 0px 0px 10px;">
-                            <span class="carousel-control-prev-icon" aria-hidden="true" ></span>
-                            <span class="sr-only" >Previous</span>
-                        </a>
-                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next" style="background: linear-gradient(to left,purple 0%, white 100%) !important; border-radius: 0px 10px 10px 0px;">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="sr-only">Next</span>
-                        </a>
+                        @if($count!=1)
+                            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev" style="background: linear-gradient(to right,purple 0%, white 100%) !important; border-radius: 10px 0px 0px 10px;">
+                                <span class="carousel-control-prev-icon" aria-hidden="true" ></span>
+                                <span class="sr-only" >Previous</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next" style="background: linear-gradient(to left,purple 0%, white 100%) !important; border-radius: 0px 10px 10px 0px;">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        @endif
                     </div>
                 @endif </td>';
             } elseif (Schema::hasTable($reltable)) {
