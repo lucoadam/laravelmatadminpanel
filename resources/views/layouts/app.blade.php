@@ -41,7 +41,7 @@
 {{--    <!-- CSS Just for demo purpose, don't include it in your project -->--}}
 {{--    <link href="{{ asset('material') }}/demo/demo.css" rel="stylesheet" />--}}
     </head>
-    <body class="{{ $class ?? 'perfect-scrollbar-off' }}">
+    <body class="{{ $class ?? 'perfect-scrollbar-on' }}">
         @auth()
             @if(isset($welcome)&&$welcome)
                 @include('layouts.page_templates.guest')
@@ -176,7 +176,8 @@
         <script src="{{ asset('material-dashboard-pro')}}/assets/js/core/jquery.min.js"></script>
         <script src="{{ asset('material-dashboard-pro')}}/assets/js/core/popper.min.js"></script>
         <script src="{{ asset('material-dashboard-pro')}}/assets/js/core/bootstrap-material-design.min.js"></script>
-        <script src="{{ asset('material-dashboard-pro')}}/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+        <script src="https://material-dashboard-pro-laravel.creative-tim.com/material/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+        {{-- <script src="{{ asset('material-dashboard-pro')}}/assets/js/plugins/perfect-scrollbar.jquery.min.js"></script> --}}
         <!-- Plugin for the momentJs  -->
         <script src="{{ asset('material-dashboard-pro')}}/assets/js/plugins/moment.min.js"></script>
         <!--  Plugin for Sweet Alert -->

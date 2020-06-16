@@ -14,8 +14,21 @@
               </h4>
             </div>
             <div class="card-body">
-              <form method="post" enctype="multipart/form-data" action="https://material-dashboard-pro-laravel.creative-tim.com/profile" autocomplete="off" class="form-horizontal">
-                <input type="hidden" name="_token" value="H6VHoaLjv9Xzqv8vV2nnDrhQ6rt2Z07l4LGIPwPE">              <input type="hidden" name="_method" value="put">
+                @if (session('status'))
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="alert alert-success alert-dismissible">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <i class="material-icons">close</i>
+                      </button>
+                      <span>{{ session('status') }}</span>
+                    </div>
+                  </div>
+                </div>
+              @endif
+            <form method="post" enctype="multipart/form-data" action="{{route('profile.update')}}" autocomplete="off" class="form-horizontal">
+                @csrf
+                @method('put')
                 <div class="row">
                   <label class="col-sm-2 col-form-label">Profile photo</label>
                   <div class="col-sm-7">
@@ -39,16 +52,23 @@
                   <label class="col-sm-2 col-form-label">Name</label>
                   <div class="col-sm-7">
                     <div class="form-group bmd-form-group is-filled">
-                      <input class="form-control" name="name" id="input-name" type="text" placeholder="Name" value="Admin" required="true" aria-required="true">
-                                        </div>
+                      <input class="form-control" name="name" id="input-name" type="text" placeholder="Name" value="{{auth()->user()->name}}" required="true" aria-required="true">
+                      @if ($errors->has('name'))
+                      <span id="name-error" class="error text-danger" for="input-name">{{ $errors->first('name') }}</span>
+                    @endif
+                    </div>
                   </div>
                 </div>
                 <div class="row">
                   <label class="col-sm-2 col-form-label">Email</label>
                   <div class="col-sm-7">
                     <div class="form-group bmd-form-group is-filled">
-                      <input class="form-control" name="email" id="input-email" type="email" placeholder="Email" value="admin@material.com" required="">
-                                        </div>
+                    <input class="form-control" name="some" id="input-email" type="email" placeholder="Email" value="{{auth()->user()->email}}" disabled>
+                    <input type="hidden" name="email" value="{{auth()->user()->email}}"/>
+                    @if ($errors->has('email'))
+                    <span id="email-error" class="error text-danger" for="input-email">{{ $errors->first('email') }}</span>
+                  @endif
+                </div>
                   </div>
                 </div>
                 <button type="submit" class="btn btn-rose pull-right">Update Profile</button>
@@ -65,14 +85,32 @@
               <h4 class="card-title">Change password</h4>
             </div>
             <div class="card-body">
-              <form method="post" action="https://material-dashboard-pro-laravel.creative-tim.com/profile/password" class="form-horizontal">
-                <input type="hidden" name="_token" value="H6VHoaLjv9Xzqv8vV2nnDrhQ6rt2Z07l4LGIPwPE">              <input type="hidden" name="_method" value="put">
+                @if (session('status_password'))
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="alert alert-success">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <i class="material-icons">close</i>
+                      </button>
+                      <span>{{ session('status_password') }}</span>
+                    </div>
+                  </div>
+                </div>
+              @endif
+              <form method="post" action="{{route('profile.password')}}" class="form-horizontal">
+                @csrf
+                @method('put')
                 <div class="row">
                   <label class="col-sm-2 col-form-label" for="input-current-password">Current Password</label>
                   <div class="col-sm-7">
                     <div class="form-group bmd-form-group">
                       <input class="form-control" input="" type="password" name="old_password" id="input-current-password" placeholder="Current Password" value="" required="">
-                                        </div>
+                      @if ($errors->has('old_password'))
+                      <span id="name-error" class="error text-danger" for="input-name">{{ $errors->first('old_password') }}</span>
+                    @endif
+
+
+                    </div>
                   </div>
                 </div>
                 <div class="row">
@@ -80,7 +118,10 @@
                   <div class="col-sm-7">
                     <div class="form-group bmd-form-group">
                       <input class="form-control" name="password" id="input-password" type="password" placeholder="New Password" value="" required="">
-                                        </div>
+                      @if ($errors->has('password'))
+                      <span id="password-error" class="error text-danger" for="input-password">{{ $errors->first('password') }}</span>
+                    @endif
+                    </div>
                   </div>
                 </div>
                 <div class="row">

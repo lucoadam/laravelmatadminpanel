@@ -1,4 +1,4 @@
-<div class="sidebar" data-color="rose" data-background-color="black">
+<div class="sidebar" data-color="rose" data-background-color="black" data-ps-id="bd2e96b5-af3f-3cd7-fdb4-4d13cf4e4d7c">
   <!--
       Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
 
