@@ -1164,7 +1164,15 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
                 $imagesStyles .="\n".'
                 @section(\'after-style\')
                 <link href="{{ asset(\'assets\') }}/css/dropzone.min.css" rel="stylesheet" />
-                @endsection';
+                @endsection
+                <style>
+                    .dropzone .dz-preview .dz-image img {
+                        display: block;
+                        object-fit: contain;
+                        height: inherit;
+                        width: inherit;
+                    }
+                </style>';
                 $imagesScripts.='
                 <script src="{{ asset(\'assets\') }}/js/dropzone.min.js"></script>
                 <script type="text/javascript">
@@ -1460,13 +1468,35 @@ $imagesStyles.
                           </td>';
             }elseif($key=='images'){
                 $bodyContent.= "\n\t\t\t\t\t\t" . '<td>@if(isset($model->images)&&is_array(json_decode($model->images)))
-                <div class="avatar avatar-sm rounded" style="display:flex;width:100px; height:100px;overflow: hidden;">
-
-                    <img src="{{url(\'/\').\'/\'.json_decode($model->images)[0]}}" alt="" style="max-width: {{0.5*100}}px;">
-                    @if(count(json_decode($model->images))>=2)
-                    <img src="{{url(\'/\').\'/\'.json_decode($model->images)[1]}}" alt="" style="max-width: {{0.5*100}}px;">
-                    @endif
-                </div>
+                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                            @php
+                                $count = 0;
+                            @endphp
+                            @foreach(json_decode($model->images) as $im)
+                                @if($count < 1)
+                                    <div class="carousel-item active" style="border-radius: 10px;">
+                                        <img class="d-block w-100 h-25" src="{{url(\'/\').\'/\'.$im}}" style="height: 150px !important; object-fit: fill; border-radius: 10px;" alt="*Slide*">
+                                    </div>
+                                @else
+                                    <div class="carousel-item" style="border-radius: 10px;">
+                                        <img class="d-block w-100 h-25" src="{{url(\'/\').\'/\'.$im}}" style="height: 150px !important; object-fit: fill; border-radius: 10px;" alt="*Slide*" >
+                                    </div>
+                                @endif
+                                @php
+                                    $count++;
+                                @endphp
+                            @endforeach
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev" style="background: linear-gradient(to right,purple 0%, white 100%) !important; border-radius: 10px 0px 0px 10px;">
+                            <span class="carousel-control-prev-icon" aria-hidden="true" ></span>
+                            <span class="sr-only" >Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next" style="background: linear-gradient(to left,purple 0%, white 100%) !important; border-radius: 0px 10px 10px 0px;">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
                 @endif </td>';
             } elseif (Schema::hasTable($reltable)) {
                 if (count($columnName) == 2) {
