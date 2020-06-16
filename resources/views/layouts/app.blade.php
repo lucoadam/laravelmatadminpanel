@@ -27,10 +27,6 @@
                 left: 15px;
                 margin-top: -6px;
             }
-
-            body {
-                background: white;
-            }
         </style>
         <!-- CSS Just for demo purpose, don't include it in your project -->
         <link href="{{ asset('material-dashboard-pro')}}/assets/demo/demo.css" rel="stylesheet">
