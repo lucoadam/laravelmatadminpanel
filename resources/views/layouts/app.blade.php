@@ -45,7 +45,7 @@
 {{--    <!-- CSS Just for demo purpose, don't include it in your project -->--}}
 {{--    <link href="{{ asset('material') }}/demo/demo.css" rel="stylesheet" />--}}
     </head>
-    <body class="{{ $class ?? '' }}">
+    <body class="{{ $class ?? 'perfect-scrollbar-off' }}">
         @auth()
             @if(isset($welcome)&&$welcome)
                 @include('layouts.page_templates.guest')
