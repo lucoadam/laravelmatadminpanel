@@ -13,7 +13,7 @@
                 <div class="modal-header">
                   <div class="card-header card-header-primary text-center">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                      <i class="material-icons">clear</i>
+                      <i class="material-icons">close</i>
                     </button>
 
                     <h4 class="card-title">Add Fields To Module</h4>
@@ -119,10 +119,14 @@
                         @method('post')
 
                         <div class="card ">
-                            <div class="card-header card-header-primary">
+                            <div class="card-header card-header-rose card-header-icon">
+                                <div class="card-icon">
+
+                                    <i class="material-icons">add</i>
+                                  </div>
                                 <h4 class="card-title">{{ __('Add Module') }}</h4>
-                                <p class="card-category"></p>
-                            </div>
+
+                                </div>
                             <div class="card-body ">
                                 <div class="row">
                                     <div class="col-md-12 text-right">

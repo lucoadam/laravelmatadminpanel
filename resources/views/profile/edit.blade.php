@@ -38,7 +38,7 @@
                                             </div>
                       <div class="fileinput-preview fileinput-exists thumbnail img-circle"></div>
                       <div>
-                        <span class="btn btn-rose btn-file">
+                        <span class="btn btn-primary btn-file">
                           <span class="fileinput-new">Select image</span>
                           <span class="fileinput-exists">Change</span>
                           <input type="file" name="photo" id="input-picture">
@@ -71,7 +71,7 @@
                 </div>
                   </div>
                 </div>
-                <button type="submit" class="btn btn-rose pull-right">Update Profile</button>
+                <button type="submit" class="btn btn-primary pull-right">Update Profile</button>
                 <div class="clearfix"></div>
               </form>
             </div>
@@ -132,7 +132,7 @@
                     </div>
                   </div>
                 </div>
-                <button type="submit" class="btn btn-rose pull-right">Change password</button>
+                <button type="submit" class="btn btn-primary pull-right">Change password</button>
                 <div class="clearfix"></div>
               </form>
             </div>
@@ -151,7 +151,7 @@
               <p class="card-description">
                 Don't be scared of the truth because we need to restart the human foundation in truth And I love you like Kanye loves Kanye I love Rick Owens’ bed design but the back is...
               </p>
-              <a href="#pablo" class="btn btn-rose btn-round">Follow<div class="ripple-container"></div></a>
+              <a href="#pablo" class="btn btn-primary btn-round">Follow<div class="ripple-container"></div></a>
             </div>
           </div>
         </div>

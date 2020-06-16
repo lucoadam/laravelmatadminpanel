@@ -209,7 +209,7 @@ class ModuleController extends Controller
      */
     public function edit(Module $module)
     {
-        return view('settings.modules.edit', compact('department'));
+        return view('settings.modules.edit', compact('module'));
     }
 
     /**
@@ -771,7 +771,11 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
      */
     public function index(' . $this->modelCamelCase . 'ViewRequest $request,' . $this->modelCamelCase . ' $model)
     {
-        return view(\'' . strtolower($this->modelCamelCase) . '.index\', [\'' . strtolower($this->modelCamelCase) . '\' => $model->all()]);
+        $mod = $model->all();
+        foreach($mod as $k=>$m){
+            $m->index=$k+1;
+        }
+        return view(\'' . strtolower($this->modelCamelCase) . '.index\', [\'' . strtolower($this->modelCamelCase) . '\' => $mod]);
     }
 
     /**
@@ -958,7 +962,7 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
             }
             else if ($key == 'file') {
                 $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="file" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"/>
-                <button onclick="document.getElementById(\'input-file\').click()" type="button" class="btn btn-fab btn-round btn-rose">
+                <button onclick="document.getElementById(\'input-file\').click()" type="button" class="btn btn-fab btn-round btn-primary">
                         <i class="material-icons">attach_file</i>
                       </button>';
             } else if ($key == 'image') {
@@ -1109,13 +1113,13 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
                @if(auth()->user()->allow(\'view-\'.strtolower(\'' . $this->toPermissionName() . '\')))
                 <div class="row">
                   <div class="col-md-12 text-right">
-                      <a href="{{ route(\'' . strtolower($this->modelCamelCase) . '.index\') }}" class="btn btn-sm btn-rose">{{ __(\'Back to list\') }}</a>
+                      <a href="{{ route(\'' . strtolower($this->modelCamelCase) . '.index\') }}" class="btn btn-sm btn-primary">{{ __(\'Back to list\') }}</a>
                   </div>
                 </div>
                 @endif' . $fieldContent . '
               </div>
               <div class="card-footer ml-auto mr-auto">
-                <button type="submit" class="btn btn-rose">{{ __(\'Add ' . $model . '\') }}</button>
+                <button type="submit" class="btn btn-primary">{{ __(\'Add ' . $model . '\') }}</button>
               </div>
             </div>
           </form>
@@ -1269,7 +1273,7 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
                 $input = '<textarea rows="5" class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true">{{$' . strtolower($this->modelCamelCase) . '->' . $key . '}}</textarea>';
             } else if ($key == 'file') {
                 $input = $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="file" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"/>
-                <button onclick="document.getElementById(\'input-file\').click()" type="button" class="btn btn-fab btn-round btn-rose">
+                <button onclick="document.getElementById(\'input-file\').click()" type="button" class="btn btn-fab btn-round btn-primary">
                         <i class="material-icons">attach_file</i>
                       </button>';
             } else if ($key == 'image') {
@@ -1420,13 +1424,13 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
                  @if(auth()->user()->allow(\'view-\'.strtolower(\'' . $this->toPermissionName() . '\')))
                 <div class="row">
                   <div class="col-md-12 text-right">
-                      <a href="{{ route(\'' . strtolower($this->modelCamelCase) . '.index\') }}" class="btn btn-sm btn-rose">{{ __(\'Back to list\') }}</a>
+                      <a href="{{ route(\'' . strtolower($this->modelCamelCase) . '.index\') }}" class="btn btn-sm btn-primary">{{ __(\'Back to list\') }}</a>
                   </div>
                 </div>
                 @endif' . $fieldContent . '
               </div>
               <div class="card-footer ml-auto mr-auto">
-                <button type="submit" class="btn btn-rose">{{ __(\'Save\') }}</button>
+                <button type="submit" class="btn btn-primary">{{ __(\'Save\') }}</button>
               </div>
             </div>
           </form>
@@ -1559,14 +1563,14 @@ $imagesStyles.
                 @if(auth()->user()->allow(\'create-\'.strtolower(\'' . $this->toPermissionName() . '\')))
                 <div class="row">
                     <div class="col-12 text-right">
-                        <a href="{{ route(\'' . strtolower($this->modelCamelCase) . '.create\') }}" class="btn btn-sm btn-rose">{{ __(\'Add ' . $model . '\') }}</a>
+                        <a href="{{ route(\'' . strtolower($this->modelCamelCase) . '.create\') }}" class="btn btn-sm btn-primary">{{ __(\'Add ' . $model . '\') }}</a>
                     </div>
                 </div>
                 @endif
                   <table id="dataTable" class="table table-striped table-no-bordered table-hover dataTable no-footer dtr-inline" style="width:100%" role="grid" aria-describedby="datatables_info">
                     <thead class=" text-primary">
                     <th class="sorting_desc">
-                        {{ __(\'Id\') }}
+                        {{ __(\'S.N.\') }}
                     </th>' . $titleContent . '
                       <th>
                         {{ __(\'Creation date\') }}
@@ -1579,7 +1583,7 @@ $imagesStyles.
                       @foreach($' . strtolower($this->modelCamelCase) . ' as $model)
                         <tr>
                             <td>
-                                {{$model->id}}
+                                {{$model->index}}
                             </td>' . $bodyContent . '
                           <td>
                             {{ $model->created_at->format(\'Y/m/d\') }}

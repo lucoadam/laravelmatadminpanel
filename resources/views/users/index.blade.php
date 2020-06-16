@@ -16,7 +16,7 @@
                 <div class="card-body">
                     <div class="row">
       <div class="col-12 text-right">
-        <a href="{{ route('user.create') }}" class="btn btn-sm btn-rose">Add user</a>
+        <a href="{{ route('user.create') }}" class="btn btn-sm btn-primary">Add user</a>
       </div>
     </div>
         <table id="datatables" class="table table-striped table-no-bordered table-hover dataTable no-footer dtr-inline" style="width:100%" role="grid" aria-describedby="datatables_info">

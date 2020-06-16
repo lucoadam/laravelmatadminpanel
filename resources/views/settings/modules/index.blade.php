@@ -28,7 +28,7 @@
                   </div>
                 @endif
                 <div class="col-12 text-right" >
-                        <a href="{{ route('settings.module.create') }}" class="btn btn-sm btn-rose">{{ __('Add Module') }}</a>
+                        <a href="{{ route('settings.module.create') }}" class="btn btn-sm btn-primary">{{ __('Add Module') }}</a>
                     </div>
 
                     @if(isset($modules))
@@ -65,7 +65,7 @@
                                   @csrf
                                   @method('delete')
 
-                                  <a rel="tooltip" class="btn btn-success btn-link" href="{{ route('settings.module.edit', $module) }}" data-original-title="" title="">
+                                  <a rel="tooltip" class="btn btn-disabled btn-success btn-link" href="{{-- route('settings.module.edit', $module) --}}" data-original-title="" title="">
                                     <i class="material-icons">edit</i>
                                     <div class="ripple-container"></div>
                                   </a>
