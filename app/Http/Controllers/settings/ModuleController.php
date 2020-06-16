@@ -983,24 +983,23 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
                     $input = '@php
                     $' . $reltable . 's = \App\Models\\' . $this->toCamelCase($columnName[0]) . '::all();
                   @endphp
+                  <div class="dropdown bootstrap-select show-tick col-sm-12 pl-0 pr-0">
+                              <select class="selectpicker col-sm-12 pl-0 pr-0 {{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . $columnName[0] . '_id[]" title="' . $this->toCamelCase($columnName[0]) . '" data-style="select-with-transition" multiple="" data-size="7" tabindex="-98">
 
-                              <select class="{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . $columnName[0] . '_id[]" multiple="true">
-                                  <option selected disabled value="">' . $this->toCamelCase($columnName[0]) . '</option>
                                   @foreach($' . $reltable . 's as $' . $reltable . ')
                                       <option value="{{$' . $reltable . '->id}}">{{$' . $reltable . '->' . $columnName[1] . '}}</option>
                                   @endforeach
-                              </select>';
+                              </select></div>';
                 } else if (count($columnName) == 2) {
                     $input = '@php
                     $' . $reltable . 's = \App\Models\\' . $this->toCamelCase($columnName[0]) . '::all();
                   @endphp
-
-                              <select class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . $columnName[0] . '_id">
-                                  <option selected disabled value="">' . $this->toCamelCase($columnName[0]) . '</option>
+                  <div class="dropdown bootstrap-select show-tick col-sm-12 pl-0 pr-0">
+                              <select class="selectpicker col-sm-12 pl-0 pr-0 {{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . $columnName[0] . '_id"  title="' . $this->toCamelCase($columnName[0]) . '" data-style="select-with-transition" tabindex="-98">
                                   @foreach($' . $reltable . 's as $' . $reltable . ')
                                       <option value="{{$' . $reltable . '->id}}">{{$' . $reltable . '->' . $columnName[1] . '}}</option>
                                   @endforeach
-                              </select>';
+                              </select></div>';
                 } else {
                     $input = '<input class="form-control{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . strtolower($key) . '" id="input-' . strtolower($key) . '" type="number" placeholder="{{ __(\'' . ucfirst($key) . '\') }}" value="{{ old(\'' . strtolower($key) . '\') }}" required="true" aria-required="true"/>';
                 }
@@ -1295,24 +1294,23 @@ class ' . $this->modelCamelCase . 'Controller extends Controller
                     $' . $reltable . 's = \App\Models\\' . $this->toCamelCase($columnName[0]) . '::all();
                     $selected = $' . strtolower($this->modelCamelCase) . '->' . $columnName[0] . '->pluck("id")->all();
                     @endphp
-
-                    <select class="{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . $columnName[0] . '_id[]" multiple="true">
-                        <option disabled value="">' . $this->toCamelCase($columnName[0]) . '</option>
+                    <div class="dropdown bootstrap-select show-tick col-sm-12 pl-0 pr-0">
+                    <select class="selectpicker  col-sm-12 pl-0 pr-0 {{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . $columnName[0] . '_id[]"  data-style="select-with-transition" multiple="" title="'. $this->toCamelCase($columnName[0]).'" data-size="7" tabindex="-98">
                         @foreach($' . $reltable . 's as $' . $reltable . ')
                         <option value="{{$' . $reltable . '->id}}" {!!in_array($' . $reltable . '->id,$selected)?"selected":""!!}>{{$' . $reltable . '->' . $columnName[1] . '}}</option>
                                                           @endforeach
-                                                      </select>' ;
+                                                      </select></div>' ;
                     } else if (count($columnName)==2) {
                         $input='@php
                                             $' . $reltable . 's = \App\Models\\' . $this->toCamelCase($columnName[0]) . '::all();
                             @endphp
+                            <div class="dropdown bootstrap-select show-tick col-sm-12 pl-0 pr-0">
+                            <select class="selectpicker  col-sm-12 pl-0 pr-0 {{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . $columnName[0] . '_id"  data-style="select-with-transition"  title="'. $this->toCamelCase($columnName[0]).'" tabindex="-98">
 
-                            <select class="{{ $errors->has(\'' . strtolower($key) . '\') ? \' is-invalid\' : \'\' }}" name="' . $columnName[0] . '_id" multiple="true">
-                                <option selected disabled value="">' . $this->toCamelCase($columnName[0]) . '</option>
                                 @foreach($' . $reltable . 's as $' . $reltable . ')
                                 <option value="{{$' . $reltable . '->id}}" {!!($' . $reltable . '->id==$' . strtolower($this->modelCamelCase) . '->' . $columnName[0] . '_id' . ')?"selected":""!!}>{{$' . $reltable . '->' . $columnName[1] . '}}</option>
                                 @endforeach
-                            </select>';
+                            </select></div>';
 
 
 
