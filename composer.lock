@@ -483,7 +483,7 @@
                 "shasum": ""
             },
             "require": {
-                "laravel/framework": "^5.5 || ^6.0"
+                 "laravel/framework": "6.20.14"
             },
             "type": "library",
             "extra": {
@@ -513,7 +513,7 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v6.5.0",
+            "version": "v6.20.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
